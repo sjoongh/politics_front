@@ -51,8 +51,9 @@ export default function LoginForm() {
       password,
       nickname,
       phone,
-    });
-  };
+    }, () => setTab(0) // 회원가입 후 로그인 탭으로 전환
+      );
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
