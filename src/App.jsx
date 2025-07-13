@@ -9,6 +9,7 @@ import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
 import { useNews, useSearch, useExport } from './components/useNews';
 import LoginForm from './components/LoginForm';
+import MyPage from './components/MyPage';
 
 function App() {
   const { data, loading, error, refreshData } = useNews();
@@ -23,7 +24,8 @@ function App() {
     { id: 'president', label: '대통령 정책', icon: '🎖️' },
     { id: 'parliament', label: '국회 활동', icon: '🏛️' },
     { id: 'statements', label: '정치인 발언', icon: '💬' },
-    { id: 'news', label: '뉴스', icon: '📰' }
+    { id: 'news', label: '뉴스', icon: '📰' },
+    { id: 'mypage', label: '마이페이지', icon: '👤' }
   ];
 
   const handleSearch = useCallback(async (searchTerm, filters) => {
@@ -63,9 +65,8 @@ function App() {
   }
 
   const renderTabContent = () => {
-    if (!data) return null;
-
-    const currentData = searchResults || data;
+    // if (!data) return null;
+    // const currentData = searchResults || data;
 
     switch (activeTab) {
       case 'dashboard':
@@ -129,20 +130,42 @@ function App() {
         );
 
       case 'news':
+  return (
+    <div>
+      <div className="section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span>📰 뉴스</span>
+        <button
+          className="btn btn--outline btn--sm"
+          style={{ marginLeft: "auto" }}
+          onClick={refreshData}
+          disabled={loading}
+        >
+          🔄 뉴스 업데이트
+        </button>
+      </div>
+      <div className="content-cards">
+        {(searchResults?.results?.news)?.map((news, index) => (
+          <NewsCard 
+            key={index}
+            item={news}
+            type="news"
+            onDetailClick={handleDetailClick}
+          />
+        ))}
+      </div>
+    </div>
+  );
+  // searchResults?.results?.news || data.news_updates 위에 이렇게 들어가야함
+  // 음.. 아마도 버튼형식으로 바꿔서 클릭하면 뉴스 업데이트 해주는 방식으로 해야할듯?
+      case 'mypage':
+        // fetchBookmarks={/* 북마크 불러오는 함수 또는 null */}
         return (
-          <div>
-            <div className="section-title">📰 뉴스 업데이트</div>
-            <div className="content-cards">
-              {(searchResults?.results?.news || data.news_updates)?.map((news, index) => (
-                <NewsCard 
-                  key={index}
-                  item={news}
-                  type="news"
-                  onDetailClick={handleDetailClick}
-                />
-              ))}
-            </div>
-          </div>
+          <MyPage
+            user={user}
+            fetchBookmarks={data?.bookmarks || []} // 북마크 데이터가 있다면 전달
+            fetchPreferences={data?.preferences || { keywords: [], politicians: [], parties: [] }} // 관심사 데이터
+            updateNotification={null} // 알림 설정 업데이트 함수 (추후 구현 가능)
+          />
         );
 
       default:
