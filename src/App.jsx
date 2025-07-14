@@ -130,31 +130,37 @@ function App() {
         );
 
       case 'news':
-  return (
-    <div>
-      <div className="section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span>📰 뉴스</span>
-        <button
-          className="btn btn--outline btn--sm"
-          style={{ marginLeft: "auto" }}
-          onClick={refreshData}
-          disabled={loading}
-        >
-          🔄 뉴스 업데이트
-        </button>
-      </div>
-      <div className="content-cards">
-        {(searchResults?.results?.news)?.map((news, index) => (
-          <NewsCard 
-            key={index}
-            item={news}
-            type="news"
-            onDetailClick={handleDetailClick}
-          />
-        ))}
-      </div>
-    </div>
-  );
+        console.log(data);
+        const newsList = searchResults?.results?.news || data?.articles || [];
+        return (
+          <div>
+            <div className="section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>📰 뉴스</span>
+              <button
+                className="btn btn--outline btn--sm"
+                style={{ marginLeft: "auto" }}
+                onClick={refreshData}
+                disabled={loading}
+              >
+                🔄 뉴스 업데이트
+              </button>
+            </div>
+            <div className="content-cards">
+              {newsList.length > 0 ? (
+                newsList.map((news, index) => (
+                  <NewsCard 
+                    key={news.id || index}
+                    item={news}
+                    type="news"
+                    onDetailClick={handleDetailClick}
+                  />
+                ))
+              ) : (
+              <p style={{ textAlign: "center", color: "#888" }}>뉴스가 없습니다.</p>
+              )}
+            </div>
+          </div>
+        );
   // searchResults?.results?.news || data.news_updates 위에 이렇게 들어가야함
   // 음.. 아마도 버튼형식으로 바꿔서 클릭하면 뉴스 업데이트 해주는 방식으로 해야할듯?
       case 'mypage':

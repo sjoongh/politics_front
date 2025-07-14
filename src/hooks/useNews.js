@@ -5,9 +5,12 @@ export async function getAllNews(category = null, limit = 20, offset = 0) {
   try {
     const params = {};
     if (category) params.category = category;
+    console.log('뉴스 카테고리:', category);
     params.limit = limit;
     params.offset = offset;
     const res = await api.get('/api/news/list', { params });
+    console.log('전체 뉴스 데이터:', res.data);
+    console.log('전체 뉴스 데이터:', res.data.data);
     return res.data.data || [];
   } catch (err) {
     throw new Error(err.response?.data?.detail || '뉴스 데이터를 불러오는데 실패했습니다.');

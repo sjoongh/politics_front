@@ -4,6 +4,10 @@ import { formatDate } from '../utils/dateUtils';
 
 const Dashboard = ({ data, onDetailClick, searchResults }) => {
   if (!data) return null;
+  // president-info 밑에 넣어야함
+  // <div className="president-name">{data.current_president.name}</div>
+  //          <p><strong>소속:</strong> {data.current_president.party}</p>
+  //          <p><strong>취임일:</strong> {formatDate(data.current_president.start_date)}</p>
 
   const displayData = searchResults || data;
 
@@ -13,9 +17,6 @@ const Dashboard = ({ data, onDetailClick, searchResults }) => {
         <div className="card__body">
           <h3>🎖️ 현재 대통령</h3>
           <div className="president-info">
-            <div className="president-name">{data.current_president.name}</div>
-            <p><strong>소속:</strong> {data.current_president.party}</p>
-            <p><strong>취임일:</strong> {formatDate(data.current_president.start_date)}</p>
           </div>
         </div>
       </div>
