@@ -116,7 +116,8 @@ const NewsCard = ({ item, type, onDetailClick }) => {
   // TODO LIST
   // newsCategoryBadge 기존 status 클래스와 유사하게 동작하도록 변경
   // 이미지 썸네일이 원본형태로 꽉차게 안나옴 -> 퍼블렉시티참고
-  // onDetailClick 뭔가 데이터 전달이 안되는것 같은데 에러를 찾아야할듯?
+  // -->> 원문보기 사진도 꽉 안참
+  // onDetailClick 시 에러 && 사진 밑으로 자세히보기를 넣어야할듯? 아니면 출처 row 맨끝에
   const renderNewsUpdate = (news, onDetailClick) => (
     <div className="newsCardHorizontal">
       {news.image_url && (
@@ -134,7 +135,7 @@ const NewsCard = ({ item, type, onDetailClick }) => {
         <div className="newsCardBody">
           <p className="newsDesc">{news.ai_summary}</p>
           <p className="newsSource"><strong>출처:</strong> {news.source}</p>
-          {onDetailClick && (
+          {news.source_url && (
             <button
               className="detailLink"
               onClick={() => onDetailClick('news.source_url', news.source_url)}
