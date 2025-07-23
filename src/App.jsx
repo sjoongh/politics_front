@@ -18,31 +18,36 @@ function App() {
   const { user, logout } = useAppContext();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
+  const [webViewUrl, setWebViewUrl] = React.useState(null);
 
   const tabs = [
-    { id: 'dashboard', label: '대시보드', icon: '📊' },
+    // { id: 'dashboard', label: '대시보드', icon: '📊' },
+    { id: 'news', label: '뉴스', icon: '📰' },
     { id: 'president', label: '대통령 정책', icon: '🎖️' },
     { id: 'parliament', label: '국회 활동', icon: '🏛️' },
     { id: 'statements', label: '정치인 발언', icon: '💬' },
-    { id: 'news', label: '뉴스', icon: '📰' },
     { id: 'mypage', label: '마이페이지', icon: '👤' }
   ];
 
   const handleSearch = useCallback(async (searchTerm, filters) => {
     if (searchTerm.trim()) {
       await search(searchTerm);
-      setActiveTab('dashboard'); // 검색 후 대시보드로 이동
+      setActiveTab('news'); // 검색 후 대시보드로 이동
     } else {
       clearSearch();
     }
   }, [search, clearSearch]);
 
   const handleDetailClick = useCallback((type, content) => {
-    setModal({
-      isOpen: true,
-      content,
-      type
-    });
+    if (type === 'news' && content.source_url) {
+      setWebViewUrl(content.source_url); // ✅ 웹뷰로 연결
+    } else {
+      setModal({
+        isOpen: true,
+        content,
+        type
+      });
+    }
   }, []);
 
   const closeModal = useCallback(() => {
@@ -69,7 +74,7 @@ function App() {
     // const currentData = searchResults || data;
 
     switch (activeTab) {
-      case 'dashboard':
+      /* case 'dashboard':
         return (
           <Dashboard 
             data={data}
@@ -77,6 +82,7 @@ function App() {
             onDetailClick={handleDetailClick}
           />
         );
+      */
 
       case 'president':
         return (
@@ -130,7 +136,6 @@ function App() {
         );
 
       case 'news':
-        console.log(data);
         const newsList = searchResults?.results?.news || data?.articles || [];
         return (
           <div>
@@ -232,7 +237,20 @@ function App() {
         content={modal.content}
         type={modal.type}
       />
-
+      {webViewUrl && (
+        <div className="webviewModal">
+          <div className="webviewModalContent">
+            <button className="webviewClose" onClick={() => setWebViewUrl(null)}>×</button>
+            <iframe
+              src={webViewUrl}
+              title="뉴스 원문"
+              frameBorder="0"
+              style={{ width: '100%', height: '80vh', border: 'none' }}
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
       <footer className="main-footer">
         <div className="container">
           <div className="flex justify-between py-16">

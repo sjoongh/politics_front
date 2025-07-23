@@ -1,8 +1,8 @@
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
+import defaultNews from '../assets/default_news.png';
 
-const NewsCard = ({ item, type, onDetailClick }) => {
-  console.log(onDetailClick.content);
+const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
 
   const getStatusClass = (status) => {
     switch(status) {
@@ -25,6 +25,13 @@ const NewsCard = ({ item, type, onDetailClick }) => {
       default: return 'info';
     }
   };
+
+  const FALLBACK_IMAGE = defaultNews;
+
+  function isIconLikeImage(url) {
+    // 너무 크기가 작거나 알려진 아이콘 gif
+    return url.endsWith('btn_textview.gif') || url.match(/\/icon|btn.*\.gif$/);
+  }
 
   const renderPresidentPolicy = (policy) => (
     <div className="card">
@@ -113,16 +120,30 @@ const NewsCard = ({ item, type, onDetailClick }) => {
       </div>
     </div>
   );
-  // TODO LIST
-  // newsCategoryBadge 기존 status 클래스와 유사하게 동작하도록 변경
-  // 이미지 썸네일이 원본형태로 꽉차게 안나옴 -> 퍼블렉시티참고
-  // -->> 원문보기 사진도 꽉 안참
-  // onDetailClick 시 에러 && 사진 밑으로 자세히보기를 넣어야할듯? 아니면 출처 row 맨끝에
-  const renderNewsUpdate = (news, onDetailClick) => (
+  const renderNewsUpdate = (news) => (
     <div className="newsCardHorizontal">
       {news.image_url && (
         <div className="newsCardThumbnail">
-          <img src={news.image_url} alt={news.title} loading="lazy" />
+          <img src={
+            news.image_url && !isIconLikeImage(news.image_url)
+            ? news.image_url
+            : FALLBACK_IMAGE
+          }
+          alt={news.title}
+          loading="lazy"
+          onError={e => {
+            e.target.onerror = null;
+            e.target.src = FALLBACK_IMAGE;
+            e.target.style.objectFit = 'contain';
+          }}
+          /* style={{
+              objectFit: 'contain',
+              width: '100%',
+              height: '100%',
+              background: '#ededed'
+            }} 
+            */
+          />
         </div>
       )}
       <div className="newsCardInfo">
@@ -134,14 +155,16 @@ const NewsCard = ({ item, type, onDetailClick }) => {
         </div>
         <div className="newsCardBody">
           <p className="newsDesc">{news.ai_summary}</p>
-          <p className="newsSource"><strong>출처:</strong> {news.source}</p>
           {news.source_url && (
-            <button
-              className="detailLink"
-              onClick={() => onDetailClick('news.source_url', news.source_url)}
-            >
-              자세히 보기 →
-            </button>
+            <div className="newsFooterRow">
+              <p className="newsSource"><strong>출처:</strong> {news.source}</p>
+              <button
+                className="detailLink"
+                onClick={() => onDetailClick('news', news)}
+              >
+                자세히 보기 →
+              </button>
+            </div>
           )}
         </div>
         <div className="newsCategoryBadge">{news.category}</div>

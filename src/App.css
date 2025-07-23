@@ -336,24 +336,23 @@ body {
 
 /* 왼쪽 썸네일 */
 .newsCardThumbnail {
-  flex: 0 0 104px;
+  width: 110px;
   height: 80px;
-  margin: var(--space-16) 0 var(--space-16) var(--space-16);
-  overflow: hidden;
-  border-radius: var(--radius-base);
-  background: #f7f7f7;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #f8f8f8;
 }
 
 .newsCardThumbnail img {
-  width: 104px;
+  max-width: 100%;
+  max-height: 100%;
+  width: 110px;
   height: 80px;
-  object-fit: cover;
-  border-radius: var(--radius-base);
+  object-fit: contain;      /* 원본 비율 유지 & 꽉 채우기 */
+  background: #ededed;
+  border-radius: var(--radius-base, 8px);
   display: block;
-  background: #eaeaea;
 }
 
 /* 우측 텍스트 정보 부분 */
@@ -406,10 +405,17 @@ body {
   color: var(--color-text-primary);
 }
 
+.newsFooterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-8);
+}
+
 .newsSource {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-8);
+  
 }
 
 .detailLink {
@@ -417,12 +423,11 @@ body {
   color: var(--color-primary);
   background: none;
   border: none;
-  padding: 0;
-  margin-top: var(--space-4);
-  cursor: pointer;
   font-weight: 600;
-  display: inline-block;
-  text-align: left;
+  cursor: pointer;
+  text-align: right;
+  margin-left: auto;
+  padding: 0;
 }
 
 .detailLink:hover {
@@ -773,6 +778,69 @@ body {
 .py-16 {
   padding-top: var(--space-16);
   padding-bottom: var(--space-16);
+}
+
+/* webview */
+.webviewModal {
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.webviewModalContent {
+  background: var(--color-surface, white);
+  border-radius: var(--radius-lg);
+  width: 95vw;
+  max-width: 800px;
+  height: 85vh;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.webviewClose {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 10;                   /* 아이프레임보다 항상 위에! */
+  font-size: 2rem;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary, #21808d);  /* 반투명 원 배경 */
+  color: white;                   /* 더 진하거나 #fff로 해도 됨 */
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.webviewClose:hover {
+  background: rgba(0,0,0,0.18);
+  color: var(--color-primary, #21808d);
+}
+
+.webviewModalContent {
+  position: relative;
+  padding-top: 62px;      /* 위쪽에 여유를 줘서 버튼을 누르기 쉽게 */
+}
+
+
+.webviewModal iframe {
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 /* Responsive design */
