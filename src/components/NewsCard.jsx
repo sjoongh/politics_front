@@ -42,10 +42,10 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
         </div>
       </div>
       <div className="card__body">
-        <p>{policy.description}</p>
-        {policy.details && (
+        <p>{policy.context}</p>
+        {policy.promise_type && (
           <div className="news-desc">
-            <strong>세부사항:</strong> {policy.details}
+            <strong>세부사항:</strong> {policy.promise_type}
           </div>
         )}
         {onDetailClick && (
@@ -78,8 +78,8 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
         {activity.committee && (
           <p><strong>소관위원회:</strong> {activity.committee}</p>
         )}
-        {activity.description && (
-          <p>{activity.description}</p>
+        {activity.context && (
+          <p>{activity.context}</p>
         )}
         {onDetailClick && (
           <button 
@@ -106,9 +106,9 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
       </div>
       <div className="card__body">
         <div className="quote">
-          "{statement.content}"
+          "{statement.context}"
         </div>
-        <p><strong>발언 맥락:</strong> {statement.context}</p>
+        <p><strong>발언 맥락:</strong> {statement.speak_reason}</p>
         {onDetailClick && (
           <button 
             className="detail-link"

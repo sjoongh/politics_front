@@ -7,13 +7,16 @@ import Dashboard from './components/Dashboard';
 import Tabs from './components/Tabs';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
-import { useNews, useSearch, useExport } from './components/useNews';
+import { useNews, useSearch, useExport, usePresident, usePolicies, useStatements } from './components/useNews';
 import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 
 function App() {
   const { data, loading, error, refreshData } = useNews();
   const { searchResults, searchLoading, search, clearSearch } = useSearch();
+  const { president, loading: presidentLoading } = usePresident();
+  const { policies, loading: policiesLoading } = usePolicies();
+  const { statements, loading: statementsLoading } = useStatements();
   const { exportData, exporting } = useExport();
   const { user, logout } = useAppContext();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -23,8 +26,8 @@ function App() {
   const tabs = [
     // { id: 'dashboard', label: '대시보드', icon: '📊' },
     { id: 'news', label: '뉴스', icon: '📰' },
-    { id: 'president', label: '대통령 정책', icon: '🎖️' },
-    { id: 'parliament', label: '국회 활동', icon: '🏛️' },
+    { id: 'president', label: '대통령', icon: '🎖️' },
+    { id: 'parliament', label: '정책', icon: '🏛️' },
     { id: 'statements', label: '정치인 발언', icon: '💬' },
     { id: 'mypage', label: '마이페이지', icon: '👤' }
   ];
@@ -89,10 +92,9 @@ function App() {
           <div>
             <div className="section-title">🎖️ 대통령 정책</div>
             <div className="content-cards">
-              {(searchResults?.results?.policies || data.recent_policies)?.map((policy, index) => (
+              {(searchResults?.results?.policies || president)?.map((president, index) => (
                 <NewsCard 
-                  key={index}
-                  item={policy}
+                  item={president}
                   type="policy"
                   onDetailClick={handleDetailClick}
                 />
@@ -104,12 +106,11 @@ function App() {
       case 'parliament':
         return (
           <div>
-            <div className="section-title">🏛️ 국회 활동</div>
+            <div className="section-title">🏛️ 정책 활동</div>
             <div className="content-cards">
-              {(searchResults?.results?.activities || data.parliamentary_activities)?.map((activity, index) => (
+              {(searchResults?.results?.activities || policies)?.map((policy) => (
                 <NewsCard 
-                  key={index}
-                  item={activity}
+                  item={policy}
                   type="parliament"
                   onDetailClick={handleDetailClick}
                 />
@@ -123,9 +124,8 @@ function App() {
           <div>
             <div className="section-title">💬 주요 정치인 발언</div>
             <div className="content-cards">
-              {(searchResults?.results?.statements || data.political_statements)?.map((statement, index) => (
-                <NewsCard 
-                  key={index}
+              {(searchResults?.results?.statements || statements)?.map((statement) => (
+                <NewsCard
                   item={statement}
                   type="statement"
                   onDetailClick={handleDetailClick}
@@ -152,9 +152,8 @@ function App() {
             </div>
             <div className="content-cards">
               {newsList.length > 0 ? (
-                newsList.map((news, index) => (
+                newsList.map((news) => (
                   <NewsCard 
-                    key={news.id || index}
                     item={news}
                     type="news"
                     onDetailClick={handleDetailClick}

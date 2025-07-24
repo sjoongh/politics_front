@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { getAllNews, searchNews, getNewsDetail, exportNewsData } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
+import { getAllNews, searchNews, getNewsDetail, exportNewsData, getPresidentInfo, getRecentPolicies, getPoliticalStatements } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
 
 // 뉴스 전체 데이터 대시보드용
 export const useNews = () => {
@@ -128,3 +128,67 @@ export const useExport = () => {
 
   return { exportData, exporting };
 };
+
+export function usePresident() {
+  const [president, setPresident] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPresident = async () => {
+      try {
+        const data = await getPresidentInfo();
+        setPresident(data);
+      } catch (err) {
+        console.error('대통령 정보 불러오기 실패:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPresident();
+  }, []);
+  return { president, loading };
+}
+
+export function usePolicies() {
+  const [policies, setPolicies] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPolicies = async () => {
+      try {
+        const data = await getRecentPolicies();
+        setPolicies(data);
+      } catch (err) {
+        console.error('정책 정보 불러오기 실패:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPolicies();
+  }, []);
+
+  return { policies, loading };
+}
+
+export function useStatements() {
+  const [statements, setStatements] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStatements = async () => {
+      try {
+        const data = await getPoliticalStatements();
+        setStatements(data);
+      } catch (err) {
+        console.error('정치인 발언 정보 불러오기 실패:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStatements();
+  }, []);
+
+  return { statements, loading };
+}

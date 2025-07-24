@@ -5,12 +5,9 @@ export async function getAllNews(category = null, limit = 20, offset = 0) {
   try {
     const params = {};
     if (category) params.category = category;
-    console.log('뉴스 카테고리:', category);
     params.limit = limit;
     params.offset = offset;
     const res = await api.get('/api/news/list', { params });
-    console.log('전체 뉴스 데이터:', res.data);
-    console.log('전체 뉴스 데이터:', res.data.data);
     return res.data.data || [];
   } catch (err) {
     throw new Error(err.response?.data?.detail || '뉴스 데이터를 불러오는데 실패했습니다.');
@@ -48,5 +45,36 @@ export async function exportNewsData() {
     return text;
   } catch (err) {
     throw new Error('내보내기 실패');
+  }
+}
+
+// 대통령 정보 조회
+export async function getPresidentInfo() {
+  try {
+    const res = await api.get('/api/politics/president');
+  return res.data.data.president;
+  } catch (err) {
+    throw new Error(err.response?.data?.detail || '대통령 정보를 불러오는 중 오류 발생');
+  }
+}
+
+// 최근 정책 조회
+export async function getRecentPolicies() {
+  try {
+    const res = await api.get('/api/politics/policies');
+    console.log('Recent Policies:', res.data);
+    return res.data.data.policies;
+  } catch (err) {
+    throw new Error(err.response?.data?.detail || '정책 정보를 불러오는 중 오류 발생');
+  }
+}
+
+// 정치인 발언 조회
+export async function getPoliticalStatements() {
+  try {
+    const res = await api.get('/api/politics/statements');
+    return res.data.data.statements;
+  } catch (err) {
+    throw new Error(err.response?.data?.detail || '정치인 발언 정보를 불러오는 중 오류 발생');
   }
 }
