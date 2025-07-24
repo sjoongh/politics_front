@@ -12,6 +12,7 @@ import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 
 function App() {
+  // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
   const { data, loading, error, refreshData } = useNews();
   const { searchResults, searchLoading, search, clearSearch } = useSearch();
   const { president, loading: presidentLoading } = usePresident();
@@ -92,7 +93,7 @@ function App() {
           <div>
             <div className="section-title">🎖️ 대통령 정책</div>
             <div className="content-cards">
-              {(searchResults?.results?.policies || president)?.map((president, index) => (
+              {(searchResults?.results?.policies || president)?.map((president) => (
                 <NewsCard 
                   item={president}
                   type="policy"
