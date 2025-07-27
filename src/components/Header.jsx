@@ -13,6 +13,7 @@ const Header = ({ onExport, exporting, children }) => {
           <div className="last-update">
             <p>📅 {getCurrentDate()}</p>
             <p>🕐 마지막 업데이트: <span id="update-time">{getCurrentTime()}</span></p>
+            {/*
             <button 
               className="btn btn--secondary btn--sm"
               onClick={onExport}
@@ -20,6 +21,7 @@ const Header = ({ onExport, exporting, children }) => {
             >
               {exporting ? '내보내는 중...' : '📄 데이터 내보내기'}
             </button>
+            */}
             {children}
           </div>
         </div>

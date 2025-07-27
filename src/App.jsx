@@ -226,15 +226,12 @@ function App() {
   console.log(loginOpen);
   if (loginOpen) {
     return (<LoginForm onSuccess={handleLoginSuccess}
-       onClose={() => {
-      setLoginOpen(false);
-      setActiveTab('news');
-    }} />)
+       />)
   }
 
   return (
     <div className="App">
-      <Header onExport={handleExport} exporting={exporting}>
+      <Header>
         {renderAuthButton()}
       </Header>
 
