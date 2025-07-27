@@ -19,6 +19,12 @@ export function AppProvider({ children }) {
     }
   }, [user]);
 
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -28,6 +34,7 @@ export function AppProvider({ children }) {
         setFavorites,
         notifications,
         setNotifications,
+        logout
       }}
     >
       {children}

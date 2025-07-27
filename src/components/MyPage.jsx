@@ -9,6 +9,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useMyPage } from "../hooks/useMyPage";
 
 export default function MyPage({ user }) {
+  console.log(user);
   const {
     bookmarks,
     preferences,
@@ -84,14 +85,15 @@ export default function MyPage({ user }) {
             <Typography variant="h5" style={{ fontWeight: 600 }}>{user?.nickname || user?.email || "사용자"}</Typography>
             <Typography variant="body2" color="text.secondary">{user?.email}</Typography>
             <Typography variant="caption" color="text.secondary">
-              가입일: {user?.createdAt?.slice(0, 10) || "-"}
+              가입일: {user?.created_at?.slice(0, 10) || "-"}
             </Typography>
           </div>
         </div>
 
         <Divider sx={{ my: 2 }} />
 
-        {/* 북마크 */}
+        
+        {/*
         <Typography variant="subtitle1" gutterBottom>
           <BookmarkIcon fontSize="small" sx={{ mr: 1 }} />
           북마크한 뉴스
@@ -106,7 +108,7 @@ export default function MyPage({ user }) {
 
         <Divider sx={{ my: 2 }} />
 
-        {/* 관심사 */}
+        
         <Typography variant="subtitle1" gutterBottom>관심 키워드/정치인/정당</Typography>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
           {preferences.keywords.map(k => <span key={k} className="topic-tag">{k}</span>)}
@@ -116,7 +118,7 @@ export default function MyPage({ user }) {
 
         <Divider sx={{ my: 2 }} />
 
-        {/* 알림 설정 */}
+        
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <NotificationsActiveIcon fontSize="small" sx={{ mr: 1 }} />
@@ -126,6 +128,7 @@ export default function MyPage({ user }) {
         </div>
 
         <Divider sx={{ my: 2 }} />
+        */}
 
         {/* 비밀번호 변경 / 회원 탈퇴 */}
         <Button variant="outlined" color="primary" fullWidth sx={{ mt: 1 }} onClick={() => setChangePwOpen(true)}>

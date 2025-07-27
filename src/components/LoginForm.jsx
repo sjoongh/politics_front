@@ -10,7 +10,9 @@ import {
   Box,
   createTheme,
   ThemeProvider,
+  IconButton
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from "../hooks/useAuth";
 
 const darkTheme = createTheme({
@@ -29,7 +31,7 @@ const darkTheme = createTheme({
   },
 });
 
-export default function LoginForm() {
+export default function LoginForm({ onSuccess, onClose }) {
   const [tab, setTab] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,6 +65,11 @@ export default function LoginForm() {
         justifyContent="center"
         alignItems="center"
         bgcolor="background.default"
+        onClick={(e) => {
+          // 폼 외부 클릭 시 종료 (배경 클릭)
+          if (e.target.id === 'login-overlay' && onClose) onClose();
+        }}
+        id="login-overlay"
       >
         <Paper
           elevation={8}
@@ -72,7 +79,14 @@ export default function LoginForm() {
             bgcolor: "background.paper",
             borderRadius: 2,
           }}
+          onClick={(e) => e.stopPropagation()}
         >
+          <IconButton
+            sx={{ position: "absolute", top: 8, right: 8, color: "white" }}
+            onClick={onClose}
+          >
+            <CloseIcon />
+          </IconButton>
           <Typography variant="h4" align="center" gutterBottom>
             POLITICS NEWS
           </Typography>
@@ -93,7 +107,7 @@ export default function LoginForm() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                login(email, password);
+                login(email, password, onSuccess);
               }}
             >
               <TextField

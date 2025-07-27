@@ -6,16 +6,16 @@ export function useAuth() {
   const { setUser } = useAppContext();
   const [loading, setLoading] = useState(false);
 
-  const login = async (email, password) => {
+  const login = async (email, password, onSuccess) => {
     if (!email || !password) return alert("EMAIL와 PW를 입력하세요.");
     setLoading(true);
     try {
       const res = await api.post("/api/auth/login", { email, password });
       
       const data = res.data;
-
-      setUser({ email: data.email });
-      
+      // 추후에는 access token을 저장하는 로직 추가 해야함
+      setUser(data.data.user);
+      if (onSuccess) onSuccess();
     } catch (err) {
       alert(err.message || "로그인 실패");
     } finally {

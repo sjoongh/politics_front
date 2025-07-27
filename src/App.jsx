@@ -23,6 +23,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
   const [webViewUrl, setWebViewUrl] = React.useState(null);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const tabs = [
     // { id: 'dashboard', label: '대시보드', icon: '📊' },
@@ -54,10 +55,6 @@ function App() {
     }
   }, []);
 
-  const closeModal = useCallback(() => {
-    setModal({ isOpen: false, content: null, type: null });
-  }, []);
-
   const handleExport = useCallback(async () => {
     try {
       await exportData();
@@ -67,11 +64,20 @@ function App() {
     }
   }, [exportData]);
 
-  if (!user) {
-    return (
-          <LoginForm />
-    );
-  }
+  // 로그인 버튼 클릭 시
+  const handleLoginOpen = () => setLoginOpen(true);
+
+  // 로그인 성공 시: 모달 닫고 뉴스 탭으로 이동
+  const handleLoginSuccess = () => {
+    setLoginOpen(false);
+    setActiveTab('news');
+  };
+  // 로그아웃 버튼 클릭시
+  const handleLogout = () => {
+    logout();       // 실제 로그아웃 수행
+    setActiveTab('news');
+    setLoginOpen(false); // 혹시 이전에 열려있던 게 있다면
+  };
 
   const renderTabContent = () => {
     // if (!data) return null;
@@ -205,12 +211,31 @@ function App() {
   //   );
   // }
 
+  // Header 버튼 분기
+  const renderAuthButton = () => {
+    if (user) {
+      return (
+        <button className="btn btn--outline ml-4" onClick={handleLogout}>로그아웃</button>
+      );
+    } else {
+      return (
+        <button className="btn btn--outline ml-4" onClick={handleLoginOpen}>로그인</button>
+      );
+    }
+  };
+  console.log(loginOpen);
+  if (loginOpen) {
+    return (<LoginForm onSuccess={handleLoginSuccess}
+       onClose={() => {
+      setLoginOpen(false);
+      setActiveTab('news');
+    }} />)
+  }
+
   return (
     <div className="App">
       <Header onExport={handleExport} exporting={exporting}>
-        <button className="btn btn--outline ml-4" onClick={logout}>
-          로그아웃
-        </button>
+        {renderAuthButton()}
       </Header>
 
       <main className="container">
@@ -230,13 +255,6 @@ function App() {
           {renderTabContent()}
         </div>
       </main>
-
-      <Modal 
-        isOpen={modal.isOpen}
-        onClose={closeModal}
-        content={modal.content}
-        type={modal.type}
-      />
       {webViewUrl && (
         <div className="webviewModal">
           <div className="webviewModalContent">
