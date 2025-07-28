@@ -20,6 +20,7 @@ export async function searchNews(query, category = '') {
     const res = await api.get('/api/news/search', {
       params: { q: query, category },
     });
+    
     return res.data.data || [];
   } catch (err) {
     throw new Error(err.response?.data?.detail || '검색 실패');

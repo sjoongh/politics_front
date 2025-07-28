@@ -27,6 +27,7 @@ function App() {
 
   const tabs = [
     // { id: 'dashboard', label: '대시보드', icon: '📊' },
+    { id: 'all', label: '전체', icon: '🔍' },
     { id: 'news', label: '뉴스', icon: '📰' },
     { id: 'president', label: '대통령', icon: '🎖️' },
     { id: 'parliament', label: '정책', icon: '🏛️' },
@@ -37,9 +38,10 @@ function App() {
   const handleSearch = useCallback(async (searchTerm, filters) => {
     if (searchTerm.trim()) {
       await search(searchTerm);
-      setActiveTab('news'); // 검색 후 대시보드로 이동
+      setActiveTab('all'); // 검색 후 대시보드로 이동
     } else {
       clearSearch();
+      setActiveTab('news'); // 검색어가 없으면 뉴스 탭으로 이동
     }
   }, [search, clearSearch]);
 
@@ -79,7 +81,56 @@ function App() {
     setLoginOpen(false); // 혹시 이전에 열려있던 게 있다면
   };
 
+  const renderSearchContent = () => {
+    console.log('Rendering search content for tab:', searchResults);
+  const results = searchResults || {};
+  switch (activeTab) {
+    case 'all':
+      return (
+        <>
+          <div className="section-title">🔍 전체 검색결과</div>
+          <div>
+            <h3>뉴스</h3>
+            {results.articles?.slice(0, 5).map(item => (
+              <NewsCard item={item} type="news" onDetailClick={handleDetailClick} />
+            ))}
+            <button onClick={() => setActiveTab('search_news')}>더보기</button>
+          </div>
+          <div>
+            <h3>정책</h3>
+            {results.policies?.slice(0, 5).map(item => (
+              <NewsCard item={item} type="policy" onDetailClick={handleDetailClick} />
+            ))}
+            <button onClick={() => setActiveTab('search_policies')}>더보기</button>
+          </div>
+          <div>
+            <h3>발언</h3>
+            {results.statements?.slice(0, 5).map(item => (
+              <NewsCard item={item} type="statement" onDetailClick={handleDetailClick} />
+            ))}
+            <button onClick={() => setActiveTab('search_statements')}>더보기</button>
+          </div>
+        </>
+      );
+    case 'search_news':
+      return results.news?.map(item => (
+        <NewsCard item={item} type="news" onDetailClick={handleDetailClick} />
+      ));
+    case 'search_policies':
+      return results.policies?.map(item => (
+        <NewsCard item={item} type="policy" onDetailClick={handleDetailClick} />
+      ));
+    case 'search_statements':
+      return results.statements?.map(item => (
+        <NewsCard item={item} type="statement" onDetailClick={handleDetailClick} />
+      ));
+    default:
+      return null;
+  }
+  };
+
   const renderTabContent = () => {
+     if (activeTab.startsWith('all')) return renderSearchContent();
     // if (!data) return null;
     // const currentData = searchResults || data;
 
@@ -223,7 +274,7 @@ function App() {
       );
     }
   };
-  console.log(loginOpen);
+  
   if (loginOpen) {
     return (<LoginForm onSuccess={handleLoginSuccess}
        />)
