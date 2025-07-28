@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
 import Header from './components/Header';
@@ -24,6 +24,7 @@ function App() {
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
   const [webViewUrl, setWebViewUrl] = React.useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const searchInputRef = useRef(null);
 
   const tabs = [
     // { id: 'dashboard', label: '대시보드', icon: '📊' },
@@ -80,6 +81,17 @@ function App() {
     setActiveTab('news');
     setLoginOpen(false); // 혹시 이전에 열려있던 게 있다면
   };
+
+  const handleTabChange = useCallback((tabId) => {
+    // 검색 후 전체 탭이 아닌 다른 탭으로 이동하면 검색 결과와 검색창 초기화
+    if (activeTab === 'all' && tabId !== 'all') {
+      clearSearch();
+      if (searchInputRef.current) {
+        searchInputRef.current.value = '';
+      }
+    }
+    setActiveTab(tabId);
+  }, [activeTab, clearSearch]);
 
   const renderSearchContent = () => {
     console.log('Rendering search content for tab:', searchResults);
@@ -295,7 +307,7 @@ function App() {
 
         <Tabs 
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
           tabs={tabs}
         />
 
