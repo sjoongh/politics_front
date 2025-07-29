@@ -1,35 +1,20 @@
 import React, { useState } from 'react';
 
-const SearchFilters = ({ onSearch, onFilter, searchLoading }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchFilters = React.forwardRef(({ searchValue, onSearchValueChange, onSearch, onFilter, searchLoading }, ref) => {
   const [dateFilter, setDateFilter] = useState('all');
   const [topicFilter, setTopicFilter] = useState('all');
   const [partyFilter, setPartyFilter] = useState('all');
 
   const handleSearch = () => {
-    onSearch(searchTerm, {
-      date: dateFilter,
-      topic: topicFilter,
-      party: partyFilter
-    });
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
+    onSearch(searchValue, { date: dateFilter, topic: topicFilter, party: partyFilter });
   };
 
   const clearFilters = () => {
-    setSearchTerm('');
+    onSearchValueChange('');
     setDateFilter('all');
     setTopicFilter('all');
     setPartyFilter('all');
-    onFilter({
-      date: 'all',
-      topic: 'all', 
-      party: 'all'
-    });
+    onFilter({ date: 'all', topic: 'all', party: 'all' });
   };
 
   return (
@@ -39,9 +24,9 @@ const SearchFilters = ({ onSearch, onFilter, searchLoading }) => {
           type="text"
           className="form-control"
           placeholder="정책, 법안, 정치인, 뉴스 검색..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleKeyPress}
+          value={searchValue}
+          onChange={(e) => onSearchValueChange(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
         />
         <button 
           className="btn btn--primary"
@@ -108,6 +93,6 @@ const SearchFilters = ({ onSearch, onFilter, searchLoading }) => {
       </div>
     </div>
   );
-};
+});
 
 export default SearchFilters;

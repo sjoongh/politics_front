@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
 import Header from './components/Header';
@@ -25,6 +25,7 @@ function App() {
   const [webViewUrl, setWebViewUrl] = React.useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const searchInputRef = useRef(null);
+  const [searchValue, setSearchValue] = useState('');
 
   const tabs = [
     // { id: 'dashboard', label: '대시보드', icon: '📊' },
@@ -82,16 +83,18 @@ function App() {
     setLoginOpen(false); // 혹시 이전에 열려있던 게 있다면
   };
 
-  const handleTabChange = useCallback((tabId) => {
+  const handleTabChange = (tabId) => {
     // 검색 후 전체 탭이 아닌 다른 탭으로 이동하면 검색 결과와 검색창 초기화
     if (activeTab === 'all' && tabId !== 'all') {
       clearSearch();
-      if (searchInputRef.current) {
-        searchInputRef.current.value = '';
-      }
+      setSearchValue('');
     }
     setActiveTab(tabId);
-  }, [activeTab, clearSearch]);
+  };
+
+  useEffect(() => {
+    setSearchValue('');
+  }, []);
 
   const renderSearchContent = () => {
     console.log('Rendering search content for tab:', searchResults);
@@ -299,9 +302,12 @@ function App() {
       </Header>
 
       <main className="container">
-        <SearchFilters 
+        <SearchFilters
+          ref={searchInputRef}
+          searchValue={searchValue}
+          onSearchValueChange={setSearchValue}
           onSearch={handleSearch}
-          onFilter={() => {}} // 추후 구현 가능
+          onFilter={() => {}} // 추후 구현
           searchLoading={searchLoading}
         />
 
