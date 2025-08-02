@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useAppContext } from "../components/AppContext";
 import api from "./api";
 
 export function useMyPage(user) {
@@ -7,6 +8,7 @@ export function useMyPage(user) {
   const [preferences, setPreferences] = useState({ keywords: [], politicians: [], parties: [] });
   const [notificationOn, setNotificationOn] = useState(user?.notificationOn ?? true);
   const [loading, setLoading] = useState(false);
+  const { setUser, logout } = useAppContext();
 
   // GET: 북마크, 관심사
   const fetchBookmarks = async () => {
@@ -39,27 +41,30 @@ export function useMyPage(user) {
 
   const changePassword = async (newPassword) => {
     try {
-      await api.post("/api/auth/profile", { password: newPassword });
-      alert("비밀번호가 변경되었습니다.");
+      await api.put("/api/auth/password", { 
+        password: newPassword,
+        email: user.email
+      });
     } catch (err) {
-      alert("비밀번호 변경 실패: " + (err.response?.data?.detail || err.message));
+      console.error("비밀번호 변경 실패:", err);
     }
   };
 
   const deleteAccount = async () => {
     try {
-      await api.delete("/api/auth/delete");
-      alert("회원 탈퇴가 완료되었습니다.");
-      window.location.reload(); // 또는 로그아웃 처리
+      await api.delete("/api/auth/delete", {
+        params: { email: user.email }
+    });
+      logout();
     } catch (err) {
-      alert("회원 탈퇴 실패: " + (err.response?.data?.detail || err.message));
+      console.error("회원 탈퇴 실패:", err);
     }
   };
 
   useEffect(() => {
     if (user) {
-      fetchBookmarks();
-      fetchPreferences();
+      // fetchBookmarks();
+      // fetchPreferences();
     }
   }, [user]);
 

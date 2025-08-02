@@ -34,7 +34,7 @@ function App() {
     { id: 'president', label: '대통령', icon: '🎖️' },
     { id: 'parliament', label: '정책', icon: '🏛️' },
     { id: 'statements', label: '정치인 발언', icon: '💬' },
-    { id: 'mypage', label: '마이페이지', icon: '👤' }
+    ...(user ? [{ id: 'mypage', label: '마이페이지', icon: '👤' }] : [])
   ];
 
   const handleSearch = useCallback(async (searchTerm, filters) => {
@@ -339,7 +339,7 @@ function App() {
         <div className="container">
           <div className="flex justify-between py-16">
             <div className="footer-info">
-              <p>© 2025 정치 뉴스 추적기. 모든 권리 보유.</p>
+              <p>© 브리핑 코리아. 모든 권리 보유.</p>
               <p>뉴스 출처: 각 언론사 및 공식 보도자료</p>
             </div>
             <div className="footer-update">
