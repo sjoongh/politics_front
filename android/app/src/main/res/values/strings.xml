@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PoliticalApp</string>
+    <string name="title_activity_main">PoliticalApp</string>
+    <string name="package_name">com.political.app</string>
+    <string name="custom_url_scheme">com.political.app</string>
+</resources>

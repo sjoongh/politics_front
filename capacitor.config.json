@@ -1,0 +1,13 @@
+{
+  "appId": "com.political.app",
+  "appName": "PoliticalApp",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": [
+      "politics-news.vercel.app",
+      "localhost"
+    ]
+  }
+}
