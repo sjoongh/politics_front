@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// 로컬 환경과 프로덕션 환경에 맞게 baseURL 설정
+const API_BASE_URL = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:8000' 
+  : 'https://politics-backend-9vp2.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
