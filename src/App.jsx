@@ -97,52 +97,47 @@ function App() {
   }, []);
 
   const renderSearchContent = () => {
-    console.log('Rendering search content for tab:', searchResults);
   const results = searchResults || {};
-  switch (activeTab) {
-    case 'all':
-      return (
-        <>
-          <div className="section-title">🔍 전체 검색결과</div>
-          <div>
-            <h3>뉴스</h3>
-            {results.articles?.slice(0, 5).map(item => (
-              <NewsCard item={item} type="news" onDetailClick={handleDetailClick} />
-            ))}
-            <button onClick={() => setActiveTab('search_news')}>더보기</button>
-          </div>
-          <div>
-            <h3>정책</h3>
-            {results.policies?.slice(0, 5).map(item => (
-              <NewsCard item={item} type="policy" onDetailClick={handleDetailClick} />
-            ))}
-            <button onClick={() => setActiveTab('search_policies')}>더보기</button>
-          </div>
-          <div>
-            <h3>발언</h3>
-            {results.statements?.slice(0, 5).map(item => (
-              <NewsCard item={item} type="statement" onDetailClick={handleDetailClick} />
-            ))}
-            <button onClick={() => setActiveTab('search_statements')}>더보기</button>
-          </div>
-        </>
-      );
-    case 'search_news':
-      return results.news?.map(item => (
-        <NewsCard item={item} type="news" onDetailClick={handleDetailClick} />
-      ));
-    case 'search_policies':
-      return results.policies?.map(item => (
-        <NewsCard item={item} type="policy" onDetailClick={handleDetailClick} />
-      ));
-    case 'search_statements':
-      return results.statements?.map(item => (
-        <NewsCard item={item} type="statement" onDetailClick={handleDetailClick} />
-      ));
-    default:
-      return null;
+  // 모든 카테고리를 하나의 배열로 합침
+  const mergedList = [
+    ...(results.articles || []),
+    ...(results.policies || []),
+    ...(results.statements || [])
+  ];
+
+  // 아무것도 없으면 안내 메시지
+  if (!mergedList.length) {
+    return (
+      <div style={{ textAlign: 'center', color: '#888' }}>
+        검색 결과가 없습니다.
+      </div>
+    );
   }
-  };
+
+  return (
+    <>
+      <div className="section-title">🔍 전체 검색결과</div>
+      <div>
+        {mergedList.map((item, idx) => {
+          // 타입 자동 판별
+          let type = 'news';
+          if (item.type === 'policy' || item.policy_title || item.committee) type = 'policy';
+          else if (item.type === 'statement' || item.speaker || item.spaker) type = 'statement';
+          // 기본적으로 뉴스 타입
+
+          return (
+            <NewsCard
+              key={item.id || idx}
+              item={item}
+              type={type}
+              onDetailClick={handleDetailClick}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+};
 
   const renderTabContent = () => {
      if (activeTab.startsWith('all')) return renderSearchContent();
@@ -341,12 +336,6 @@ function App() {
             <div className="footer-info">
               <p>© 브리핑 코리아. 모든 권리 보유.</p>
               <p>뉴스 출처: 각 언론사 및 공식 보도자료</p>
-            </div>
-            <div className="footer-update">
-              <p>마지막 업데이트: {data?.last_updated}</p>
-              <button className="btn btn--outline btn--sm" onClick={refreshData}>
-                🔄 새로고침
-              </button>
             </div>
           </div>
         </div>
