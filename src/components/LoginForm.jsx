@@ -67,26 +67,38 @@ export default function LoginForm({ onSuccess, onClose }) {
         bgcolor="background.default"
         onClick={(e) => {
           // 폼 외부 클릭 시 종료 (배경 클릭)
-          if (e.target.id === 'login-overlay' && onClose) onClose();
+          if (e.target === e.currentTarget && onClose) onClose();
         }}
-        id="login-overlay"
+        sx={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,                       // (중요) 웹뷰 모달보다 높게
+          bgcolor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
       >
+        {/* 카드 */}
         <Paper
           elevation={8}
           sx={{
             p: 4,
-            width: 400,
+            width: { xs: '90%', sm: 400 },
             bgcolor: "background.paper",
             borderRadius: 2,
+            position: 'relative',
           }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()} // 내부 클릭은 닫힘 방지
         >
           <IconButton
             sx={{ position: "absolute", top: 8, right: 8, color: "white" }}
-            onClick={onClose}
+            onClick={onClose}                  // X 버튼으로 닫기
           >
             <CloseIcon />
           </IconButton>
+
+          {/* ... 탭/폼 내용 동일 ... */}
           <Typography variant="h4" align="center" gutterBottom>
             POLITICS NEWS
           </Typography>

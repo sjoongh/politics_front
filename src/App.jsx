@@ -68,14 +68,13 @@ function App() {
     }
   }, [exportData]);
 
-  // 로그인 버튼 클릭 시
-  const handleLoginOpen = () => setLoginOpen(true);
-
-  // 로그인 성공 시: 모달 닫고 뉴스 탭으로 이동
   const handleLoginSuccess = () => {
-    setLoginOpen(false);
-    setActiveTab('news');
-  };
+  setLoginOpen(false);
+  setActiveTab('news');
+};
+
+const handleLoginOpen = () => setLoginOpen(true);
+const handleLoginClose = () => setLoginOpen(false);
   // 로그아웃 버튼 클릭시
   const handleLogout = () => {
     logout();       // 실제 로그아웃 수행
@@ -284,11 +283,6 @@ function App() {
       );
     }
   };
-  
-  if (loginOpen) {
-    return (<LoginForm onSuccess={handleLoginSuccess}
-       />)
-  }
 
   return (
     <div className="App">
@@ -330,6 +324,13 @@ function App() {
           </div>
         </div>
       )}
+      {/* 로그인 모달을 겹쳐서 띄움 */}
+    {loginOpen && (
+      <LoginForm
+        onSuccess={handleLoginSuccess}
+        onClose={handleLoginClose}   // (중요) 닫기 콜백 전달
+      />
+    )}
       <footer className="main-footer">
         <div className="container">
           <div className="flex justify-between py-16">
