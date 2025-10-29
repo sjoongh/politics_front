@@ -1,5 +1,5 @@
 브리핑 코리아
-Firebase + Python + React 기반의 실시간 정치 뉴스 수집 및 AI 요약 서비스
+Firebase + Python + React 기반의 실시간 정치 뉴스 수집 및 AI 요약 서비스 : 11월 구글스토어 브리핑 코리아 출시
 
 🚀 주요 기능
 📰 뉴스 수집 및 관리
