@@ -69,7 +69,7 @@ Firebase: 인증, 데이터베이스, 호스팅
 Vercel/Netlify: 프론트엔드 배포
 
 Google Cloud Run: 백엔드 컨테이너 배포
-
+```
 📁 프로젝트 구조
 text
 political-news-app/
@@ -95,6 +95,7 @@ political-news-app/
 │   ├── package.json      # Node.js 의존성
 │   └── .env.example     # 환경변수 예시
 └── README.md           # 프로젝트 문서
+```
 🚀 빠른 시작
 1. 저장소 클론
 bash
