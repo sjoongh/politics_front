@@ -317,6 +317,12 @@ const handleLoginClose = () => setLoginOpen(false);
           </div>
         </div>
       )}
+      <Modal
+        isOpen={modal.isOpen}
+        type={modal.type}
+        content={modal.content}
+        onClose={() => setModal({ isOpen: false, content: null, type: null })}
+      />
       {/* 로그인 모달을 겹쳐서 띄움 */}
     {loginOpen && (
       <LoginForm

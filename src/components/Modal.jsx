@@ -19,11 +19,11 @@ const Modal = ({ isOpen, onClose, title, content, type }) => {
           <div>
             <h3>{content.title}</h3>
             <p><strong>날짜:</strong> {formatDate(content.date)}</p>
-            <p><strong>설명:</strong> {content.description}</p>
-            {content.details && (
+            <p>{content.context}</p>
+            {content.promise_type && (
               <div>
                 <strong>세부사항:</strong>
-                <p>{content.details}</p>
+                <p>{content.promise_type}</p>
               </div>
             )}
           </div>
@@ -41,8 +41,8 @@ const Modal = ({ isOpen, onClose, title, content, type }) => {
             {content.committee && (
               <p><strong>소관위원회:</strong> {content.committee}</p>
             )}
-            {content.description && (
-              <p><strong>내용:</strong> {content.description}</p>
+            {content.context && (
+              <p><strong>내용:</strong> {content.context}</p>
             )}
           </div>
         );
@@ -54,9 +54,9 @@ const Modal = ({ isOpen, onClose, title, content, type }) => {
             <p><strong>날짜:</strong> {formatDate(content.date)}</p>
             <p><strong>유형:</strong> {content.type}</p>
             <div className="quote">
-              "{content.content}"
+              "{content.context}"
             </div>
-            <p><strong>발언 맥락:</strong> {content.context}</p>
+            <p><strong>발언 맥락:</strong> {content.speak_reason}</p>
           </div>
         );
 
