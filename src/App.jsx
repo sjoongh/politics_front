@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from '@mui/material';
-import theme from './theme';
+import { makeTheme } from './theme/muiTheme';
+import { ThemeModeProvider, useThemeMode } from './theme/ThemeContext';
 import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
 import Header from './components/Header';
@@ -347,14 +348,24 @@ const handleLoginClose = () => setLoginOpen(false);
   );
 }
 
-export default function WrappedApp() {
+function ThemedRoot() {
+  const { resolved } = useThemeMode();
+  const muiTheme = React.useMemo(() => makeTheme(resolved), [resolved]);
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={muiTheme}>
       <AppProvider>
         <App />
         <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       </AppProvider>
     </ThemeProvider>
+  );
+}
+
+export default function WrappedApp() {
+  return (
+    <ThemeModeProvider>
+      <ThemedRoot />
+    </ThemeModeProvider>
   );
 }
 
