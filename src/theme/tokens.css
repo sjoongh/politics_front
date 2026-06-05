@@ -193,3 +193,22 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   .bk-modal { align-items: center; justify-content: center; }
   .bk-modal__panel { max-width: 560px; margin: 0; border-radius: var(--radius-lg); }
 }
+
+/* ===== 검색 / 버튼 ===== */
+.search-container { width: 100%; }
+.search-box { display: flex; gap: 8px; }
+.search-box .form-control {
+  flex: 1; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); padding: 11px 14px; border-radius: var(--radius-md); font-size: 14px;
+  font-family: var(--font-base);
+}
+.search-box .form-control::placeholder { color: var(--text-secondary); }
+.btn { font-family: var(--font-base); }
+.btn--primary {
+  border: none; background: var(--primary); color: var(--on-primary);
+  padding: 0 16px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer;
+}
+.btn--outline {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  padding: 8px 14px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;
+}

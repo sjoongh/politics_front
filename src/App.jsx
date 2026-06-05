@@ -313,7 +313,14 @@ function ThemedRoot() {
     <ThemeProvider theme={muiTheme}>
       <AppProvider>
         <App />
-        <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: { background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--card-border)' },
+            success: { iconTheme: { primary: 'var(--primary)', secondary: 'var(--on-primary)' } },
+          }}
+        />
       </AppProvider>
     </ThemeProvider>
   );

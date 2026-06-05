@@ -8,7 +8,7 @@ const shimmer = {
 };
 
 const SkeletonCard = () => (
-  <div className="card" style={{ padding: '16px' }}>
+  <div className="bk-card" style={{ padding: '16px' }}>
     <div style={{ ...shimmer, height: '20px', width: '70%', marginBottom: '12px' }} />
     <div style={{ ...shimmer, height: '14px', width: '100%', marginBottom: '8px' }} />
     <div style={{ ...shimmer, height: '14px', width: '90%' }} />
