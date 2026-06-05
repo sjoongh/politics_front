@@ -297,7 +297,6 @@ const handleLoginClose = () => setLoginOpen(false);
           searchValue={searchValue}
           onSearchValueChange={setSearchValue}
           onSearch={handleSearch}
-          onFilter={() => {}} // 추후 구현
           searchLoading={searchLoading}
         />
 

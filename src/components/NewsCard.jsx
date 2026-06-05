@@ -29,8 +29,8 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
   const FALLBACK_IMAGE = defaultNews;
 
   function isIconLikeImage(url) {
-    // 너무 크기가 작거나 알려진 아이콘 gif
-    return url.endsWith('btn_textview.gif') || url.match(/\/icon|btn.*\.gif$/);
+    if (!url || typeof url !== 'string') return true;
+    return /btn_textview\.gif$|\/icon|btn.*\.gif$/.test(url);
   }
 
   const renderPresidentPolicy = (policy) => (
@@ -124,25 +124,16 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
     <div className="newsCardHorizontal">
       {news.image_url && (
         <div className="newsCardThumbnail">
-          <img src={
-            news.image_url && !isIconLikeImage(news.image_url)
-            ? news.image_url
-            : FALLBACK_IMAGE
-          }
-          alt={news.title}
-          loading="lazy"
-          onError={e => {
-            e.target.onerror = null;
-            e.target.src = FALLBACK_IMAGE;
-            e.target.style.objectFit = 'contain';
-          }}
-          /* style={{
-              objectFit: 'contain',
-              width: '100%',
-              height: '100%',
-              background: '#ededed'
-            }} 
-            */
+          <img
+            src={news.image_url && !isIconLikeImage(news.image_url) ? news.image_url : FALLBACK_IMAGE}
+            alt={news.title}
+            loading="lazy"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = FALLBACK_IMAGE;
+              e.target.style.objectFit = 'contain';
+            }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', background: '#ededed' }}
           />
         </div>
       )}
