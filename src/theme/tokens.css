@@ -120,3 +120,11 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   .app-header__search-inline { display: block; }
   .app-header__search-stacked { display: none; }
 }
+
+/* ===== 푸터 ===== */
+.app-footer { border-top: 1px solid var(--border); margin-top: 32px; }
+.app-footer__inner {
+  max-width: 1080px; margin: 0 auto; padding: 20px 16px calc(80px + env(safe-area-inset-bottom));
+  color: var(--text-secondary); font-size: 12px; line-height: 1.7;
+}
+@media (min-width: 768px) { .app-footer__inner { padding-bottom: 24px; } }
