@@ -9,7 +9,6 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useMyPage } from "../hooks/useMyPage";
 
 export default function MyPage({ user }) {
-  console.log(user);
   const {
     bookmarks,
     preferences,

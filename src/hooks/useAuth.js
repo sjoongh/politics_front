@@ -29,7 +29,6 @@ export function useAuth() {
     }
     setLoading(true);
     try {
-      console.log("회원가입 정보:", userInfo);
       await api.post("/api/auth/register", {
         email: userInfo.email,
         password: userInfo.password,

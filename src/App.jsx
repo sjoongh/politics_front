@@ -3,7 +3,6 @@ import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
 import Header from './components/Header';
 import SearchFilters from './components/SearchFilters';
-import Dashboard from './components/Dashboard';
 import Tabs from './components/Tabs';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
@@ -28,7 +27,6 @@ function App() {
   const [searchValue, setSearchValue] = useState('');
 
   const tabs = [
-    // { id: 'dashboard', label: '대시보드', icon: '📊' },
     { id: 'all', label: '전체', icon: '🔍' },
     { id: 'news', label: '뉴스', icon: '📰' },
     { id: 'president', label: '대통령', icon: '🎖️' },
@@ -144,15 +142,6 @@ const handleLoginClose = () => setLoginOpen(false);
     // const currentData = searchResults || data;
 
     switch (activeTab) {
-      /* case 'dashboard':
-        return (
-          <Dashboard 
-            data={data}
-            searchResults={searchResults}
-            onDetailClick={handleDetailClick}
-          />
-        );
-      */
 
       case 'president':
         return (

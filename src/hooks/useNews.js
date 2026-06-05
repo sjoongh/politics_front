@@ -63,7 +63,6 @@ export async function getPresidentInfo() {
 export async function getRecentPolicies() {
   try {
     const res = await api.get('/api/politics/policies');
-    console.log('Recent Policies:', res.data);
     return res.data.data.policies;
   } catch (err) {
     throw new Error(err.response?.data?.detail || '정책 정보를 불러오는 중 오류 발생');
