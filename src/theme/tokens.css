@@ -62,3 +62,11 @@
 
 html, body { background: var(--bg); color: var(--text); }
 body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
+
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--badge-bg); color: var(--text-secondary);
+  border: 1px solid var(--card-border); cursor: pointer;
+}
+.theme-toggle:hover { color: var(--primary-text); }
