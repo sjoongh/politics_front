@@ -148,8 +148,9 @@ const handleLoginClose = () => setLoginOpen(false);
           <div>
             <div className="section-title">🎖️ 대통령 정책</div>
             <div className="content-cards">
-              {(searchResults?.results?.policies || president)?.map((president) => (
-                <NewsCard 
+              {(searchResults?.results?.policies || president)?.map((president, idx) => (
+                <NewsCard
+                  key={president.id || idx}
                   item={president}
                   type="policy"
                   onDetailClick={handleDetailClick}
@@ -164,8 +165,9 @@ const handleLoginClose = () => setLoginOpen(false);
           <div>
             <div className="section-title">🏛️ 정책 활동</div>
             <div className="content-cards">
-              {(searchResults?.results?.activities || policies)?.map((policy) => (
-                <NewsCard 
+              {(searchResults?.results?.activities || policies)?.map((policy, idx) => (
+                <NewsCard
+                  key={policy.id || idx}
                   item={policy}
                   type="parliament"
                   onDetailClick={handleDetailClick}
@@ -180,8 +182,9 @@ const handleLoginClose = () => setLoginOpen(false);
           <div>
             <div className="section-title">💬 주요 정치인 발언</div>
             <div className="content-cards">
-              {(searchResults?.results?.statements || statements)?.map((statement) => (
+              {(searchResults?.results?.statements || statements)?.map((statement, idx) => (
                 <NewsCard
+                  key={statement.id || idx}
                   item={statement}
                   type="statement"
                   onDetailClick={handleDetailClick}
@@ -208,8 +211,9 @@ const handleLoginClose = () => setLoginOpen(false);
             </div>
             <div className="content-cards">
               {newsList.length > 0 ? (
-                newsList.map((news) => (
-                  <NewsCard 
+                newsList.map((news, idx) => (
+                  <NewsCard
+                    key={news.id || idx}
                     item={news}
                     type="news"
                     onDetailClick={handleDetailClick}
