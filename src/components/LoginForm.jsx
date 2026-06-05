@@ -68,7 +68,7 @@ export default function LoginForm({ onSuccess, onClose }) {
             p: 4,
             width: { xs: '90%', sm: 400 },
             bgcolor: "background.paper",
-            borderRadius: 2,
+            borderRadius: 3,
             position: 'relative',
           }}
           onClick={(e) => e.stopPropagation()} // 내부 클릭은 닫힘 방지
@@ -81,8 +81,11 @@ export default function LoginForm({ onSuccess, onClose }) {
           </IconButton>
 
           {/* ... 탭/폼 내용 동일 ... */}
-          <Typography variant="h4" align="center" gutterBottom>
-            POLITICS NEWS
+          <Typography variant="h5" align="center" sx={{ fontWeight: 800, color: 'primary.main', mb: 0.5 }}>
+            브리핑 코리아
+          </Typography>
+          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 2 }}>
+            로그인하고 맞춤 브리핑을 받아보세요
           </Typography>
 
           <Tabs
