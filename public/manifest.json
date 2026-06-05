@@ -1,0 +1,9 @@
+{
+  "short_name": "브리핑 코리아",
+  "name": "브리핑 코리아 — 정치 뉴스 AI 요약",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#21808d",
+  "background_color": "#fcfcf9"
+}
