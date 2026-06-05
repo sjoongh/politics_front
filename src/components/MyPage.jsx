@@ -78,7 +78,7 @@ export default function MyPage({ user }) {
       }}>
         {/* 프로필 */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: "24px" }}>
-          <Avatar sx={{ width: 64, height: 64, bgcolor: "#21808d", mr: 2 }}>
+          <Avatar sx={{ width: 64, height: 64, bgcolor: "primary.main", mr: 2 }}>
             {user?.nickname?.[0] || user?.email?.[0] || "U"}
           </Avatar>
           <div>

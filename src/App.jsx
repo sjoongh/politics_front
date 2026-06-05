@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
 import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
 import Header from './components/Header';
@@ -352,10 +354,12 @@ const handleLoginClose = () => setLoginOpen(false);
 
 export default function WrappedApp() {
   return (
-    <AppProvider>
-      <App />
-      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
-    </AppProvider>
+    <ThemeProvider theme={theme}>
+      <AppProvider>
+        <App />
+        <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 

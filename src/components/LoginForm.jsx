@@ -9,28 +9,10 @@ import {
   Typography,
   CircularProgress,
   Box,
-  createTheme,
-  ThemeProvider,
   IconButton
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from "../hooks/useAuth";
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#90caf9",
-    },
-    background: {
-      default: "#121212",
-      paper: "#1e1e1e",
-    },
-  },
-  typography: {
-    fontFamily: `'Noto Sans KR', sans-serif`,
-  },
-});
 
 export default function LoginForm({ onSuccess, onClose }) {
   const [tab, setTab] = useState(0);
@@ -59,8 +41,7 @@ export default function LoginForm({ onSuccess, onClose }) {
   }
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Box
+    <Box
         minHeight="100vh"
         display="flex"
         justifyContent="center"
@@ -93,7 +74,7 @@ export default function LoginForm({ onSuccess, onClose }) {
           onClick={(e) => e.stopPropagation()} // 내부 클릭은 닫힘 방지
         >
           <IconButton
-            sx={{ position: "absolute", top: 8, right: 8, color: "white" }}
+            sx={{ position: "absolute", top: 8, right: 8, color: "text.secondary" }}
             onClick={onClose}                  // X 버튼으로 닫기
           >
             <CloseIcon />
@@ -202,6 +183,5 @@ export default function LoginForm({ onSuccess, onClose }) {
           )}
         </Paper>
       </Box>
-    </ThemeProvider>
   );
 }
