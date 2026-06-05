@@ -77,13 +77,11 @@ const Modal = ({ isOpen, onClose, title, content, type }) => {
   };
 
   return (
-    <div className="modal" onClick={handleOverlayClick}>
-      <div className="modal-content">
-        <span className="close" onClick={onClose}>&times;</span>
-        <div id="modal-content">
-          {title && <h2>{title}</h2>}
-          {renderContent()}
-        </div>
+    <div className="bk-modal" onClick={handleOverlayClick}>
+      <div className="bk-modal__panel" onClick={(e) => e.stopPropagation()}>
+        <button className="bk-modal__close" onClick={onClose} aria-label="닫기">&times;</button>
+        {title && <h2>{title}</h2>}
+        {renderContent()}
       </div>
     </div>
   );
