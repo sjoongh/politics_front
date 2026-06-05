@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from 'react-hot-toast';
 import {
   Typography, Avatar, List, ListItem, ListItemText,
   Divider, Switch, Button, Dialog, DialogTitle,
@@ -26,22 +27,22 @@ export default function MyPage({ user }) {
     try {
       await updateNotification(!notificationOn);
     } catch (err) {
-      alert("알림 설정 변경 실패: " + err.message);
+      toast.error("알림 설정 변경 실패: " + err.message);
     }
   };
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      return alert("비밀번호가 일치하지 않습니다.");
+      return toast.error("비밀번호가 일치하지 않습니다.");
     }
     try {
       await changePassword(newPassword);
-      alert("비밀번호가 변경되었습니다.");
+      toast.success("비밀번호가 변경되었습니다.");
       setChangePwOpen(false);
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      alert("비밀번호 변경 실패: " + err.message);
+      toast.error("비밀번호 변경 실패: " + err.message);
     }
   };
 
@@ -49,10 +50,10 @@ export default function MyPage({ user }) {
     if (!window.confirm("정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
     try {
       await deleteAccount();
-      alert("회원 탈퇴가 완료되었습니다.");
+      toast.success("회원 탈퇴가 완료되었습니다.");
       window.location.reload();
     } catch (err) {
-      alert("회원 탈퇴 실패: " + err.message);
+      toast.error("회원 탈퇴 실패: " + err.message);
     }
   };
 

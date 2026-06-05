@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from 'react-hot-toast';
 import { useAppContext } from "../components/AppContext";
 import api from "./api";
 
@@ -7,7 +8,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
 
   const login = async (email, password, onSuccess) => {
-    if (!email || !password) return alert("EMAIL와 PW를 입력하세요.");
+    if (!email || !password) return toast.error("이메일과 비밀번호를 입력하세요.");
     setLoading(true);
     try {
       const res = await api.post("/api/auth/login", { email, password });
@@ -17,7 +18,7 @@ export function useAuth() {
       setUser(data.data.user);
       if (onSuccess) onSuccess();
     } catch (err) {
-      alert(err.message || "로그인 실패");
+      toast.error(err.message || "로그인 실패");
     } finally {
       setLoading(false);
     }
@@ -25,7 +26,7 @@ export function useAuth() {
 
   const register = async (userInfo, onSuccess) => {
     if (!userInfo || !userInfo.email || !userInfo.password || !userInfo.nickname || !userInfo.phone) {
-      return alert("ID와 PW를 입력하세요.");
+      return toast.error("모든 필수 정보를 입력하세요.");
     }
     setLoading(true);
     try {
@@ -36,10 +37,10 @@ export function useAuth() {
         phone: userInfo.phone,
       });
 
-      alert("회원가입 완료. 로그인 해주세요.");
+      toast.success("회원가입 완료. 로그인 해주세요.");
       if (onSuccess) onSuccess();
     } catch (err) {
-      alert(err.message || "회원가입 실패");
+      toast.error(err.message || "회원가입 실패");
     } finally {
       setLoading(false);
     }

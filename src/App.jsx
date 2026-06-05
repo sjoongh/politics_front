@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
 import Header from './components/Header';
@@ -60,9 +61,9 @@ function App() {
   const handleExport = useCallback(async () => {
     try {
       await exportData();
-      alert('데이터가 성공적으로 내보내기되었습니다!');
+      toast.success('데이터가 성공적으로 내보내기되었습니다!');
     } catch (error) {
-      alert('내보내기 중 오류가 발생했습니다: ' + error.message);
+      toast.error('내보내기 중 오류가 발생했습니다: ' + error.message);
     }
   }, [exportData]);
 
@@ -348,6 +349,7 @@ export default function WrappedApp() {
   return (
     <AppProvider>
       <App />
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
     </AppProvider>
   );
 }

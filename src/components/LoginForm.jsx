@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from 'react-hot-toast';
 import {
   Button,
   TextField,
@@ -43,7 +44,7 @@ export default function LoginForm({ onSuccess, onClose }) {
   const handleRegister = (e) => {
     e.preventDefault();
     if (!phone.trim()) {
-      alert("휴대폰 번호는 필수입니다.");
+      toast.error("휴대폰 번호는 필수입니다.");
       return;
     }
 
