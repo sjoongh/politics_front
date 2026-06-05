@@ -24,7 +24,7 @@ function App() {
   const { policies } = usePolicies();
   const { statements } = useStatements();
   const { user, logout } = useAppContext();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('news');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
   const [webViewUrl, setWebViewUrl] = React.useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
