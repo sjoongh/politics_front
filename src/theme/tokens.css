@@ -137,3 +137,36 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   .feed-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
 }
 .section-title { font-size: 18px; font-weight: 800; color: var(--text); margin: 4px 0 14px; letter-spacing: -.3px; }
+
+/* ===== 통일 카드 ===== */
+.bk-card {
+  background: var(--surface); border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.bk-card__thumb {
+  height: 140px; background: linear-gradient(135deg,#7aa2ff,var(--primary));
+  background-size: cover; background-position: center;
+}
+.bk-card__body { padding: 14px 15px; display: flex; flex-direction: column; gap: 8px; }
+.bk-badge {
+  align-self: flex-start; font-size: 10.5px; font-weight: 700;
+  padding: 3px 9px; border-radius: var(--radius-pill);
+  background: var(--badge-bg); color: var(--badge-text);
+}
+.bk-badge--alert { background: var(--accent-red-bg); color: var(--accent-red); }
+.bk-badge--success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+.bk-badge--warning { background: color-mix(in srgb, var(--warning) 16%, transparent); color: var(--warning); }
+.bk-card__title { font-size: 15px; font-weight: 700; line-height: 1.42; color: var(--text); }
+.bk-card__summary { font-size: 12.5px; line-height: 1.55; color: var(--text-secondary); }
+.bk-card__quote {
+  font-size: 13px; line-height: 1.5; color: var(--text);
+  border-left: 3px solid var(--primary); padding-left: 10px; margin: 2px 0;
+}
+.bk-card__meta {
+  margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--card-border);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; color: var(--text-secondary);
+}
+.bk-card__src { font-weight: 700; color: var(--primary-text); }
+.bk-card__more { background: none; border: none; color: var(--primary-text); font-weight: 600; font-size: 12px; cursor: pointer; }

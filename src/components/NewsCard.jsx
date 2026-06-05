@@ -1,32 +1,7 @@
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
-import defaultNews from '../assets/default_news.png';
 
 const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
-
-  const getStatusClass = (status) => {
-    switch(status) {
-      case '가결': return 'success';
-      case '발의': return 'info';
-      case '부결': return 'error';
-      default: return 'info';
-    }
-  };
-
-  const getCategory = (category) => {
-    switch(category) {
-      case 'politics': return 'info';
-      case 'president': return 'success';
-      case 'breaking': return 'error';
-      case 'parliament': return 'warning';
-      case '연대': return 'success';
-      case '인사': return 'warning';
-      case '수사': return 'info';
-      default: return 'info';
-    }
-  };
-
-  const FALLBACK_IMAGE = defaultNews;
 
   function isIconLikeImage(url) {
     if (!url || typeof url !== 'string') return true;
@@ -34,137 +9,74 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
   }
 
   const renderPresidentPolicy = (policy) => (
-    <div className="card">
-      <div className="card__header">
-        <h3>{policy.title}</h3>
-        <div className="card-meta">
-          <span className="card-date">{formatDate(policy.date)}</span>
+    <article className="bk-card">
+      <div className="bk-card__body">
+        <span className="bk-badge">대통령</span>
+        <h3 className="bk-card__title">{policy.title}</h3>
+        {policy.context && <p className="bk-card__summary">{policy.context}</p>}
+        {policy.promise_type && <p className="bk-card__summary"><strong>세부:</strong> {policy.promise_type}</p>}
+        <div className="bk-card__meta">
+          <span className="bk-card__src">{formatDate(policy.date)}</span>
+          <button className="bk-card__more" onClick={() => onDetailClick('president', policy)}>자세히 →</button>
         </div>
       </div>
-      <div className="card__body">
-        <p>{policy.context}</p>
-        {policy.promise_type && (
-          <div className="news-desc">
-            <strong>세부사항:</strong> {policy.promise_type}
+    </article>
+  );
+
+  const renderParliamentActivity = (activity) => {
+    const statusClass = activity.status === '가결' ? 'bk-badge--success'
+      : activity.status === '부결' ? 'bk-badge--alert' : '';
+    return (
+      <article className="bk-card">
+        <div className="bk-card__body">
+          <span className={`bk-badge ${statusClass}`}>{activity.status || '정책'}</span>
+          <h3 className="bk-card__title">{activity.title}</h3>
+          {activity.proposer && <p className="bk-card__summary"><strong>발의자:</strong> {activity.proposer}</p>}
+          {activity.committee && <p className="bk-card__summary"><strong>소관위:</strong> {activity.committee}</p>}
+          {activity.context && <p className="bk-card__summary">{activity.context}</p>}
+          <div className="bk-card__meta">
+            <span className="bk-card__src">{formatDate(activity.date)}</span>
+            <button className="bk-card__more" onClick={() => onDetailClick('parliament', activity)}>자세히 →</button>
           </div>
-        )}
-        {onDetailClick && (
-          <button 
-            className="detail-link"
-            onClick={() => onDetailClick('president', policy)}
-          >
-            자세히 보기 →
-          </button>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+      </article>
+    );
+  };
 
-  const renderParliamentActivity = (activity) => (
-    <div className="card">
-      <div className="card__header">
-        <h3>{activity.title}</h3>
-        <div className="card-meta">
-          <span className="card-date">{formatDate(activity.date)}</span>
-          <span className={`status status--${getStatusClass(activity.status)}`}>
-            {activity.status}
-          </span>
+  const renderPoliticalStatement = (statement) => {
+    const typeClass = statement.type === '논란' ? 'bk-badge--alert' : '';
+    return (
+      <article className="bk-card">
+        <div className="bk-card__body">
+          <span className={`bk-badge ${typeClass}`}>{statement.type || '발언'}</span>
+          <h3 className="bk-card__title">{statement.speaker} <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>({statement.party})</span></h3>
+          <p className="bk-card__quote">"{statement.context}"</p>
+          {statement.speak_reason && <p className="bk-card__summary"><strong>맥락:</strong> {statement.speak_reason}</p>}
+          <div className="bk-card__meta">
+            <span className="bk-card__src">{formatDate(statement.date)}</span>
+            <button className="bk-card__more" onClick={() => onDetailClick('statements', statement)}>자세히 →</button>
+          </div>
         </div>
-      </div>
-      <div className="card__body">
-        {activity.proposer && (
-          <p><strong>발의자:</strong> {activity.proposer}</p>
-        )}
-        {activity.committee && (
-          <p><strong>소관위원회:</strong> {activity.committee}</p>
-        )}
-        {activity.context && (
-          <p>{activity.context}</p>
-        )}
-        {onDetailClick && (
-          <button 
-            className="detail-link"
-            onClick={() => onDetailClick('parliament', activity)}
-          >
-            자세히 보기 →
-          </button>
-        )}
-      </div>
-    </div>
-  );
+      </article>
+    );
+  };
 
-  const renderPoliticalStatement = (statement) => (
-    <div className="card">
-      <div className="card__header">
-        <h3>{statement.speaker} ({statement.party})</h3>
-        <div className="card-meta">
-          <span className="card-date">{formatDate(statement.date)}</span>
-          <span className={`status status--${getCategory(statement.type)}`}>
-            {statement.type}
-          </span>
-        </div>
-      </div>
-      <div className="card__body">
-        <div className="quote">
-          "{statement.context}"
-        </div>
-        <p><strong>발언 맥락:</strong> {statement.speak_reason}</p>
-        {onDetailClick && (
-          <button 
-            className="detail-link"
-            onClick={() => onDetailClick('statements', statement)}
-          >
-            자세히 보기 →
-          </button>
-        )}
-      </div>
-    </div>
-  );
   const renderNewsUpdate = (news) => (
-    <div className="newsCardHorizontal">
-      {news.image_url && (
-        <div className="newsCardThumbnail">
-          <img
-            src={news.image_url && !isIconLikeImage(news.image_url) ? news.image_url : FALLBACK_IMAGE}
-            alt={news.title}
-            loading="lazy"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = FALLBACK_IMAGE;
-              e.target.style.objectFit = 'contain';
-            }}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', background: '#ededed' }}
-          />
-        </div>
+    <article className="bk-card">
+      {news.image_url && !isIconLikeImage(news.image_url) && (
+        <div className="bk-card__thumb" style={{ backgroundImage: `url(${news.image_url})` }} />
       )}
-      <div className="newsCardInfo">
-        <div className="newsCardHeader">
-          <h3 className="newsCardTitle">{news.title}</h3>
-          <div className="newsCardMeta">
-            <span className="newsCardDate">{formatDate(news.published_at)}</span>
-          </div>
+      <div className="bk-card__body">
+        <span className="bk-badge bk-badge--alert">{news.category || '뉴스'}</span>
+        <h3 className="bk-card__title">{news.title}</h3>
+        <p className="bk-card__summary">{news.ai_summary}</p>
+        <div className="bk-card__meta">
+          <span className="bk-card__src">{news.source}</span>
+          <button className="bk-card__more" onClick={() => onDetailClick('news', news)}>자세히 →</button>
         </div>
-        <div className="newsCardBody">
-          <p className="newsDesc">{news.ai_summary}</p>
-          {news.source_url && (
-            <div className="newsFooterRow">
-              <p className="newsSource"><strong>출처:</strong> {news.source}</p>
-              <button
-                className="detailLink"
-                onClick={() => onDetailClick('news', news)}
-              >
-                자세히 보기 →
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="newsCategoryBadge">{news.category}</div>
       </div>
-    </div>
+    </article>
   );
-
-
-
 
   // 타입에 따라 적절한 렌더링 함수 선택
   switch(type) {
