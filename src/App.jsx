@@ -5,9 +5,9 @@ import { makeTheme } from './theme/muiTheme';
 import { ThemeModeProvider, useThemeMode } from './theme/ThemeContext';
 import './App.css';
 import { AppProvider, useAppContext } from "./components/AppContext";
-import Header from './components/Header';
+import AppShell from './components/layout/AppShell';
+import Navigation from './components/layout/Navigation';
 import SearchFilters from './components/SearchFilters';
-import Tabs from './components/Tabs';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
 import { useNews, useSearch, useExport, usePresident, usePolicies, useStatements } from './components/useNews';
@@ -149,7 +149,7 @@ const handleLoginClose = () => setLoginOpen(false);
         return (
           <div>
             <div className="section-title">🎖️ 대통령 정책</div>
-            <div className="content-cards">
+            <div className="feed-grid">
               {((searchResults?.results?.policies || president) || []).length > 0 ? (
                 (searchResults?.results?.policies || president).map((president, idx) => (
                   <NewsCard key={president.id || idx} item={president} type="policy" onDetailClick={handleDetailClick} />
@@ -165,7 +165,7 @@ const handleLoginClose = () => setLoginOpen(false);
         return (
           <div>
             <div className="section-title">🏛️ 정책 활동</div>
-            <div className="content-cards">
+            <div className="feed-grid">
               {((searchResults?.results?.activities || policies) || []).length > 0 ? (
                 (searchResults?.results?.activities || policies).map((policy, idx) => (
                   <NewsCard key={policy.id || idx} item={policy} type="parliament" onDetailClick={handleDetailClick} />
@@ -181,7 +181,7 @@ const handleLoginClose = () => setLoginOpen(false);
         return (
           <div>
             <div className="section-title">💬 주요 정치인 발언</div>
-            <div className="content-cards">
+            <div className="feed-grid">
               {((searchResults?.results?.statements || statements) || []).length > 0 ? (
                 (searchResults?.results?.statements || statements).map((statement, idx) => (
                   <NewsCard key={statement.id || idx} item={statement} type="statement" onDetailClick={handleDetailClick} />
@@ -208,7 +208,7 @@ const handleLoginClose = () => setLoginOpen(false);
                 🔄 뉴스 업데이트
               </button>
             </div>
-            <div className="content-cards">
+            <div className="feed-grid">
               {newsList.length > 0 ? (
                 newsList.map((news, idx) => (
                   <NewsCard
@@ -257,94 +257,62 @@ const handleLoginClose = () => setLoginOpen(false);
 
   if (loading) {
     return (
-      <div className="App">
-        <Header>{renderAuthButton()}</Header>
-        <main className="container">
-          <div className="content-cards" style={{ marginTop: '24px' }}>
-            {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
-          </div>
-        </main>
-      </div>
+      <AppShell nav={null} search={null} authButton={renderAuthButton()}>
+        <div className="feed-grid">{[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}</div>
+      </AppShell>
     );
   }
-
   if (error) {
     return (
-      <div className="App">
-        <Header>{renderAuthButton()}</Header>
-        <main className="container">
-          <EmptyState icon="⚠️" message={`데이터를 불러오지 못했습니다. (${error})`} />
-          <div style={{ textAlign: 'center' }}>
-            <button className="btn btn--primary" onClick={refreshData}>다시 시도</button>
-          </div>
-        </main>
-      </div>
+      <AppShell nav={null} search={null} authButton={renderAuthButton()}>
+        <EmptyState icon="⚠️" message={`데이터를 불러오지 못했습니다. (${error})`} />
+        <div style={{ textAlign: 'center' }}>
+          <button className="btn btn--primary" onClick={refreshData}>다시 시도</button>
+        </div>
+      </AppShell>
     );
   }
 
+  const navEl = (
+    <Navigation tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
+  );
+  const searchEl = (
+    <SearchFilters
+      ref={searchInputRef}
+      searchValue={searchValue}
+      onSearchValueChange={setSearchValue}
+      onSearch={handleSearch}
+      searchLoading={searchLoading}
+    />
+  );
+
   return (
-    <div className="App">
-      <Header>
-        {renderAuthButton()}
-      </Header>
+    <>
+      <AppShell nav={navEl} search={searchEl} authButton={renderAuthButton()}>
+        {renderTabContent()}
+      </AppShell>
 
-      <main className="container">
-        <SearchFilters
-          ref={searchInputRef}
-          searchValue={searchValue}
-          onSearchValueChange={setSearchValue}
-          onSearch={handleSearch}
-          searchLoading={searchLoading}
-        />
-
-        <Tabs 
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          tabs={tabs}
-        />
-
-        <div className="tab-content active">
-          {renderTabContent()}
-        </div>
-      </main>
       {webViewUrl && (
         <div className="webviewModal">
           <div className="webviewModalContent">
             <button className="webviewClose" onClick={() => setWebViewUrl(null)}>×</button>
-            <iframe
-              src={webViewUrl}
-              title="뉴스 원문"
-              frameBorder="0"
-              style={{ width: '100%', height: '80vh', border: 'none' }}
-              allowFullScreen
-            />
+            <iframe src={webViewUrl} title="뉴스 원문" frameBorder="0"
+              style={{ width: '100%', height: '80vh', border: 'none' }} allowFullScreen />
           </div>
         </div>
       )}
+
       <Modal
         isOpen={modal.isOpen}
         type={modal.type}
         content={modal.content}
         onClose={() => setModal({ isOpen: false, content: null, type: null })}
       />
-      {/* 로그인 모달을 겹쳐서 띄움 */}
-    {loginOpen && (
-      <LoginForm
-        onSuccess={handleLoginSuccess}
-        onClose={handleLoginClose}   // (중요) 닫기 콜백 전달
-      />
-    )}
-      <footer className="main-footer">
-        <div className="container">
-          <div className="flex justify-between py-16">
-            <div className="footer-info">
-              <p>© 브리핑 코리아. 모든 권리 보유.</p>
-              <p>뉴스 출처: 각 언론사 및 공식 보도자료</p>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+
+      {loginOpen && (
+        <LoginForm onSuccess={handleLoginSuccess} onClose={handleLoginClose} />
+      )}
+    </>
   );
 }
 

@@ -128,3 +128,12 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   color: var(--text-secondary); font-size: 12px; line-height: 1.7;
 }
 @media (min-width: 768px) { .app-footer__inner { padding-bottom: 24px; } }
+
+/* ===== 셸 / 콘텐츠 ===== */
+.app-shell { min-height: 100vh; background: var(--bg); }
+.app-main { max-width: 1080px; margin: 0 auto; padding: 16px; }
+.feed-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 768px) {
+  .feed-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+}
+.section-title { font-size: 18px; font-weight: 800; color: var(--text); margin: 4px 0 14px; letter-spacing: -.3px; }
