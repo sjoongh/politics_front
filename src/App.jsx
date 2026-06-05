@@ -10,6 +10,8 @@ import Modal from './components/Modal';
 import { useNews, useSearch, useExport, usePresident, usePolicies, useStatements } from './components/useNews';
 import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
+import EmptyState from './components/EmptyState';
+import SkeletonCard from './components/SkeletonCard';
 
 function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
@@ -149,14 +151,13 @@ const handleLoginClose = () => setLoginOpen(false);
           <div>
             <div className="section-title">🎖️ 대통령 정책</div>
             <div className="content-cards">
-              {(searchResults?.results?.policies || president)?.map((president, idx) => (
-                <NewsCard
-                  key={president.id || idx}
-                  item={president}
-                  type="policy"
-                  onDetailClick={handleDetailClick}
-                />
-              ))}
+              {((searchResults?.results?.policies || president) || []).length > 0 ? (
+                (searchResults?.results?.policies || president).map((president, idx) => (
+                  <NewsCard key={president.id || idx} item={president} type="policy" onDetailClick={handleDetailClick} />
+                ))
+              ) : (
+                <EmptyState message="대통령 정책 정보가 없습니다." />
+              )}
             </div>
           </div>
         );
@@ -166,14 +167,13 @@ const handleLoginClose = () => setLoginOpen(false);
           <div>
             <div className="section-title">🏛️ 정책 활동</div>
             <div className="content-cards">
-              {(searchResults?.results?.activities || policies)?.map((policy, idx) => (
-                <NewsCard
-                  key={policy.id || idx}
-                  item={policy}
-                  type="parliament"
-                  onDetailClick={handleDetailClick}
-                />
-              ))}
+              {((searchResults?.results?.activities || policies) || []).length > 0 ? (
+                (searchResults?.results?.activities || policies).map((policy, idx) => (
+                  <NewsCard key={policy.id || idx} item={policy} type="parliament" onDetailClick={handleDetailClick} />
+                ))
+              ) : (
+                <EmptyState message="정책 활동이 없습니다." />
+              )}
             </div>
           </div>
         );
@@ -183,14 +183,13 @@ const handleLoginClose = () => setLoginOpen(false);
           <div>
             <div className="section-title">💬 주요 정치인 발언</div>
             <div className="content-cards">
-              {(searchResults?.results?.statements || statements)?.map((statement, idx) => (
-                <NewsCard
-                  key={statement.id || idx}
-                  item={statement}
-                  type="statement"
-                  onDetailClick={handleDetailClick}
-                />
-              ))}
+              {((searchResults?.results?.statements || statements) || []).length > 0 ? (
+                (searchResults?.results?.statements || statements).map((statement, idx) => (
+                  <NewsCard key={statement.id || idx} item={statement} type="statement" onDetailClick={handleDetailClick} />
+                ))
+              ) : (
+                <EmptyState message="정치인 발언이 없습니다." />
+              )}
             </div>
           </div>
         );
@@ -221,7 +220,7 @@ const handleLoginClose = () => setLoginOpen(false);
                   />
                 ))
               ) : (
-              <p style={{ textAlign: "center", color: "#888" }}>뉴스가 없습니다.</p>
+              <EmptyState message="뉴스가 없습니다." icon="📰" />
               )}
             </div>
           </div>
@@ -244,27 +243,6 @@ const handleLoginClose = () => setLoginOpen(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container" style={{ textAlign: 'center', padding: '2rem' }}>
-        <h2>데이터를 불러오는 중...</h2>
-        <p>잠시만 기다려 주세요.</p>
-      </div>
-    );
-  }
-
-  // if (error) {
-  //   return (
-  //     <div className="container" style={{ textAlign: 'center', padding: '2rem' }}>
-  //       <h2>오류가 발생했습니다</h2>
-  //       <p>{error}</p>
-  //       <button className="btn btn--primary" onClick={refreshData}>
-  //         다시 시도
-  //       </button>
-  //     </div>
-  //   );
-  // }
-
   // Header 버튼 분기
   const renderAuthButton = () => {
     if (user) {
@@ -277,6 +255,33 @@ const handleLoginClose = () => setLoginOpen(false);
       );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="App">
+        <Header>{renderAuthButton()}</Header>
+        <main className="container">
+          <div className="content-cards" style={{ marginTop: '24px' }}>
+            {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="App">
+        <Header>{renderAuthButton()}</Header>
+        <main className="container">
+          <EmptyState icon="⚠️" message={`데이터를 불러오지 못했습니다. (${error})`} />
+          <div style={{ textAlign: 'center' }}>
+            <button className="btn btn--primary" onClick={refreshData}>다시 시도</button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
