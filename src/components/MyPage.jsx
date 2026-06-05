@@ -1,20 +1,14 @@
 import { useState } from "react";
 import toast from 'react-hot-toast';
 import {
-  Typography, Avatar, List, ListItem, ListItemText,
-  Divider, Switch, Button, Dialog, DialogTitle,
+  Typography, Avatar,
+  Divider, Button, Dialog, DialogTitle,
   DialogContent, DialogActions, TextField
 } from "@mui/material";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useMyPage } from "../hooks/useMyPage";
 
 export default function MyPage({ user }) {
   const {
-    bookmarks,
-    preferences,
-    notificationOn,
-    updateNotification,
     changePassword,
     deleteAccount,
   } = useMyPage(user);
@@ -22,14 +16,6 @@ export default function MyPage({ user }) {
   const [changePwOpen, setChangePwOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleNotificationToggle = async () => {
-    try {
-      await updateNotification(!notificationOn);
-    } catch (err) {
-      toast.error("알림 설정 변경 실패: " + err.message);
-    }
-  };
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
@@ -63,14 +49,14 @@ export default function MyPage({ user }) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "var(--color-background)",
+      background: "var(--bg)",
       padding: "32px 0"
     }}>
       <div style={{
-        background: "var(--color-surface)",
+        background: "var(--surface)",
         borderRadius: "var(--radius-lg)",
-        boxShadow: "var(--shadow-md)",
-        border: "1px solid var(--color-card-border)",
+        boxShadow: "var(--shadow-card)",
+        border: "1px solid var(--card-border)",
         maxWidth: "420px",
         width: "100%",
         margin: "0 auto",

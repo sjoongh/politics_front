@@ -1,47 +1,22 @@
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAppContext } from "../components/AppContext";
 import api from "./api";
 
 export function useMyPage(user) {
-  const [bookmarks, setBookmarks] = useState([]);
-  const [preferences, setPreferences] = useState({ keywords: [], politicians: [], parties: [] });
-  const [notificationOn, setNotificationOn] = useState(user?.notificationOn ?? true);
-  const [loading, setLoading] = useState(false);
-  const { setUser, logout } = useAppContext();
+  const { logout } = useAppContext();
 
-  // GET: 북마크, 관심사
-  const fetchBookmarks = async () => {
-    try {
-      const res = await api.get("/api/bookmarks/list");
-      setBookmarks(res.data || []);
-    } catch (err) {
-      console.error("북마크 불러오기 실패:", err);
+  // GET: 북마크, 관심사 (currently disabled)
+  useEffect(() => {
+    if (user) {
+      // fetchBookmarks();
+      // fetchPreferences();
     }
-  };
-
-  const fetchPreferences = async () => {
-    try {
-      const res = await api.get("/api/user/preferences");
-      setPreferences(res.data || { keywords: [], politicians: [], parties: [] });
-    } catch (err) {
-      console.error("관심사 불러오기 실패:", err);
-    }
-  };
-
-  const updateNotification = async (newValue) => {
-    try {
-      await api.patch("/api/auth/profile", { enabled: newValue });
-      setNotificationOn(newValue);
-    } catch (err) {
-      console.error("알림 설정 실패:", err);
-      throw err;
-    }
-  };
+  }, [user]);
 
   const changePassword = async (newPassword) => {
     try {
-      await api.put("/api/auth/password", { 
+      await api.put("/api/auth/password", {
         password: newPassword,
         email: user.email
       });
@@ -61,21 +36,7 @@ export function useMyPage(user) {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      // fetchBookmarks();
-      // fetchPreferences();
-    }
-  }, [user]);
-
   return {
-    bookmarks,
-    preferences,
-    notificationOn,
-    loading,
-    fetchBookmarks,
-    fetchPreferences,
-    updateNotification,
     changePassword,
     deleteAccount,
   };
