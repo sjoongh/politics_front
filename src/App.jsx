@@ -109,11 +109,7 @@ const handleLoginClose = () => setLoginOpen(false);
 
   // 아무것도 없으면 안내 메시지
   if (!mergedList.length) {
-    return (
-      <div style={{ textAlign: 'center', color: '#888' }}>
-        검색 결과가 없습니다.
-      </div>
-    );
+    return <EmptyState message="검색 결과가 없습니다." icon="🔍" />;
   }
 
   return (
