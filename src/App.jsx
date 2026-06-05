@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from '@mui/material';
 import { makeTheme } from './theme/muiTheme';
 import { ThemeModeProvider, useThemeMode } from './theme/ThemeContext';
@@ -10,7 +10,7 @@ import Navigation from './components/layout/Navigation';
 import SearchFilters from './components/SearchFilters';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
-import { useNews, useSearch, useExport, usePresident, usePolicies, useStatements } from './components/useNews';
+import { useNews, useSearch, usePresident, usePolicies, useStatements } from './components/useNews';
 import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
@@ -20,10 +20,9 @@ function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
   const { data, loading, error, refreshData } = useNews();
   const { searchResults, searchLoading, search, clearSearch } = useSearch();
-  const { president, loading: presidentLoading } = usePresident();
-  const { policies, loading: policiesLoading } = usePolicies();
-  const { statements, loading: statementsLoading } = useStatements();
-  const { exportData, exporting } = useExport();
+  const { president } = usePresident();
+  const { policies } = usePolicies();
+  const { statements } = useStatements();
   const { user, logout } = useAppContext();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
@@ -62,15 +61,6 @@ function App() {
       });
     }
   }, []);
-
-  const handleExport = useCallback(async () => {
-    try {
-      await exportData();
-      toast.success('데이터가 성공적으로 내보내기되었습니다!');
-    } catch (error) {
-      toast.error('내보내기 중 오류가 발생했습니다: ' + error.message);
-    }
-  }, [exportData]);
 
   const handleLoginSuccess = () => {
   setLoginOpen(false);
