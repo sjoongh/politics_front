@@ -130,3 +130,6 @@ temp/
 
 # OMC tool working state
 .omc/
+
+# Brainstorm visual companion
+.superpowers/
