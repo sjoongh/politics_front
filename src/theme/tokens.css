@@ -210,3 +210,18 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   border: 1px solid var(--border); background: var(--surface); color: var(--text);
   padding: 8px 14px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;
 }
+
+/* ===== 이슈 ===== */
+.issue-card { cursor: pointer; }
+.bk-badge--muted { background: var(--badge-bg); color: var(--text-secondary); }
+.issue-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.issue-link { font-size: 12.5px; color: var(--primary-text); text-decoration: none;
+  background: var(--badge-bg); padding: 6px 10px; border-radius: var(--radius-pill); }
+.issue-section-title { font-weight: 800; font-size: 14px; margin: 16px 0 10px; color: var(--text); }
+.issue-timeline { border-left: 2px solid var(--card-border); padding-left: 14px; margin-left: 4px; }
+.issue-event { position: relative; padding: 8px 0; }
+.issue-event::before { content: ''; position: absolute; left: -21px; top: 13px;
+  width: 9px; height: 9px; border-radius: 50%; background: var(--primary); }
+.issue-event__date { font-size: 11px; color: var(--text-secondary); }
+.issue-event__headline { font-weight: 700; font-size: 14px; color: var(--text); margin: 2px 0; }
+.issue-event__summary { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
