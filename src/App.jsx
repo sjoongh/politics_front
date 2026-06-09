@@ -11,6 +11,9 @@ import SearchFilters from './components/SearchFilters';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
 import { useNews, useSearch, usePresident, usePolicies, useStatements } from './components/useNews';
+import IssueCard from './components/IssueCard';
+import IssueDetail from './components/IssueDetail';
+import { useIssues } from './components/useIssues';
 import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
@@ -23,6 +26,7 @@ function App() {
   const { president } = usePresident();
   const { policies } = usePolicies();
   const { statements } = useStatements();
+  const { issues, loading: issuesLoading } = useIssues();
   const { user, logout } = useAppContext();
   const [activeTab, setActiveTab] = useState('news');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
@@ -30,6 +34,7 @@ function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   const searchInputRef = useRef(null);
   const [searchValue, setSearchValue] = useState('');
+  const [selectedIssueId, setSelectedIssueId] = useState(null);
 
   const tabs = [
     { id: 'all', label: '전체', icon: '🔍' },
@@ -37,6 +42,7 @@ function App() {
     { id: 'president', label: '대통령', icon: '🎖️' },
     { id: 'parliament', label: '정책', icon: '🏛️' },
     { id: 'statements', label: '정치인 발언', icon: '💬' },
+    { id: 'issues', label: '이슈', icon: '🔥' },
     ...(user ? [{ id: 'mypage', label: '마이페이지', icon: '👤' }] : [])
   ];
 
@@ -183,6 +189,24 @@ const handleLoginClose = () => setLoginOpen(false);
           </div>
         );
 
+      case 'issues':
+        return (
+          <div>
+            <div className="section-title">🔥 이슈</div>
+            {issuesLoading ? (
+              <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
+            ) : issues.length > 0 ? (
+              <div className="feed-grid">
+                {issues.map((iss) => (
+                  <IssueCard key={iss.id} issue={iss} onClick={setSelectedIssueId} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState message="등록된 이슈가 없습니다." icon="🔥" />
+            )}
+          </div>
+        );
+
       case 'news':
         const newsList = searchResults?.results?.news || data?.articles || [];
         return (
@@ -298,6 +322,14 @@ const handleLoginClose = () => setLoginOpen(false);
         content={modal.content}
         onClose={() => setModal({ isOpen: false, content: null, type: null })}
       />
+
+      {selectedIssueId && (
+        <IssueDetail
+          issueId={selectedIssueId}
+          onClose={() => setSelectedIssueId(null)}
+          onArticleClick={handleDetailClick}
+        />
+      )}
 
       {loginOpen && (
         <LoginForm onSuccess={handleLoginSuccess} onClose={handleLoginClose} />
