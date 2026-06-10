@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-// 로컬 환경과 프로덕션 환경에 맞게 baseURL 설정
-const API_BASE_URL = process.env.NODE_ENV === 'development' 
-  ? 'http://localhost:8000' 
-  : 'https://politics-backend-9vp2.onrender.com';
+// 프로덕션은 Firebase Hosting 같은 오리진(/api/** → Cloud Run rewrite)으로 호출.
+// 호스팅이 바뀌어도 이 URL은 고정이라 앱 재배포가 불필요.
+const API_BASE_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:8000'
+  : 'https://koreanpolitical.web.app';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
