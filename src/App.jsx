@@ -14,6 +14,9 @@ import { useNews, useSearch, usePresident, usePolicies, useStatements } from './
 import IssueCard from './components/IssueCard';
 import IssueDetail from './components/IssueDetail';
 import { useIssues } from './components/useIssues';
+import MemberCard from './components/MemberCard';
+import MemberDetail from './components/MemberDetail';
+import { useMembers } from './components/useMembers';
 import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
@@ -27,6 +30,7 @@ function App() {
   const { policies } = usePolicies();
   const { statements } = useStatements();
   const { issues, loading: issuesLoading } = useIssues();
+  const { members, loading: membersLoading } = useMembers();
   const { user, logout } = useAppContext();
   const [activeTab, setActiveTab] = useState('news');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
@@ -35,6 +39,7 @@ function App() {
   const searchInputRef = useRef(null);
   const [searchValue, setSearchValue] = useState('');
   const [selectedIssueId, setSelectedIssueId] = useState(null);
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
 
   const tabs = [
     { id: 'all', label: '전체', icon: '🔍' },
@@ -43,6 +48,7 @@ function App() {
     { id: 'parliament', label: '정책', icon: '🏛️' },
     { id: 'statements', label: '정치인 발언', icon: '💬' },
     { id: 'issues', label: '이슈', icon: '🔥' },
+    { id: 'members', label: '의원', icon: '⚖️' },
     ...(user ? [{ id: 'mypage', label: '마이페이지', icon: '👤' }] : [])
   ];
 
@@ -207,6 +213,24 @@ const handleLoginClose = () => setLoginOpen(false);
           </div>
         );
 
+      case 'members':
+        return (
+          <div>
+            <div className="section-title">⚖️ 의원 책임성</div>
+            {membersLoading ? (
+              <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
+            ) : members.length > 0 ? (
+              <div className="feed-grid">
+                {members.map((m) => (
+                  <MemberCard key={m.id} member={m} onClick={setSelectedMemberId} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState message="등록된 의원이 없습니다." icon="⚖️" />
+            )}
+          </div>
+        );
+
       case 'news':
         const newsList = searchResults?.results?.news || data?.articles || [];
         return (
@@ -328,6 +352,13 @@ const handleLoginClose = () => setLoginOpen(false);
           issueId={selectedIssueId}
           onClose={() => setSelectedIssueId(null)}
           onArticleClick={handleDetailClick}
+        />
+      )}
+
+      {selectedMemberId && (
+        <MemberDetail
+          memberId={selectedMemberId}
+          onClose={() => setSelectedMemberId(null)}
         />
       )}
 
