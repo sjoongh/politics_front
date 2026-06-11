@@ -52,6 +52,35 @@ export default function MemberDetail({ memberId, onClose }) {
               <p className="bk-card__summary">공개된 확정 전과 없음</p>
             )}
 
+            {Array.isArray(detail.votes) && detail.votes.length > 0 && (
+              <>
+                <div className="issue-section-title">🗳️ 주요 표결</div>
+                <div className="issue-timeline">
+                  {detail.votes.slice(0, 10).map((v, i) => (
+                    <div key={i} className="issue-event">
+                      <div className="issue-event__headline">
+                        <span className={`vote-tag vote-tag--${v.vote === '찬성' ? 'yes' : v.vote === '반대' ? 'no' : 'etc'}`}>{v.vote}</span> {v.bill}
+                      </div>
+                      {v.link && <a className="issue-event__summary" href={v.link} target="_blank" rel="noreferrer">의안 보기</a>}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {Array.isArray(detail.bills) && detail.bills.length > 0 && (
+              <>
+                <div className="issue-section-title">📜 발의 법안 {detail.bill_count ? `(${detail.bill_count})` : ''}</div>
+                <div className="issue-timeline">
+                  {detail.bills.slice(0, 10).map((b, i) => (
+                    <a key={i} className="persp-item" href={b.link} target="_blank" rel="noreferrer">
+                      <span className="persp-item__src">{b.result || '처리중'}</span> {b.name}
+                    </a>
+                  ))}
+                </div>
+              </>
+            )}
+
             {detail.disclaimer && (
               <p className="member-disclaimer">{detail.disclaimer}</p>
             )}
