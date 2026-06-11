@@ -6,12 +6,40 @@ import {
   DialogContent, DialogActions, TextField
 } from "@mui/material";
 import { useMyPage } from "../hooks/useMyPage";
+import { useAppContext } from "./AppContext";
 
 export default function MyPage({ user }) {
   const {
     changePassword,
     deleteAccount,
+    updateInterests,
   } = useMyPage(user);
+  const { setUser } = useAppContext();
+
+  const [newInterest, setNewInterest] = useState("");
+
+  const saveInterests = async (interests) => {
+    try {
+      await updateInterests(interests);
+      const updated = { ...user, interests };
+      setUser(updated);
+      localStorage.setItem("user", JSON.stringify(updated));
+      toast.success("관심 키워드 저장됨");
+    } catch (err) {
+      toast.error("저장 실패: " + (err.message || ""));
+    }
+  };
+  const handleAddInterest = () => {
+    const k = newInterest.trim();
+    if (!k) return;
+    const cur = user?.interests || [];
+    if (cur.includes(k)) { setNewInterest(""); return; }
+    saveInterests([...cur, k]);
+    setNewInterest("");
+  };
+  const handleRemoveInterest = (k) => {
+    saveInterests((user?.interests || []).filter((x) => x !== k));
+  };
 
   const [changePwOpen, setChangePwOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -78,7 +106,27 @@ export default function MyPage({ user }) {
 
         <Divider sx={{ my: 2 }} />
 
-        
+        <div style={{ marginBottom: 16 }}>
+          <Typography variant="subtitle1" gutterBottom>관심 키워드</Typography>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+            {(user?.interests || []).map((k) => (
+              <span key={k} className="bk-badge" style={{ cursor: 'pointer' }} onClick={() => handleRemoveInterest(k)}>
+                {k} ✕
+              </span>
+            ))}
+            {(!user?.interests || user.interests.length === 0) && (
+              <Typography variant="body2" color="text.secondary">아직 없음 — 추가해보세요</Typography>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <TextField size="small" placeholder="예: 예산, 외교" value={newInterest} onChange={(e) => setNewInterest(e.target.value)} />
+            <Button variant="outlined" onClick={handleAddInterest}>추가</Button>
+          </div>
+        </div>
+
+        <Divider sx={{ my: 2 }} />
+
+
         {/*
         <Typography variant="subtitle1" gutterBottom>
           <BookmarkIcon fontSize="small" sx={{ mr: 1 }} />

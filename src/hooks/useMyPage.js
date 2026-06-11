@@ -36,8 +36,14 @@ export function useMyPage(user) {
     }
   };
 
+  const updateInterests = async (interests) => {
+    const res = await api.put("/api/auth/profile", { interests });
+    return res.data;
+  };
+
   return {
     changePassword,
     deleteAccount,
+    updateInterests,
   };
 }
