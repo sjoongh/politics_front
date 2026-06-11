@@ -22,6 +22,7 @@ export function AppProvider({ children }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
     window.location.reload();
   };
 

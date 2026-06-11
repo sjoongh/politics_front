@@ -13,6 +13,15 @@ const api = axios.create({
   },
 });
 
+// 요청 인터셉터 - 저장된 토큰을 Authorization 헤더로 첨부
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // 응답 인터셉터 - 에러 처리
 api.interceptors.response.use(
   (response) => response,

@@ -14,7 +14,9 @@ export function useAuth() {
       const res = await api.post("/api/auth/login", { email, password });
       
       const data = res.data;
-      // 추후에는 access token을 저장하는 로직 추가 해야함
+      if (data.data?.access_token) {
+        localStorage.setItem('access_token', data.data.access_token);
+      }
       setUser(data.data.user);
       if (onSuccess) onSuccess();
     } catch (err) {
