@@ -23,6 +23,7 @@ import EmptyState from './components/EmptyState';
 import SkeletonCard from './components/SkeletonCard';
 import DailySummaryCard from './components/DailySummaryCard';
 import { useDailySummary } from './components/useSummary';
+import { useDigest } from './components/useDigest';
 
 function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
@@ -35,6 +36,7 @@ function App() {
   const { members, loading: membersLoading } = useMembers();
   const dailySummary = useDailySummary();
   const { user, logout } = useAppContext();
+  const { articles: digestArticles, loading: digestLoading } = useDigest(user?.interests);
   const [activeTab, setActiveTab] = useState('news');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
   const [webViewUrl, setWebViewUrl] = React.useState(null);
@@ -52,6 +54,7 @@ function App() {
     { id: 'statements', label: '정치인 발언', icon: '💬' },
     { id: 'issues', label: '이슈', icon: '🔥' },
     { id: 'members', label: '의원', icon: '⚖️' },
+    ...(user ? [{ id: 'digest', label: '맞춤', icon: '✨' }] : []),
     ...(user ? [{ id: 'mypage', label: '마이페이지', icon: '👤' }] : [])
   ];
 
@@ -212,6 +215,27 @@ const handleLoginClose = () => setLoginOpen(false);
               </div>
             ) : (
               <EmptyState message="등록된 이슈가 없습니다." icon="🔥" />
+            )}
+          </div>
+        );
+
+      case 'digest':
+        return (
+          <div>
+            <div className="section-title">✨ 맞춤 다이제스트</div>
+            <DailySummaryCard summary={dailySummary} />
+            {!user?.interests || user.interests.length === 0 ? (
+              <EmptyState message="마이페이지에서 관심 키워드를 등록하면 맞춤 뉴스를 보여드려요." icon="✨" />
+            ) : digestLoading ? (
+              <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
+            ) : digestArticles.length > 0 ? (
+              <div className="feed-grid">
+                {digestArticles.map((news, idx) => (
+                  <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState message="관심 키워드에 맞는 최신 기사가 아직 없어요." icon="✨" />
             )}
           </div>
         );

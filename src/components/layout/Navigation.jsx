@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutGrid, Newspaper, Landmark, ScrollText, MessageSquareQuote, User, Flag, Scale } from 'lucide-react';
+import { LayoutGrid, Newspaper, Landmark, ScrollText, MessageSquareQuote, User, Flag, Scale, Sparkles } from 'lucide-react';
 
 const ICONS = {
   all: LayoutGrid,
@@ -9,6 +9,7 @@ const ICONS = {
   statements: MessageSquareQuote,
   issues: Flag,
   members: Scale,
+  digest: Sparkles,
   mypage: User,
 };
 
