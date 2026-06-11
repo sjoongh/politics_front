@@ -21,6 +21,8 @@ import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
 import SkeletonCard from './components/SkeletonCard';
+import DailySummaryCard from './components/DailySummaryCard';
+import { useDailySummary } from './components/useSummary';
 
 function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
@@ -31,6 +33,7 @@ function App() {
   const { statements } = useStatements();
   const { issues, loading: issuesLoading } = useIssues();
   const { members, loading: membersLoading } = useMembers();
+  const dailySummary = useDailySummary();
   const { user, logout } = useAppContext();
   const [activeTab, setActiveTab] = useState('news');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
@@ -235,6 +238,7 @@ const handleLoginClose = () => setLoginOpen(false);
         const newsList = searchResults?.results?.news || data?.articles || [];
         return (
           <div>
+            <DailySummaryCard summary={dailySummary} />
             <div className="section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span>📰 뉴스</span>
               <button
@@ -276,7 +280,21 @@ const handleLoginClose = () => setLoginOpen(false);
         );
 
       default:
-        return null;
+        return (
+          <div>
+            <DailySummaryCard summary={dailySummary} />
+            <div className="section-title">🔍 전체</div>
+            <div className="feed-grid">
+              {(data?.articles || []).length > 0 ? (
+                (data?.articles || []).map((news, idx) => (
+                  <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
+                ))
+              ) : (
+                <EmptyState message="표시할 내용이 없습니다." icon="🔍" />
+              )}
+            </div>
+          </div>
+        );
     }
   };
 

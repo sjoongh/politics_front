@@ -229,3 +229,10 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 /* ===== 의원 책임성 ===== */
 .member-disclaimer { margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--card-border);
   font-size: 11.5px; line-height: 1.5; color: var(--text-secondary); }
+
+/* ===== 오늘의 요약 ===== */
+.daily-summary { margin-bottom: 16px; border-left: 3px solid var(--primary); }
+.daily-summary__label { font-weight: 800; font-size: 13px; color: var(--primary-text); margin-bottom: 8px; }
+.daily-summary__overview { font-size: 14.5px; line-height: 1.65; color: var(--text); margin: 0; }
+.daily-summary__highlights { margin: 12px 0 0; padding-left: 0; list-style: none; }
+.daily-summary__highlights li { font-size: 13px; color: var(--text-secondary); padding: 3px 0; }
