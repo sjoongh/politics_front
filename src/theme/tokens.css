@@ -236,3 +236,20 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .daily-summary__overview { font-size: 14.5px; line-height: 1.65; color: var(--text); margin: 0; }
 .daily-summary__highlights { margin: 12px 0 0; padding-left: 0; list-style: none; }
 .daily-summary__highlights li { font-size: 13px; color: var(--text-secondary); padding: 3px 0; }
+
+/* ===== 관점 비교 ===== */
+.perspectives { margin: 16px 0; }
+.persp-bar { display: flex; height: 22px; border-radius: var(--radius-pill); overflow: hidden; background: var(--badge-bg); }
+.persp-seg { font-size: 11px; color: #fff; text-align: center; line-height: 22px; min-width: 28px; }
+.persp-seg--left { background: #2563eb; }
+.persp-seg--center { background: #6b7280; }
+.persp-seg--right { background: #dc2626; }
+.persp-seg--foreign { background: #7c3aed; }
+.persp-legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0; font-size: 12px; color: var(--text-secondary); }
+.persp-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; }
+.persp-blindspot { font-size: 12.5px; color: var(--text); background: var(--badge-bg); padding: 8px 10px; border-radius: var(--radius-md); margin: 8px 0; }
+.persp-group { margin: 10px 0; }
+.persp-group__label { display: inline-block; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill); margin-bottom: 6px; }
+.persp-item { display: block; font-size: 13px; color: var(--text); text-decoration: none; padding: 3px 0; }
+.persp-item__src { color: var(--text-secondary); font-size: 11.5px; }
+.persp-disclaimer { font-size: 11px; color: var(--text-secondary); margin-top: 10px; }

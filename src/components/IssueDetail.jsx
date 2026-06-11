@@ -25,6 +25,51 @@ export default function IssueDetail({ issueId, onClose, onArticleClick }) {
             <h3>{detail.title}</h3>
             {detail.summary && <p>{detail.summary}</p>}
 
+            {detail.perspectives && detail.perspectives.breakdown.total > 0 && (
+              <div className="perspectives">
+                <div className="issue-section-title">📊 관점 비교</div>
+                <div className="persp-bar">
+                  {['left', 'center', 'right', 'foreign'].map((k) => {
+                    const n = detail.perspectives.breakdown.counts[k] || 0;
+                    const total = detail.perspectives.breakdown.total || 1;
+                    const pct = Math.round((n / total) * 100);
+                    return n > 0 ? (
+                      <div key={k} className={`persp-seg persp-seg--${k}`} style={{ width: `${pct}%` }} title={`${pct}%`}>
+                        {pct}%
+                      </div>
+                    ) : null;
+                  })}
+                </div>
+                <div className="persp-legend">
+                  <span><i className="persp-dot persp-seg--left" /> 진보 {detail.perspectives.breakdown.counts.left}</span>
+                  <span><i className="persp-dot persp-seg--center" /> 중도 {detail.perspectives.breakdown.counts.center}</span>
+                  <span><i className="persp-dot persp-seg--right" /> 보수 {detail.perspectives.breakdown.counts.right}</span>
+                  <span><i className="persp-dot persp-seg--foreign" /> 외신 {detail.perspectives.breakdown.counts.foreign}</span>
+                </div>
+                {detail.perspectives.breakdown.blindspot && (
+                  <div className="persp-blindspot">
+                    ⚠️ {detail.perspectives.breakdown.blindspot === 'left' ? '진보' : '보수'} 성향 매체는 이 사건을 보도하지 않았습니다.
+                  </div>
+                )}
+                {['left', 'center', 'right', 'foreign'].map((k) => {
+                  const items = detail.perspectives.groups[k] || [];
+                  return items.length > 0 ? (
+                    <div key={k} className="persp-group">
+                      <div className={`persp-group__label persp-seg--${k}`}>
+                        {({ left: '진보', center: '중도', right: '보수', foreign: '외신' })[k]}
+                      </div>
+                      {items.map((it, i) => (
+                        <a key={i} href={it.source_url} target="_blank" rel="noreferrer" className="persp-item">
+                          <span className="persp-item__src">{it.source}</span> {it.title}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null;
+                })}
+                <p className="persp-disclaimer">{detail.perspectives.disclaimer}</p>
+              </div>
+            )}
+
             {detail.official_links && detail.official_links.length > 0 && (
               <div className="issue-links">
                 {detail.official_links.map((l, i) => (
