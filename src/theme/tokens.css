@@ -158,6 +158,10 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   height: 140px; background: linear-gradient(135deg,#7aa2ff,var(--primary));
   background-size: cover; background-position: center;
 }
+[data-theme="dark"] .bk-card__thumb { background: linear-gradient(135deg,#28324c,var(--primary)); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bk-card__thumb { background: linear-gradient(135deg,#28324c,var(--primary)); }
+}
 .bk-card__body { padding: 14px 15px; display: flex; flex-direction: column; gap: 8px; }
 .bk-badge {
   align-self: flex-start; font-size: 10.5px; font-weight: 700;
@@ -389,6 +393,25 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .metric-chip--cta { background: color-mix(in srgb, var(--primary) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 32%, transparent); }
 .metric-chip--cta .metric-chip__num { color: var(--primary-text); }
 .metric-chip--cta .metric-chip__label { color: var(--primary-text); font-weight: 600; }
+
+/* ===== 목록 툴바 ===== */
+.list-toolbar { margin-bottom: 14px; }
+.list-toolbar__search { position: relative; margin-bottom: 10px; }
+.list-toolbar__search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; }
+.list-toolbar__input {
+  width: 100%; box-sizing: border-box; padding: 11px 14px 11px 38px;
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface); color: var(--text); font-size: 14px; font-family: var(--font-base);
+}
+.list-toolbar__input::placeholder { color: var(--text-secondary); }
+.list-toolbar__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; }
+.list-toolbar__count { font-size: 12.5px; color: var(--text-secondary); font-weight: 600; }
+.list-toolbar__sorts { display: flex; gap: 6px; margin-left: auto; }
+.sort-btn {
+  font-size: 12.5px; font-weight: 600; padding: 5px 11px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer;
+}
+.sort-btn.active { color: var(--primary-text); border-color: var(--primary); background: var(--badge-bg); }
 
 /* ===== 이슈 카드 출처 메타 ===== */
 .issue-card__sources { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }

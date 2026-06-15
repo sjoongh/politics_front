@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from '@mui/material';
 import { makeTheme } from './theme/muiTheme';
@@ -24,10 +24,17 @@ import SkeletonCard from './components/SkeletonCard';
 import DailySummaryCard from './components/DailySummaryCard';
 import BriefingHero from './components/BriefingHero';
 import ScrollToTop from './components/ScrollToTop';
+import ListToolbar from './components/ListToolbar';
 import { useDailySummary } from './components/useSummary';
 import { useDigest } from './components/useDigest';
 
 const NEWS_TOPICS = ['전체', '정치', '경제', '사회', '대통령실', '국회'];
+const MEMBER_SORTS = [{ id: 'name', label: '이름순' }, { id: 'criminal', label: '전과순' }, { id: 'term', label: '선수순' }];
+
+function memberTermCount(term) {
+  const m = String(term || '').match(/제?\d+대/g);
+  return m ? m.length : 0;
+}
 
 function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
@@ -50,6 +57,42 @@ function App() {
   const [selectedIssueId, setSelectedIssueId] = useState(null);
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const [newsTopic, setNewsTopic] = useState('전체');
+  const [memberQuery, setMemberQuery] = useState('');
+  const [memberParty, setMemberParty] = useState('전체');
+  const [memberSort, setMemberSort] = useState('name');
+  const [issueQuery, setIssueQuery] = useState('');
+  const [issueStatus, setIssueStatus] = useState('전체');
+
+  const memberParties = useMemo(
+    () => ['전체', ...Array.from(new Set(members.map((m) => m.party).filter(Boolean)))],
+    [members]
+  );
+  const visibleMembers = useMemo(() => {
+    const q = memberQuery.trim();
+    let list = members.filter((m) => {
+      const partyOk = memberParty === '전체' || m.party === memberParty;
+      const qOk = !q || `${m.name || ''} ${m.district || ''}`.includes(q);
+      return partyOk && qOk;
+    });
+    const sorted = [...list];
+    if (memberSort === 'name') sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
+    else if (memberSort === 'criminal') sorted.sort((a, b) => (b.criminal_count || 0) - (a.criminal_count || 0));
+    else if (memberSort === 'term') sorted.sort((a, b) => memberTermCount(b.term) - memberTermCount(a.term));
+    return sorted;
+  }, [members, memberQuery, memberParty, memberSort]);
+
+  const issueStatuses = useMemo(
+    () => ['전체', ...Array.from(new Set(issues.map((i) => i.status).filter(Boolean)))],
+    [issues]
+  );
+  const visibleIssues = useMemo(() => {
+    const q = issueQuery.trim();
+    return issues.filter((i) => {
+      const statusOk = issueStatus === '전체' || i.status === issueStatus;
+      const qOk = !q || `${i.title || ''} ${i.summary || ''}`.includes(q);
+      return statusOk && qOk;
+    });
+  }, [issues, issueQuery, issueStatus]);
 
   const tabs = [
     { id: 'all', label: '전체', icon: '🔍' },
@@ -213,11 +256,29 @@ const handleLoginClose = () => setLoginOpen(false);
             {issuesLoading ? (
               <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
             ) : issues.length > 0 ? (
-              <div className="feed-grid">
-                {issues.map((iss) => (
-                  <IssueCard key={iss.id} issue={iss} onClick={setSelectedIssueId} />
-                ))}
-              </div>
+              <>
+                <ListToolbar
+                  query={issueQuery}
+                  onQuery={setIssueQuery}
+                  placeholder="이슈 제목·내용 검색"
+                  filters={issueStatuses}
+                  activeFilter={issueStatus}
+                  onFilter={setIssueStatus}
+                  resultCount={visibleIssues.length}
+                />
+                {visibleIssues.length > 0 ? (
+                  <div className="feed-grid">
+                    {visibleIssues.map((iss) => (
+                      <IssueCard key={iss.id} issue={iss} onClick={setSelectedIssueId} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-rich">
+                    <div className="empty-rich__icon">🔎</div>
+                    <p className="empty-rich__msg">조건에 맞는 이슈가 없어요.<br />검색어나 필터를 바꿔보세요.</p>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="empty-rich">
                 <div className="empty-rich__icon">🔥</div>
@@ -255,11 +316,32 @@ const handleLoginClose = () => setLoginOpen(false);
             {membersLoading ? (
               <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
             ) : members.length > 0 ? (
-              <div className="feed-grid">
-                {members.map((m) => (
-                  <MemberCard key={m.id} member={m} onClick={setSelectedMemberId} />
-                ))}
-              </div>
+              <>
+                <ListToolbar
+                  query={memberQuery}
+                  onQuery={setMemberQuery}
+                  placeholder="의원 이름·지역구 검색"
+                  filters={memberParties}
+                  activeFilter={memberParty}
+                  onFilter={setMemberParty}
+                  sorts={MEMBER_SORTS}
+                  activeSort={memberSort}
+                  onSort={setMemberSort}
+                  resultCount={visibleMembers.length}
+                />
+                {visibleMembers.length > 0 ? (
+                  <div className="feed-grid">
+                    {visibleMembers.map((m) => (
+                      <MemberCard key={m.id} member={m} onClick={setSelectedMemberId} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-rich">
+                    <div className="empty-rich__icon">🔎</div>
+                    <p className="empty-rich__msg">조건에 맞는 의원이 없어요.<br />검색어나 정당 필터를 바꿔보세요.</p>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="empty-rich">
                 <div className="empty-rich__icon">⚖️</div>
