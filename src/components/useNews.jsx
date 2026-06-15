@@ -1,6 +1,32 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { getAllNews, searchNews, aiSearchNews, getNewsDetail, exportNewsData, getPresidentInfo, getRecentPolicies, getPoliticalStatements } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
+import { getAllNews, searchNews, aiSearchNews, getForYou, getNewsDetail, exportNewsData, getPresidentInfo, getRecentPolicies, getPoliticalStatements } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
+
+// 개인 맞춤 'For You' 피드 훅
+export const useForYou = (enabled) => {
+  const [result, setResult] = useState(null); // {mode, profile, items, count}
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const refresh = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getForYou(30);
+      setResult(data);
+    } catch (err) {
+      setError(err.message || '맞춤 피드 조회 실패');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (enabled) refresh();
+  }, [enabled, refresh]);
+
+  return { result, loading, error, refresh };
+};
 
 // AI 자연어 검색 훅
 export const useAiSearch = () => {

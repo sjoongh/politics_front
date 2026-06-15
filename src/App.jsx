@@ -10,8 +10,9 @@ import Navigation from './components/layout/Navigation';
 import SearchFilters from './components/SearchFilters';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
-import { useNews, useSearch, useAiSearch, usePresident, usePolicies, useStatements } from './components/useNews';
+import { useNews, useSearch, useAiSearch, useForYou, usePresident, usePolicies, useStatements } from './components/useNews';
 import AiSearchResults from './components/AiSearchResults';
+import ForYouFeed from './components/ForYouFeed';
 import IssueCard from './components/IssueCard';
 import IssueDetail from './components/IssueDetail';
 import { useIssues } from './components/useIssues';
@@ -28,7 +29,6 @@ import ScrollToTop from './components/ScrollToTop';
 import ListToolbar from './components/ListToolbar';
 import NewsReaderModal from './components/NewsReaderModal';
 import { useDailySummary } from './components/useSummary';
-import { useDigest } from './components/useDigest';
 
 const NEWS_TOPICS = ['전체', '정치', '경제', '사회', '대통령실', '국회'];
 const MEMBER_SORTS = [{ id: 'name', label: '이름순' }, { id: 'criminal', label: '전과순' }, { id: 'term', label: '선수순' }];
@@ -50,8 +50,8 @@ function App() {
   const { members, loading: membersLoading } = useMembers();
   const dailySummary = useDailySummary();
   const { user, logout } = useAppContext();
-  const { articles: digestArticles, loading: digestLoading } = useDigest(user?.interests);
   const [activeTab, setActiveTab] = useState('news');
+  const forYou = useForYou(!!user && activeTab === 'digest');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
   const [readerArticle, setReaderArticle] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -281,23 +281,12 @@ const handleLoginClose = () => setLoginOpen(false);
 
       case 'digest':
         return (
-          <div>
-            <div className="section-title">✨ 맞춤 다이제스트</div>
-            <DailySummaryCard summary={dailySummary} />
-            {!user?.interests || user.interests.length === 0 ? (
-              <EmptyState message="마이페이지에서 관심 키워드를 등록하면 맞춤 뉴스를 보여드려요." icon="✨" />
-            ) : digestLoading ? (
-              <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
-            ) : digestArticles.length > 0 ? (
-              <div className="feed-grid">
-                {digestArticles.map((news, idx) => (
-                  <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState message="관심 키워드에 맞는 최신 기사가 아직 없어요." icon="✨" />
-            )}
-          </div>
+          <ForYouFeed
+            result={forYou.result}
+            loading={forYou.loading}
+            onDetailClick={handleDetailClick}
+            onGoSettings={() => setActiveTab('mypage')}
+          />
         );
 
       case 'members':

@@ -39,6 +39,16 @@ export async function aiSearchNews(query, { includeBriefing = false, limit = 20 
   }
 }
 
+// 개인 맞춤 'For You' 피드 (로그인 필요 — 인터셉터가 토큰 첨부)
+export async function getForYou(limit = 30) {
+  try {
+    const res = await api.get('/api/news/foryou', { params: { limit } });
+    return res.data.data; // {mode, profile, items, count}
+  } catch (err) {
+    throw new Error(err.response?.data?.detail || '맞춤 피드 조회 실패');
+  }
+}
+
 // 뉴스 상세 조회
 export async function getNewsDetail(articleId) {
   try {
