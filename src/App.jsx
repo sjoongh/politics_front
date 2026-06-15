@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from '@mui/material';
 import { makeTheme } from './theme/muiTheme';
@@ -10,7 +10,9 @@ import Navigation from './components/layout/Navigation';
 import SearchFilters from './components/SearchFilters';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
-import { useNews, useSearch, usePresident, usePolicies, useStatements } from './components/useNews';
+import { useNews, useSearch, useAiSearch, useForYou, usePresident, usePolicies, useStatements } from './components/useNews';
+import AiSearchResults from './components/AiSearchResults';
+import ForYouFeed from './components/ForYouFeed';
 import IssueCard from './components/IssueCard';
 import IssueDetail from './components/IssueDetail';
 import { useIssues } from './components/useIssues';
@@ -22,13 +24,25 @@ import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
 import SkeletonCard from './components/SkeletonCard';
 import DailySummaryCard from './components/DailySummaryCard';
+import BriefingHero from './components/BriefingHero';
+import ScrollToTop from './components/ScrollToTop';
+import ListToolbar from './components/ListToolbar';
+import NewsReaderModal from './components/NewsReaderModal';
 import { useDailySummary } from './components/useSummary';
-import { useDigest } from './components/useDigest';
+
+const NEWS_TOPICS = ['전체', '정치', '경제', '사회', '대통령실', '국회'];
+const MEMBER_SORTS = [{ id: 'name', label: '이름순' }, { id: 'criminal', label: '전과순' }, { id: 'term', label: '선수순' }];
+
+function memberTermCount(term) {
+  const m = String(term || '').match(/제?\d+대/g);
+  return m ? m.length : 0;
+}
 
 function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
   const { data, loading, error, refreshData } = useNews();
   const { searchResults, searchLoading, search, clearSearch } = useSearch();
+  const aiSearch = useAiSearch();
   const { president } = usePresident();
   const { policies } = usePolicies();
   const { statements } = useStatements();
@@ -36,15 +50,52 @@ function App() {
   const { members, loading: membersLoading } = useMembers();
   const dailySummary = useDailySummary();
   const { user, logout } = useAppContext();
-  const { articles: digestArticles, loading: digestLoading } = useDigest(user?.interests);
   const [activeTab, setActiveTab] = useState('news');
+  const forYou = useForYou(!!user && activeTab === 'digest');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
-  const [webViewUrl, setWebViewUrl] = React.useState(null);
+  const [readerArticle, setReaderArticle] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const searchInputRef = useRef(null);
   const [searchValue, setSearchValue] = useState('');
   const [selectedIssueId, setSelectedIssueId] = useState(null);
   const [selectedMemberId, setSelectedMemberId] = useState(null);
+  const [newsTopic, setNewsTopic] = useState('전체');
+  const [memberQuery, setMemberQuery] = useState('');
+  const [memberParty, setMemberParty] = useState('전체');
+  const [memberSort, setMemberSort] = useState('name');
+  const [issueQuery, setIssueQuery] = useState('');
+  const [issueStatus, setIssueStatus] = useState('전체');
+
+  const memberParties = useMemo(
+    () => ['전체', ...Array.from(new Set(members.map((m) => m.party).filter(Boolean)))],
+    [members]
+  );
+  const visibleMembers = useMemo(() => {
+    const q = memberQuery.trim();
+    let list = members.filter((m) => {
+      const partyOk = memberParty === '전체' || m.party === memberParty;
+      const qOk = !q || `${m.name || ''} ${m.district || ''}`.includes(q);
+      return partyOk && qOk;
+    });
+    const sorted = [...list];
+    if (memberSort === 'name') sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
+    else if (memberSort === 'criminal') sorted.sort((a, b) => (b.criminal_count || 0) - (a.criminal_count || 0));
+    else if (memberSort === 'term') sorted.sort((a, b) => memberTermCount(b.term) - memberTermCount(a.term));
+    return sorted;
+  }, [members, memberQuery, memberParty, memberSort]);
+
+  const issueStatuses = useMemo(
+    () => ['전체', ...Array.from(new Set(issues.map((i) => i.status).filter(Boolean)))],
+    [issues]
+  );
+  const visibleIssues = useMemo(() => {
+    const q = issueQuery.trim();
+    return issues.filter((i) => {
+      const statusOk = issueStatus === '전체' || i.status === issueStatus;
+      const qOk = !q || `${i.title || ''} ${i.summary || ''}`.includes(q);
+      return statusOk && qOk;
+    });
+  }, [issues, issueQuery, issueStatus]);
 
   const tabs = [
     { id: 'all', label: '전체', icon: '🔍' },
@@ -60,17 +111,17 @@ function App() {
 
   const handleSearch = useCallback(async (searchTerm, filters) => {
     if (searchTerm.trim()) {
-      await search(searchTerm);
-      setActiveTab('all'); // 검색 후 대시보드로 이동
+      setActiveTab('all'); // 검색 후 AI 검색 결과로 이동
+      await aiSearch.run(searchTerm);
     } else {
-      clearSearch();
+      aiSearch.clear();
       setActiveTab('news'); // 검색어가 없으면 뉴스 탭으로 이동
     }
-  }, [search, clearSearch]);
+  }, [aiSearch]);
 
   const handleDetailClick = useCallback((type, content) => {
-    if (type === 'news' && content.source_url) {
-      setWebViewUrl(content.source_url); // ✅ 웹뷰로 연결
+    if (type === 'news') {
+      setReaderArticle(content); // ✅ 인앱 요약 브리핑(iframe 웹뷰 대체)
     } else {
       setModal({
         isOpen: true,
@@ -98,6 +149,7 @@ const handleLoginClose = () => setLoginOpen(false);
     // 검색 후 전체 탭이 아닌 다른 탭으로 이동하면 검색 결과와 검색창 초기화
     if (activeTab === 'all' && tabId !== 'all') {
       clearSearch();
+      aiSearch.clear();
       setSearchValue('');
     }
     setActiveTab(tabId);
@@ -108,43 +160,30 @@ const handleLoginClose = () => setLoginOpen(false);
   }, []);
 
   const renderSearchContent = () => {
-  const results = searchResults || {};
-  // 모든 카테고리를 하나의 배열로 합침
-  const mergedList = [
-    ...(results.articles || []),
-    ...(results.policies || []),
-    ...(results.statements || [])
-  ];
-
-  // 아무것도 없으면 안내 메시지
-  if (!mergedList.length) {
-    return <EmptyState message="검색 결과가 없습니다." icon="🔍" />;
-  }
-
-  return (
-    <>
-      <div className="section-title">🔍 전체 검색결과</div>
-      <div>
-        {mergedList.map((item, idx) => {
-          // 타입 자동 판별
-          let type = 'news';
-          if (item.type === 'policy' || item.policy_title || item.committee) type = 'policy';
-          else if (item.type === 'statement' || item.speaker || item.spaker) type = 'statement';
-          // 기본적으로 뉴스 타입
-
-          return (
-            <NewsCard
-              key={item.id || idx}
-              item={item}
-              type={type}
-              onDetailClick={handleDetailClick}
-            />
-          );
-        })}
-      </div>
-    </>
-  );
-};
+    if (aiSearch.loading) {
+      return (
+        <div>
+          <div className="section-head"><span className="section-head__title">✨ AI 검색 중…</span></div>
+          <div className="news-list">{[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}</div>
+        </div>
+      );
+    }
+    if (aiSearch.error) {
+      return <EmptyState icon="⚠️" message={`검색에 실패했어요. (${aiSearch.error})`} />;
+    }
+    if (!aiSearch.result) {
+      return <EmptyState icon="🔍" message="검색어를 입력해 보세요. 예: '이재명 부동산 최근 입장'" />;
+    }
+    return (
+      <AiSearchResults
+        result={aiSearch.result}
+        query={searchValue}
+        briefingLoading={aiSearch.briefingLoading}
+        onRunBriefing={() => aiSearch.runBriefing(searchValue)}
+        onDetailClick={handleDetailClick}
+      />
+    );
+  };
 
   const renderTabContent = () => {
      if (activeTab.startsWith('all')) return renderSearchContent();
@@ -204,94 +243,175 @@ const handleLoginClose = () => setLoginOpen(false);
       case 'issues':
         return (
           <div>
-            <div className="section-title">🔥 이슈</div>
+            <div className="section-head"><span className="section-head__title">🔥 이슈</span></div>
             {issuesLoading ? (
               <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
             ) : issues.length > 0 ? (
-              <div className="feed-grid">
-                {issues.map((iss) => (
-                  <IssueCard key={iss.id} issue={iss} onClick={setSelectedIssueId} />
-                ))}
-              </div>
+              <>
+                <ListToolbar
+                  query={issueQuery}
+                  onQuery={setIssueQuery}
+                  placeholder="이슈 제목·내용 검색"
+                  filters={issueStatuses}
+                  activeFilter={issueStatus}
+                  onFilter={setIssueStatus}
+                  resultCount={visibleIssues.length}
+                />
+                {visibleIssues.length > 0 ? (
+                  <div className="feed-grid">
+                    {visibleIssues.map((iss) => (
+                      <IssueCard key={iss.id} issue={iss} onClick={setSelectedIssueId} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-rich">
+                    <div className="empty-rich__icon">🔎</div>
+                    <p className="empty-rich__msg">조건에 맞는 이슈가 없어요.<br />검색어나 필터를 바꿔보세요.</p>
+                  </div>
+                )}
+              </>
             ) : (
-              <EmptyState message="등록된 이슈가 없습니다." icon="🔥" />
+              <div className="empty-rich">
+                <div className="empty-rich__icon">🔥</div>
+                <p className="empty-rich__msg">아직 정리된 이슈가 없어요.<br />매일 수집되는 뉴스로 곧 채워집니다.</p>
+              </div>
             )}
           </div>
         );
 
       case 'digest':
         return (
-          <div>
-            <div className="section-title">✨ 맞춤 다이제스트</div>
-            <DailySummaryCard summary={dailySummary} />
-            {!user?.interests || user.interests.length === 0 ? (
-              <EmptyState message="마이페이지에서 관심 키워드를 등록하면 맞춤 뉴스를 보여드려요." icon="✨" />
-            ) : digestLoading ? (
-              <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
-            ) : digestArticles.length > 0 ? (
-              <div className="feed-grid">
-                {digestArticles.map((news, idx) => (
-                  <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState message="관심 키워드에 맞는 최신 기사가 아직 없어요." icon="✨" />
-            )}
-          </div>
+          <ForYouFeed
+            result={forYou.result}
+            loading={forYou.loading}
+            onDetailClick={handleDetailClick}
+            onGoSettings={() => setActiveTab('mypage')}
+          />
         );
 
       case 'members':
         return (
           <div>
-            <div className="section-title">⚖️ 의원 책임성</div>
+            <div className="section-head"><span className="section-head__title">⚖️ 의원 책임성</span></div>
             {membersLoading ? (
               <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
             ) : members.length > 0 ? (
-              <div className="feed-grid">
-                {members.map((m) => (
-                  <MemberCard key={m.id} member={m} onClick={setSelectedMemberId} />
-                ))}
-              </div>
+              <>
+                <ListToolbar
+                  query={memberQuery}
+                  onQuery={setMemberQuery}
+                  placeholder="의원 이름·지역구 검색"
+                  filters={memberParties}
+                  activeFilter={memberParty}
+                  onFilter={setMemberParty}
+                  sorts={MEMBER_SORTS}
+                  activeSort={memberSort}
+                  onSort={setMemberSort}
+                  resultCount={visibleMembers.length}
+                />
+                {visibleMembers.length > 0 ? (
+                  <div className="feed-grid">
+                    {visibleMembers.map((m) => (
+                      <MemberCard key={m.id} member={m} onClick={setSelectedMemberId} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-rich">
+                    <div className="empty-rich__icon">🔎</div>
+                    <p className="empty-rich__msg">조건에 맞는 의원이 없어요.<br />검색어나 정당 필터를 바꿔보세요.</p>
+                  </div>
+                )}
+              </>
             ) : (
-              <EmptyState message="등록된 의원이 없습니다." icon="⚖️" />
+              <div className="empty-rich">
+                <div className="empty-rich__icon">⚖️</div>
+                <p className="empty-rich__msg">등록된 의원 정보가 없어요.<br />국회 데이터 연동 후 표시됩니다.</p>
+              </div>
             )}
           </div>
         );
 
-      case 'news':
-        const newsList = searchResults?.results?.news || data?.articles || [];
+      case 'news': {
+        const allNews = searchResults?.results?.news || data?.articles || [];
+        const filtered = newsTopic === '전체'
+          ? allNews
+          : allNews.filter((n) => (n.category || '').includes(newsTopic));
+        const heroFallback = (issues.length > 0 ? issues : allNews).map((x) => x.title);
+        const featuredItem = filtered[0];
+        const gridItems = filtered.slice(1, 7);   // 표준 카드
+        const listItems = filtered.slice(7);       // 압축 목록형(티어링 3단계)
         return (
           <div>
-            <DailySummaryCard summary={dailySummary} />
-            <div className="section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span>📰 뉴스</span>
-              <button
-                className="btn btn--outline btn--sm"
-                style={{ marginLeft: "auto" }}
-                onClick={refreshData}
-                disabled={loading}
-              >
-                🔄 뉴스 업데이트
+            <BriefingHero summary={dailySummary} fallbackItems={heroFallback} />
+
+            {/* 요약이 있을 때만 별도 이슈 칩을 노출(요약 없으면 히어로가 이미 이슈를 나열하므로 중복 방지) */}
+            {dailySummary?.overview && issues.length > 0 && (
+              <>
+                <div className="section-head">
+                  <span className="section-head__title">🔥 주목 이슈</span>
+                  <button className="bk-card__more" onClick={() => setActiveTab('issues')}>전체보기 →</button>
+                </div>
+                <div className="topic-chips">
+                  {issues.slice(0, 8).map((iss) => (
+                    <button key={iss.id} className="topic-chip" onClick={() => setSelectedIssueId(iss.id)}>
+                      {iss.title}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div className="section-head">
+              <span className="section-head__title">📰 최신 뉴스</span>
+              <button className="btn btn--outline btn--sm" onClick={refreshData} disabled={loading}>
+                🔄 업데이트
               </button>
             </div>
-            <div className="feed-grid">
-              {newsList.length > 0 ? (
-                newsList.map((news, idx) => (
-                  <NewsCard
-                    key={news.id || idx}
-                    item={news}
-                    type="news"
-                    onDetailClick={handleDetailClick}
-                  />
-                ))
-              ) : (
-              <EmptyState message="뉴스가 없습니다." icon="📰" />
-              )}
+            <div className="topic-chips" role="tablist" aria-label="뉴스 주제">
+              {NEWS_TOPICS.map((t) => (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={newsTopic === t}
+                  className={`topic-chip ${newsTopic === t ? 'active' : ''}`}
+                  onClick={() => setNewsTopic(t)}
+                >
+                  {t}
+                </button>
+              ))}
             </div>
+            {filtered.length > 0 ? (
+              <>
+                <div className="feed-grid">
+                  {featuredItem && (
+                    <NewsCard key={featuredItem.id || 'featured'} item={featuredItem} type="news" featured onDetailClick={handleDetailClick} />
+                  )}
+                  {gridItems.map((news, idx) => (
+                    <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
+                  ))}
+                </div>
+                {listItems.length > 0 && (
+                  <>
+                    <div className="section-head"><span className="section-head__title">🗞 더 많은 뉴스</span></div>
+                    <div className="news-list">
+                      {listItems.map((news, idx) => (
+                        <NewsCard key={news.id || `row-${idx}`} item={news} type="news" compact onDetailClick={handleDetailClick} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="empty-rich">
+                <div className="empty-rich__icon">📰</div>
+                <p className="empty-rich__msg">
+                  '{newsTopic}' 주제의 뉴스가 아직 없어요.<br />다른 주제를 선택해 보세요.
+                </p>
+              </div>
+            )}
           </div>
         );
-  // searchResults?.results?.news || data.news_updates 위에 이렇게 들어가야함
-  // 음.. 아마도 버튼형식으로 바꿔서 클릭하면 뉴스 업데이트 해주는 방식으로 해야할듯?
+      }
       case 'mypage':
         // fetchBookmarks={/* 북마크 불러오는 함수 또는 null */}
         return (
@@ -372,14 +492,14 @@ const handleLoginClose = () => setLoginOpen(false);
         {renderTabContent()}
       </AppShell>
 
-      {webViewUrl && (
-        <div className="webviewModal">
-          <div className="webviewModalContent">
-            <button className="webviewClose" onClick={() => setWebViewUrl(null)}>×</button>
-            <iframe src={webViewUrl} title="뉴스 원문" frameBorder="0"
-              style={{ width: '100%', height: '80vh', border: 'none' }} allowFullScreen />
-          </div>
-        </div>
+      <ScrollToTop />
+
+      {readerArticle && (
+        <NewsReaderModal
+          article={readerArticle}
+          pool={data?.articles || []}
+          onClose={() => setReaderArticle(null)}
+        />
       )}
 
       <Modal

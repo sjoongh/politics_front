@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatDate } from '../utils/dateUtils';
 
-const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
+const NewsCard = ({ item, type, onDetailClick = () => {}, featured = false, compact = false }) => {
 
   function isIconLikeImage(url) {
     if (!url || typeof url !== 'string') return true;
@@ -61,22 +61,55 @@ const NewsCard = ({ item, type, onDetailClick = () => {} }) => {
     );
   };
 
-  const renderNewsUpdate = (news) => (
-    <article className="bk-card">
-      {news.image_url && !isIconLikeImage(news.image_url) && (
-        <div className="bk-card__thumb" style={{ backgroundImage: `url(${news.image_url})` }} />
-      )}
-      <div className="bk-card__body">
-        <span className="bk-badge bk-badge--alert">{news.category || '뉴스'}</span>
-        <h3 className="bk-card__title">{news.title}</h3>
-        <p className="bk-card__summary">{news.ai_summary}</p>
-        <div className="bk-card__meta">
-          <span className="bk-card__src">{news.source}</span>
-          <button className="bk-card__more" onClick={() => onDetailClick('news', news)}>자세히 →</button>
+  const renderNewsUpdate = (news) => {
+    const hasImg = news.image_url && !isIconLikeImage(news.image_url);
+    if (compact) {
+      return (
+        <article
+          className="news-row bk-card--clickable"
+          role="button"
+          tabIndex={0}
+          onClick={() => onDetailClick('news', news)}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onDetailClick('news', news)}
+        >
+          <div
+            className="news-row__thumb"
+            style={hasImg ? { backgroundImage: `url(${news.image_url})` } : undefined}
+            aria-hidden="true"
+          />
+          <div className="news-row__body">
+            <h3 className="news-row__title">{news.title}</h3>
+            <div className="news-row__meta">
+              <span className="bk-card__src">{news.source}</span>
+              {news.category && <span> · {news.category}</span>}
+            </div>
+          </div>
+        </article>
+      );
+    }
+    return (
+      <article
+        className={`bk-card bk-card--clickable ${featured ? 'bk-card--featured' : ''}`}
+        role="button"
+        tabIndex={0}
+        onClick={() => onDetailClick('news', news)}
+        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onDetailClick('news', news)}
+      >
+        {hasImg && (
+          <div className="bk-card__thumb" style={{ backgroundImage: `url(${news.image_url})` }} />
+        )}
+        <div className="bk-card__body">
+          <span className="bk-badge bk-badge--alert">{news.category || '뉴스'}</span>
+          <h3 className="bk-card__title">{news.title}</h3>
+          <p className="bk-card__summary">{news.ai_summary}</p>
+          <div className="bk-card__meta">
+            <span className="bk-card__src">{news.source}</span>
+            <span className="bk-card__more">자세히 →</span>
+          </div>
         </div>
-      </div>
-    </article>
-  );
+      </article>
+    );
+  };
 
   // 타입에 따라 적절한 렌더링 함수 선택
   switch(type) {

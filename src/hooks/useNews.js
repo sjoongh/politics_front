@@ -27,6 +27,28 @@ export async function searchNews(query, category = '') {
   }
 }
 
+// AI 자연어 검색 (구조화 파싱 + 랭킹, 옵션 브리핑). 키 없으면 백엔드가 폴백.
+export async function aiSearchNews(query, { includeBriefing = false, limit = 20 } = {}) {
+  try {
+    const res = await api.get('/api/news/search/ai', {
+      params: { q: query, include_briefing: includeBriefing, limit },
+    });
+    return res.data.data; // {query, mode, ai, parsed, items, count, briefing}
+  } catch (err) {
+    throw new Error(err.response?.data?.detail || 'AI 검색 실패');
+  }
+}
+
+// 개인 맞춤 'For You' 피드 (로그인 필요 — 인터셉터가 토큰 첨부)
+export async function getForYou(limit = 30) {
+  try {
+    const res = await api.get('/api/news/foryou', { params: { limit } });
+    return res.data.data; // {mode, profile, items, count}
+  } catch (err) {
+    throw new Error(err.response?.data?.detail || '맞춤 피드 조회 실패');
+  }
+}
+
 // 뉴스 상세 조회
 export async function getNewsDetail(articleId) {
   try {
