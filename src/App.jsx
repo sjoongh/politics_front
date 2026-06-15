@@ -10,7 +10,8 @@ import Navigation from './components/layout/Navigation';
 import SearchFilters from './components/SearchFilters';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
-import { useNews, useSearch, usePresident, usePolicies, useStatements } from './components/useNews';
+import { useNews, useSearch, useAiSearch, usePresident, usePolicies, useStatements } from './components/useNews';
+import AiSearchResults from './components/AiSearchResults';
 import IssueCard from './components/IssueCard';
 import IssueDetail from './components/IssueDetail';
 import { useIssues } from './components/useIssues';
@@ -41,6 +42,7 @@ function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
   const { data, loading, error, refreshData } = useNews();
   const { searchResults, searchLoading, search, clearSearch } = useSearch();
+  const aiSearch = useAiSearch();
   const { president } = usePresident();
   const { policies } = usePolicies();
   const { statements } = useStatements();
@@ -109,13 +111,13 @@ function App() {
 
   const handleSearch = useCallback(async (searchTerm, filters) => {
     if (searchTerm.trim()) {
-      await search(searchTerm);
-      setActiveTab('all'); // 검색 후 대시보드로 이동
+      setActiveTab('all'); // 검색 후 AI 검색 결과로 이동
+      await aiSearch.run(searchTerm);
     } else {
-      clearSearch();
+      aiSearch.clear();
       setActiveTab('news'); // 검색어가 없으면 뉴스 탭으로 이동
     }
-  }, [search, clearSearch]);
+  }, [aiSearch]);
 
   const handleDetailClick = useCallback((type, content) => {
     if (type === 'news') {
@@ -147,6 +149,7 @@ const handleLoginClose = () => setLoginOpen(false);
     // 검색 후 전체 탭이 아닌 다른 탭으로 이동하면 검색 결과와 검색창 초기화
     if (activeTab === 'all' && tabId !== 'all') {
       clearSearch();
+      aiSearch.clear();
       setSearchValue('');
     }
     setActiveTab(tabId);
@@ -157,43 +160,30 @@ const handleLoginClose = () => setLoginOpen(false);
   }, []);
 
   const renderSearchContent = () => {
-  const results = searchResults || {};
-  // 모든 카테고리를 하나의 배열로 합침
-  const mergedList = [
-    ...(results.articles || []),
-    ...(results.policies || []),
-    ...(results.statements || [])
-  ];
-
-  // 아무것도 없으면 안내 메시지
-  if (!mergedList.length) {
-    return <EmptyState message="검색 결과가 없습니다." icon="🔍" />;
-  }
-
-  return (
-    <>
-      <div className="section-title">🔍 전체 검색결과</div>
-      <div>
-        {mergedList.map((item, idx) => {
-          // 타입 자동 판별
-          let type = 'news';
-          if (item.type === 'policy' || item.policy_title || item.committee) type = 'policy';
-          else if (item.type === 'statement' || item.speaker || item.spaker) type = 'statement';
-          // 기본적으로 뉴스 타입
-
-          return (
-            <NewsCard
-              key={item.id || idx}
-              item={item}
-              type={type}
-              onDetailClick={handleDetailClick}
-            />
-          );
-        })}
-      </div>
-    </>
-  );
-};
+    if (aiSearch.loading) {
+      return (
+        <div>
+          <div className="section-head"><span className="section-head__title">✨ AI 검색 중…</span></div>
+          <div className="news-list">{[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}</div>
+        </div>
+      );
+    }
+    if (aiSearch.error) {
+      return <EmptyState icon="⚠️" message={`검색에 실패했어요. (${aiSearch.error})`} />;
+    }
+    if (!aiSearch.result) {
+      return <EmptyState icon="🔍" message="검색어를 입력해 보세요. 예: '이재명 부동산 최근 입장'" />;
+    }
+    return (
+      <AiSearchResults
+        result={aiSearch.result}
+        query={searchValue}
+        briefingLoading={aiSearch.briefingLoading}
+        onRunBriefing={() => aiSearch.runBriefing(searchValue)}
+        onDetailClick={handleDetailClick}
+      />
+    );
+  };
 
   const renderTabContent = () => {
      if (activeTab.startsWith('all')) return renderSearchContent();

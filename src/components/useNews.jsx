@@ -1,6 +1,47 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { getAllNews, searchNews, getNewsDetail, exportNewsData, getPresidentInfo, getRecentPolicies, getPoliticalStatements } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
+import { getAllNews, searchNews, aiSearchNews, getNewsDetail, exportNewsData, getPresidentInfo, getRecentPolicies, getPoliticalStatements } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
+
+// AI 자연어 검색 훅
+export const useAiSearch = () => {
+  const [result, setResult] = useState(null); // {query, mode, ai, parsed, items, count, briefing}
+  const [loading, setLoading] = useState(false);
+  const [briefingLoading, setBriefingLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const run = useCallback(async (query) => {
+    if (!query.trim()) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await aiSearchNews(query, { includeBriefing: false });
+      setResult(data);
+    } catch (err) {
+      setError(err.message || 'AI 검색 실패');
+      setResult(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // 브리핑 별도 생성(비용/지연 제어 — 사용자가 명시적으로 요청)
+  const runBriefing = useCallback(async (query) => {
+    if (!query?.trim()) return;
+    try {
+      setBriefingLoading(true);
+      const data = await aiSearchNews(query, { includeBriefing: true });
+      setResult(data);
+    } catch (err) {
+      setError(err.message || 'AI 브리핑 실패');
+    } finally {
+      setBriefingLoading(false);
+    }
+  }, []);
+
+  const clear = useCallback(() => { setResult(null); setError(null); }, []);
+
+  return { result, loading, briefingLoading, error, run, runBriefing, clear };
+};
 
 // 뉴스 전체 데이터 대시보드용
 export const useNews = () => {
