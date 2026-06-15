@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-// 로컬/프로덕션 baseURL. 프로덕션은 Render 백엔드.
+// 로컬/프로덕션 baseURL. 프로덕션은 Vercel 백엔드.
 const API_BASE_URL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:8000'
-  : 'https://politics-backend-9vp2.onrender.com';
+  : 'https://politicsbackend.vercel.app';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
