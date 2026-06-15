@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-// 로컬/프로덕션 baseURL. (프로덕션 백엔드 URL은 배포 후 설정)
+// 로컬/프로덕션 baseURL. 프로덕션은 개인 Vercel 백엔드.
 const API_BASE_URL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:8000'
-  : 'http://localhost:8000';
+  : 'https://politicsbackend-ruby.vercel.app';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
