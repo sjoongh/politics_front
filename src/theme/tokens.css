@@ -40,7 +40,7 @@
   --card-border: #242a36;
   --badge-bg: #222a44;
   --badge-text: #9fb4ff;
-  --accent-red: #ff7da6;
+  --accent-red: #ffabc5;
   --accent-red-bg: #3a1f2c;
   --success: #39c08a;
   --warning: #e6a23c;
@@ -54,7 +54,7 @@
     --primary: #5b78ff; --primary-text: #7e97ff;
     --border: #232834; --card-border: #242a36;
     --badge-bg: #222a44; --badge-text: #9fb4ff;
-    --accent-red: #ff7da6; --accent-red-bg: #3a1f2c;
+    --accent-red: #ffabc5; --accent-red-bg: #3a1f2c;
     --success: #39c08a; --warning: #e6a23c;
     --shadow-card: 0 6px 18px rgba(0,0,0,.30);
   }
@@ -90,14 +90,16 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 
 .bottomnav {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-  display: flex; justify-content: space-around;
+  display: flex; justify-content: space-between;
   background: var(--surface); border-top: 1px solid var(--border);
   padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+  overflow-x: auto; scrollbar-width: none;
 }
+.bottomnav::-webkit-scrollbar { display: none; }
 .bottomnav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  flex: 1 0 auto; min-width: 54px; display: flex; flex-direction: column; align-items: center; gap: 3px;
   font-size: 10.5px; font-weight: 600; background: none; border: none;
-  color: var(--text-secondary); cursor: pointer;
+  color: var(--text-secondary); cursor: pointer; white-space: nowrap;
 }
 .bottomnav-item.active { color: var(--primary-text); }
 
@@ -133,7 +135,7 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 
 /* ===== 셸 / 콘텐츠 ===== */
 .app-shell { min-height: 100vh; background: var(--bg); }
-.app-main { max-width: 1080px; margin: 0 auto; padding: 16px; }
+.app-main { max-width: 1080px; margin: 0 auto; padding: 16px; min-height: calc(100vh - 230px); }
 .feed-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
 @media (min-width: 768px) {
   .feed-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
@@ -273,8 +275,8 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 /* ===== 오늘의 브리핑 히어로 ===== */
 .briefing-hero {
   position: relative; overflow: hidden;
-  border-radius: var(--radius-lg); margin-bottom: 18px;
-  padding: 22px 22px 24px;
+  border-radius: var(--radius-lg); margin-bottom: 16px;
+  padding: 16px 18px 18px;
   background:
     radial-gradient(120% 140% at 100% 0%, rgba(255,255,255,.18), transparent 55%),
     linear-gradient(135deg, #3354ff 0%, #5b78ff 55%, #7c5cff 100%);
@@ -337,7 +339,13 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .topic-chip.active { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
 
 /* ===== 피처드 대형 카드 ===== */
-.bk-card--featured { grid-column: 1 / -1; }
+.bk-card--featured { grid-column: 1 / -1; border-left: 4px solid var(--primary); position: relative; }
+.bk-card--featured::before {
+  content: '주요'; position: absolute; top: 12px; left: 12px; z-index: 1;
+  font-size: 11px; font-weight: 800; color: var(--on-primary);
+  background: var(--primary); padding: 3px 10px; border-radius: var(--radius-pill);
+  box-shadow: 0 2px 8px rgba(51,84,255,.35);
+}
 .bk-card--featured .bk-card__thumb { height: 200px; }
 .bk-card--featured .bk-card__title { font-size: 20px; line-height: 1.35; }
 .bk-card--featured .bk-card__summary { font-size: 14px; -webkit-line-clamp: 3; }
@@ -378,7 +386,7 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .metric-chip__label { display: block; font-size: 10.5px; color: var(--text-secondary); margin-top: 3px; }
 .metric-chip--alert { background: var(--accent-red-bg); }
 .metric-chip--alert .metric-chip__num { color: var(--accent-red); }
-.metric-chip--cta { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+.metric-chip--cta { background: color-mix(in srgb, var(--primary) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 32%, transparent); }
 .metric-chip--cta .metric-chip__num { color: var(--primary-text); }
 .metric-chip--cta .metric-chip__label { color: var(--primary-text); font-weight: 600; }
 
