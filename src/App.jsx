@@ -22,8 +22,12 @@ import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
 import SkeletonCard from './components/SkeletonCard';
 import DailySummaryCard from './components/DailySummaryCard';
+import BriefingHero from './components/BriefingHero';
+import ScrollToTop from './components/ScrollToTop';
 import { useDailySummary } from './components/useSummary';
 import { useDigest } from './components/useDigest';
+
+const NEWS_TOPICS = ['전체', '정치', '경제', '사회', '대통령실', '국회'];
 
 function App() {
   // 각 탭별로 key(id값) 필요하면 추후에 넣어서 자식한테 보내주기
@@ -45,6 +49,7 @@ function App() {
   const [searchValue, setSearchValue] = useState('');
   const [selectedIssueId, setSelectedIssueId] = useState(null);
   const [selectedMemberId, setSelectedMemberId] = useState(null);
+  const [newsTopic, setNewsTopic] = useState('전체');
 
   const tabs = [
     { id: 'all', label: '전체', icon: '🔍' },
@@ -204,7 +209,7 @@ const handleLoginClose = () => setLoginOpen(false);
       case 'issues':
         return (
           <div>
-            <div className="section-title">🔥 이슈</div>
+            <div className="section-head"><span className="section-head__title">🔥 이슈</span></div>
             {issuesLoading ? (
               <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
             ) : issues.length > 0 ? (
@@ -214,7 +219,10 @@ const handleLoginClose = () => setLoginOpen(false);
                 ))}
               </div>
             ) : (
-              <EmptyState message="등록된 이슈가 없습니다." icon="🔥" />
+              <div className="empty-rich">
+                <div className="empty-rich__icon">🔥</div>
+                <p className="empty-rich__msg">아직 정리된 이슈가 없어요.<br />매일 수집되는 뉴스로 곧 채워집니다.</p>
+              </div>
             )}
           </div>
         );
@@ -243,7 +251,7 @@ const handleLoginClose = () => setLoginOpen(false);
       case 'members':
         return (
           <div>
-            <div className="section-title">⚖️ 의원 책임성</div>
+            <div className="section-head"><span className="section-head__title">⚖️ 의원 책임성</span></div>
             {membersLoading ? (
               <div className="feed-grid">{[1, 2, 3].map((n) => <SkeletonCard key={n} />)}</div>
             ) : members.length > 0 ? (
@@ -253,45 +261,81 @@ const handleLoginClose = () => setLoginOpen(false);
                 ))}
               </div>
             ) : (
-              <EmptyState message="등록된 의원이 없습니다." icon="⚖️" />
+              <div className="empty-rich">
+                <div className="empty-rich__icon">⚖️</div>
+                <p className="empty-rich__msg">등록된 의원 정보가 없어요.<br />국회 데이터 연동 후 표시됩니다.</p>
+              </div>
             )}
           </div>
         );
 
-      case 'news':
-        const newsList = searchResults?.results?.news || data?.articles || [];
+      case 'news': {
+        const allNews = searchResults?.results?.news || data?.articles || [];
+        const filtered = newsTopic === '전체'
+          ? allNews
+          : allNews.filter((n) => (n.category || '').includes(newsTopic));
+        const heroFallback = (issues.length > 0 ? issues : allNews).map((x) => x.title);
+        const [first, ...rest] = filtered;
         return (
           <div>
-            <DailySummaryCard summary={dailySummary} />
-            <div className="section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span>📰 뉴스</span>
-              <button
-                className="btn btn--outline btn--sm"
-                style={{ marginLeft: "auto" }}
-                onClick={refreshData}
-                disabled={loading}
-              >
-                🔄 뉴스 업데이트
+            <BriefingHero summary={dailySummary} fallbackItems={heroFallback} />
+
+            {/* 요약이 있을 때만 별도 이슈 칩을 노출(요약 없으면 히어로가 이미 이슈를 나열하므로 중복 방지) */}
+            {dailySummary?.overview && issues.length > 0 && (
+              <>
+                <div className="section-head">
+                  <span className="section-head__title">🔥 주목 이슈</span>
+                  <button className="bk-card__more" onClick={() => setActiveTab('issues')}>전체보기 →</button>
+                </div>
+                <div className="topic-chips">
+                  {issues.slice(0, 8).map((iss) => (
+                    <button key={iss.id} className="topic-chip" onClick={() => setSelectedIssueId(iss.id)}>
+                      {iss.title}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div className="section-head">
+              <span className="section-head__title">📰 최신 뉴스</span>
+              <button className="btn btn--outline btn--sm" onClick={refreshData} disabled={loading}>
+                🔄 업데이트
               </button>
             </div>
-            <div className="feed-grid">
-              {newsList.length > 0 ? (
-                newsList.map((news, idx) => (
-                  <NewsCard
-                    key={news.id || idx}
-                    item={news}
-                    type="news"
-                    onDetailClick={handleDetailClick}
-                  />
-                ))
-              ) : (
-              <EmptyState message="뉴스가 없습니다." icon="📰" />
-              )}
+            <div className="topic-chips" role="tablist" aria-label="뉴스 주제">
+              {NEWS_TOPICS.map((t) => (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={newsTopic === t}
+                  className={`topic-chip ${newsTopic === t ? 'active' : ''}`}
+                  onClick={() => setNewsTopic(t)}
+                >
+                  {t}
+                </button>
+              ))}
             </div>
+            {filtered.length > 0 ? (
+              <div className="feed-grid">
+                {first && (
+                  <NewsCard key={first.id || 'featured'} item={first} type="news" featured onDetailClick={handleDetailClick} />
+                )}
+                {rest.map((news, idx) => (
+                  <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
+                ))}
+              </div>
+            ) : (
+              <div className="empty-rich">
+                <div className="empty-rich__icon">📰</div>
+                <p className="empty-rich__msg">
+                  '{newsTopic}' 주제의 뉴스가 아직 없어요.<br />다른 주제를 선택해 보세요.
+                </p>
+              </div>
+            )}
           </div>
         );
-  // searchResults?.results?.news || data.news_updates 위에 이렇게 들어가야함
-  // 음.. 아마도 버튼형식으로 바꿔서 클릭하면 뉴스 업데이트 해주는 방식으로 해야할듯?
+      }
       case 'mypage':
         // fetchBookmarks={/* 북마크 불러오는 함수 또는 null */}
         return (
@@ -371,6 +415,8 @@ const handleLoginClose = () => setLoginOpen(false);
       <AppShell nav={navEl} search={searchEl} authButton={renderAuthButton()}>
         {renderTabContent()}
       </AppShell>
+
+      <ScrollToTop />
 
       {webViewUrl && (
         <div className="webviewModal">

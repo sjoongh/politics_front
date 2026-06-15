@@ -63,6 +63,10 @@
 html, body { background: var(--bg); color: var(--text); }
 body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 
+/* 접근성: 키보드 포커스 링 */
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
 .theme-toggle {
   width: 36px; height: 36px; border-radius: var(--radius-sm);
   display: inline-flex; align-items: center; justify-content: center;
@@ -141,6 +145,12 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
   background: var(--surface); border: 1px solid var(--card-border);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
   overflow: hidden; display: flex; flex-direction: column;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.bk-card.issue-card:hover, .bk-card[role="button"]:hover, .bk-card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(26,34,51,.10);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--card-border));
 }
 .bk-card__thumb {
   height: 140px; background: linear-gradient(135deg,#7aa2ff,var(--primary));
@@ -259,3 +269,145 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .vote-tag--yes { background: #16a34a; }
 .vote-tag--no { background: #dc2626; }
 .vote-tag--etc { background: #6b7280; }
+
+/* ===== 오늘의 브리핑 히어로 ===== */
+.briefing-hero {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-lg); margin-bottom: 18px;
+  padding: 22px 22px 24px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(255,255,255,.18), transparent 55%),
+    linear-gradient(135deg, #3354ff 0%, #5b78ff 55%, #7c5cff 100%);
+  color: #fff; box-shadow: 0 12px 30px rgba(51,84,255,.22);
+}
+.briefing-hero__eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; letter-spacing: .2px;
+  background: rgba(255,255,255,.18); color: #fff;
+  padding: 4px 11px; border-radius: var(--radius-pill); margin-bottom: 12px;
+}
+.briefing-hero__title { font-size: 15px; font-weight: 800; opacity: .92; margin: 0 0 6px; }
+.briefing-hero__overview { font-size: 17px; font-weight: 700; line-height: 1.55; margin: 0; letter-spacing: -.2px; }
+.briefing-hero__highlights { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+.briefing-hero__highlights li {
+  position: relative; font-size: 13.5px; line-height: 1.5; font-weight: 500;
+  padding: 8px 12px 8px 30px; border-radius: var(--radius-md);
+  background: rgba(255,255,255,.12);
+}
+.briefing-hero__highlights li::before {
+  content: ''; position: absolute; left: 12px; top: 14px;
+  width: 7px; height: 7px; border-radius: 50%; background: #fff; opacity: .9;
+}
+.briefing-hero__empty { font-size: 14px; line-height: 1.6; opacity: .92; margin: 4px 0 0; }
+@media (min-width: 768px) {
+  .briefing-hero { padding: 30px 30px 32px; }
+  .briefing-hero__overview { font-size: 21px; }
+  .briefing-hero__highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+
+/* ===== 섹션 헤더 ===== */
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 22px 0 14px;
+}
+.section-head:first-child { margin-top: 4px; }
+.section-head__title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -.3px;
+}
+.section-head__title::before {
+  content: ''; width: 4px; height: 18px; border-radius: var(--radius-pill);
+  background: var(--primary);
+}
+
+/* ===== 토픽 칩 ===== */
+.topic-chips {
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 10px;
+  margin: -2px 0 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.topic-chips::-webkit-scrollbar { display: none; }
+.topic-chip {
+  flex: 0 0 auto; font-size: 13px; font-weight: 600;
+  padding: 8px 14px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-secondary); cursor: pointer; white-space: nowrap;
+  transition: all .14s ease;
+}
+.topic-chip:hover { border-color: var(--primary); color: var(--primary-text); }
+.topic-chip.active { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+
+/* ===== 피처드 대형 카드 ===== */
+.bk-card--featured { grid-column: 1 / -1; }
+.bk-card--featured .bk-card__thumb { height: 200px; }
+.bk-card--featured .bk-card__title { font-size: 20px; line-height: 1.35; }
+.bk-card--featured .bk-card__summary { font-size: 14px; -webkit-line-clamp: 3; }
+@media (min-width: 768px) {
+  .bk-card--featured { display: grid; grid-template-columns: 1.1fr 1fr; }
+  .bk-card--featured .bk-card__thumb { height: 100%; min-height: 240px; }
+  .bk-card--featured .bk-card__body { justify-content: center; padding: 26px 28px; }
+  .bk-card--featured .bk-card__title { font-size: 23px; }
+}
+
+/* 카드 본문 줄 제한 (정보 위계) */
+.bk-card__title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.bk-card__summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ===== 의원 카드 (책임성/비교 도구) ===== */
+.member-card { position: relative; padding-left: 4px; }
+.member-card__accent {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--party-color, var(--primary));
+}
+.member-card__head { display: flex; align-items: center; gap: 12px; }
+.member-card__avatar {
+  flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; color: #fff;
+  background: var(--party-color, var(--primary));
+  background-size: cover; background-position: center;
+}
+.member-card__name { font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.2; }
+.member-card__party { font-size: 12px; font-weight: 700; color: var(--party-color, var(--primary-text)); margin-top: 2px; }
+.member-card__sub { font-size: 12.5px; color: var(--text-secondary); margin: 10px 0 0; line-height: 1.45; }
+.member-card__metrics { display: flex; gap: 8px; margin-top: 12px; }
+.metric-chip {
+  flex: 1; text-align: center; padding: 8px 6px; border-radius: var(--radius-md);
+  background: var(--badge-bg);
+}
+.metric-chip__num { display: block; font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.1; }
+.metric-chip__label { display: block; font-size: 10.5px; color: var(--text-secondary); margin-top: 3px; }
+.metric-chip--alert { background: var(--accent-red-bg); }
+.metric-chip--alert .metric-chip__num { color: var(--accent-red); }
+.metric-chip--cta { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+.metric-chip--cta .metric-chip__num { color: var(--primary-text); }
+.metric-chip--cta .metric-chip__label { color: var(--primary-text); font-weight: 600; }
+
+/* ===== 이슈 카드 출처 메타 ===== */
+.issue-card__sources { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); }
+
+/* ===== 빈 상태 강화 ===== */
+.empty-rich { text-align: center; padding: 30px 18px; color: var(--text-secondary); }
+.empty-rich__icon { font-size: 34px; }
+.empty-rich__msg { font-size: 14px; margin: 10px 0 0; line-height: 1.6; }
+
+/* ===== 맨 위로 버튼 ===== */
+.scroll-top {
+  position: fixed; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 60;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  box-shadow: 0 6px 18px rgba(26,34,51,.16); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transform: translateY(8px); transition: all .2s ease;
+}
+.scroll-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+@media (min-width: 768px) { .scroll-top { bottom: 24px; } }
+
+/* ===== 하단탭 폴리시 (터치 영역/활성) ===== */
+.bottomnav-item { min-height: 48px; padding: 4px 2px; border-radius: var(--radius-md); transition: color .14s ease; }
+.bottomnav-item svg { transition: transform .14s ease; }
+.bottomnav-item.active svg { transform: translateY(-1px) scale(1.08); }
+.bottomnav-item.active::after {
+  content: ''; position: absolute; bottom: 2px; width: 5px; height: 5px;
+  border-radius: 50%; background: var(--primary);
+}
+.bottomnav-item { position: relative; }
