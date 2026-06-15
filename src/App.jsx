@@ -25,6 +25,7 @@ import DailySummaryCard from './components/DailySummaryCard';
 import BriefingHero from './components/BriefingHero';
 import ScrollToTop from './components/ScrollToTop';
 import ListToolbar from './components/ListToolbar';
+import NewsReaderModal from './components/NewsReaderModal';
 import { useDailySummary } from './components/useSummary';
 import { useDigest } from './components/useDigest';
 
@@ -50,7 +51,7 @@ function App() {
   const { articles: digestArticles, loading: digestLoading } = useDigest(user?.interests);
   const [activeTab, setActiveTab] = useState('news');
   const [modal, setModal] = useState({ isOpen: false, content: null, type: null });
-  const [webViewUrl, setWebViewUrl] = React.useState(null);
+  const [readerArticle, setReaderArticle] = useState(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const searchInputRef = useRef(null);
   const [searchValue, setSearchValue] = useState('');
@@ -117,8 +118,8 @@ function App() {
   }, [search, clearSearch]);
 
   const handleDetailClick = useCallback((type, content) => {
-    if (type === 'news' && content.source_url) {
-      setWebViewUrl(content.source_url); // ✅ 웹뷰로 연결
+    if (type === 'news') {
+      setReaderArticle(content); // ✅ 인앱 요약 브리핑(iframe 웹뷰 대체)
     } else {
       setModal({
         isOpen: true,
@@ -514,14 +515,12 @@ const handleLoginClose = () => setLoginOpen(false);
 
       <ScrollToTop />
 
-      {webViewUrl && (
-        <div className="webviewModal">
-          <div className="webviewModalContent">
-            <button className="webviewClose" onClick={() => setWebViewUrl(null)}>×</button>
-            <iframe src={webViewUrl} title="뉴스 원문" frameBorder="0"
-              style={{ width: '100%', height: '80vh', border: 'none' }} allowFullScreen />
-          </div>
-        </div>
+      {readerArticle && (
+        <NewsReaderModal
+          article={readerArticle}
+          pool={data?.articles || []}
+          onClose={() => setReaderArticle(null)}
+        />
       )}
 
       <Modal
