@@ -357,7 +357,9 @@ const handleLoginClose = () => setLoginOpen(false);
           ? allNews
           : allNews.filter((n) => (n.category || '').includes(newsTopic));
         const heroFallback = (issues.length > 0 ? issues : allNews).map((x) => x.title);
-        const [first, ...rest] = filtered;
+        const featuredItem = filtered[0];
+        const gridItems = filtered.slice(1, 7);   // 표준 카드
+        const listItems = filtered.slice(7);       // 압축 목록형(티어링 3단계)
         return (
           <div>
             <BriefingHero summary={dailySummary} fallbackItems={heroFallback} />
@@ -399,14 +401,26 @@ const handleLoginClose = () => setLoginOpen(false);
               ))}
             </div>
             {filtered.length > 0 ? (
-              <div className="feed-grid">
-                {first && (
-                  <NewsCard key={first.id || 'featured'} item={first} type="news" featured onDetailClick={handleDetailClick} />
+              <>
+                <div className="feed-grid">
+                  {featuredItem && (
+                    <NewsCard key={featuredItem.id || 'featured'} item={featuredItem} type="news" featured onDetailClick={handleDetailClick} />
+                  )}
+                  {gridItems.map((news, idx) => (
+                    <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
+                  ))}
+                </div>
+                {listItems.length > 0 && (
+                  <>
+                    <div className="section-head"><span className="section-head__title">🗞 더 많은 뉴스</span></div>
+                    <div className="news-list">
+                      {listItems.map((news, idx) => (
+                        <NewsCard key={news.id || `row-${idx}`} item={news} type="news" compact onDetailClick={handleDetailClick} />
+                      ))}
+                    </div>
+                  </>
                 )}
-                {rest.map((news, idx) => (
-                  <NewsCard key={news.id || idx} item={news} type="news" onDetailClick={handleDetailClick} />
-                ))}
-              </div>
+              </>
             ) : (
               <div className="empty-rich">
                 <div className="empty-rich__icon">📰</div>
