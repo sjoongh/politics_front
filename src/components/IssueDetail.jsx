@@ -4,6 +4,59 @@ import { statusBadgeClass } from './issueStatus';
 import { formatDate } from '../utils/dateUtils';
 import NewsCard from './NewsCard';
 
+const POSITION = {
+  support: { label: '찬성', cls: 'pos--support' },
+  oppose: { label: '반대', cls: 'pos--oppose' },
+  criticize: { label: '비판', cls: 'pos--criticize' },
+  propose: { label: '발의/제안', cls: 'pos--propose' },
+  explain: { label: '설명', cls: 'pos--explain' },
+  neutral: { label: '중립', cls: 'pos--neutral' },
+};
+
+function SourceItem({ s }) {
+  const pos = POSITION[s.position];
+  return (
+    <a className="src-item" href={s.url} target="_blank" rel="noreferrer">
+      <div className="src-item__head">
+        <span className="src-item__actor">{s.actor_name}</span>
+        {pos && <span className={`position-tag ${pos.cls}`}>{pos.label}</span>}
+      </div>
+      <div className="src-item__title">{s.claim_summary || s.title}</div>
+      {s.vote && (
+        <div className="src-item__vote">
+          찬성 {s.vote.yes} · 반대 {s.vote.no} · 기권 {s.vote.abstain}
+          {s.vote.result && <strong> → {s.vote.result}</strong>}
+        </div>
+      )}
+    </a>
+  );
+}
+
+function Panel({ icon, title, items }) {
+  return (
+    <div className="src-panel">
+      <div className="src-panel__title">{icon} {title} <span className="src-panel__count">{items.length}</span></div>
+      {items.length > 0 ? items.map((s, i) => <SourceItem key={s.id || i} s={s} />)
+        : <div className="src-panel__empty">해당 소스 없음</div>}
+    </div>
+  );
+}
+
+function SourcePanels({ panels }) {
+  const gov = panels.government || [];
+  const bills = panels.assembly_bill || [];
+  const votes = panels.assembly_vote || [];
+  if (gov.length + bills.length + votes.length === 0) return null;  // 1차 소스 없으면 숨김
+  return (
+    <div className="source-panels">
+      <div className="issue-section-title">🔗 1차 소스 — 사건의 전체 그림</div>
+      <Panel icon="🏛" title="정부 입장" items={gov} />
+      <Panel icon="📜" title="관련 법안" items={bills} />
+      <Panel icon="🗳" title="표결 결과" items={votes} />
+    </div>
+  );
+}
+
 export default function IssueDetail({ issueId, onClose, onArticleClick }) {
   const { detail, loading } = useIssueDetail(issueId);
 
@@ -24,6 +77,10 @@ export default function IssueDetail({ issueId, onClose, onArticleClick }) {
             <span className={statusBadgeClass(detail.status)}>{detail.status}</span>
             <h3>{detail.title}</h3>
             {detail.summary && <p>{detail.summary}</p>}
+
+            {detail.source_panels && (
+              <SourcePanels panels={detail.source_panels} />
+            )}
 
             {detail.perspectives && detail.perspectives.breakdown.total > 0 && (
               <div className="perspectives">
