@@ -339,6 +339,15 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .pos--explain { background: #6b7280; }
 .pos--neutral { background: #94a3b8; }
 
+/* ===== 정당 입장 ===== */
+.party-stance { border-top: 1px solid var(--card-border); padding: 9px 0; }
+.party-stance:first-of-type { border-top: none; }
+.party-stance__head { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; color: var(--party-color, var(--text)); margin-bottom: 4px; }
+.party-stance__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--party-color, var(--primary)); }
+.party-stance__count { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--text-secondary); background: var(--badge-bg); padding: 1px 8px; border-radius: var(--radius-pill); }
+.party-stance__item { display: block; font-size: 12.5px; color: var(--text); text-decoration: none; padding: 3px 0 3px 15px; line-height: 1.45; }
+.party-stance__src { color: var(--text-secondary); font-size: 11px; }
+
 /* ===== 표결 태그 ===== */
 .vote-tag { display: inline-block; font-size: 11px; font-weight: 700; color: #fff; padding: 1px 7px; border-radius: var(--radius-pill); margin-right: 6px; }
 .vote-tag--yes { background: #16a34a; }

@@ -3,6 +3,7 @@ import { useIssueDetail } from './useIssues';
 import { statusBadgeClass } from './issueStatus';
 import { formatDate } from '../utils/dateUtils';
 import NewsCard from './NewsCard';
+import { partyColor } from '../utils/partyColors';
 
 const POSITION = {
   support: { label: '찬성', cls: 'pos--support' },
@@ -42,17 +43,40 @@ function Panel({ icon, title, items }) {
   );
 }
 
+function PartyPanel({ groups }) {
+  return (
+    <div className="src-panel">
+      <div className="src-panel__title">🗣 정당 입장 <span className="src-panel__count">{groups.length}</span></div>
+      {groups.length > 0 ? groups.map((g, i) => (
+        <div key={i} className="party-stance" style={{ '--party-color': partyColor(g.party) }}>
+          <div className="party-stance__head">
+            <span className="party-stance__dot" /> {g.party}
+            <span className="party-stance__count">{g.count}건</span>
+          </div>
+          {(g.articles || []).slice(0, 3).map((a, j) => (
+            <a key={j} className="party-stance__item" href={a.source_url} target="_blank" rel="noreferrer">
+              <span className="party-stance__src">{a.source}</span> {a.title}
+            </a>
+          ))}
+        </div>
+      )) : <div className="src-panel__empty">정당 입장 없음</div>}
+    </div>
+  );
+}
+
 function SourcePanels({ panels }) {
   const gov = panels.government || [];
   const bills = panels.assembly_bill || [];
   const votes = panels.assembly_vote || [];
-  if (gov.length + bills.length + votes.length === 0) return null;  // 1차 소스 없으면 숨김
+  const party = panels.party || [];
+  if (gov.length + bills.length + votes.length + party.length === 0) return null;
   return (
     <div className="source-panels">
       <div className="issue-section-title">🔗 1차 소스 — 사건의 전체 그림</div>
       <Panel icon="🏛" title="정부 입장" items={gov} />
       <Panel icon="📜" title="관련 법안" items={bills} />
       <Panel icon="🗳" title="표결 결과" items={votes} />
+      {party.length > 0 && <PartyPanel groups={party} />}
     </div>
   );
 }
