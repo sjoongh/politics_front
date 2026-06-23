@@ -3,10 +3,19 @@ import { Newspaper } from 'lucide-react';
 import { formatDate } from '../utils/dateUtils';
 import { statusBadgeClass } from './issueStatus';
 
+function issueType(issue) {
+  const k = issue.auto_key || '';
+  if (k.startsWith('news:')) return { label: '🔥 현안', cls: 'bk-badge--alert' };
+  if (k.startsWith('bill:')) return { label: '📜 법안', cls: 'bk-badge--muted' };
+  if (!issue.auto_generated) return { label: '✏️ 큐레이션', cls: 'bk-badge' };
+  return null;
+}
+
 export default function IssueCard({ issue, onClick }) {
   const sourceCount = issue.source_count
     ?? (Array.isArray(issue.articles) ? issue.articles.length : null)
     ?? (Array.isArray(issue.related_articles) ? issue.related_articles.length : null);
+  const type = issueType(issue);
 
   return (
     <article
@@ -17,7 +26,10 @@ export default function IssueCard({ issue, onClick }) {
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onClick(issue.id)}
     >
       <div className="bk-card__body">
-        <span className={statusBadgeClass(issue.status)}>{issue.status}</span>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {type && <span className={`bk-badge ${type.cls}`}>{type.label}</span>}
+          <span className={statusBadgeClass(issue.status)}>{issue.status}</span>
+        </div>
         <h3 className="bk-card__title">{issue.title}</h3>
         {issue.summary && <p className="bk-card__summary">{issue.summary}</p>}
         <div className="bk-card__meta">
