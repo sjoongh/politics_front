@@ -4,11 +4,12 @@ import { formatDate } from '../utils/dateUtils';
 import { statusBadgeClass } from './issueStatus';
 
 function issueType(issue) {
-  const k = issue.auto_key || '';
-  if (k.startsWith('news:')) return { label: '🔥 현안', cls: 'bk-badge--alert' };
-  if (k.startsWith('bill:')) return { label: '📜 법안', cls: 'bk-badge--muted' };
-  if (!issue.auto_generated) return { label: '✏️ 큐레이션', cls: 'bk-badge' };
-  return null;
+  switch (issue.issue_type) {
+    case 'news': return { label: '🔥 현안', cls: 'bk-badge--alert' };
+    case 'bill': return { label: '📜 법안', cls: 'bk-badge--muted' };
+    case 'manual': return { label: '✏️ 큐레이션', cls: 'bk-badge' };
+    default: return null;
+  }
 }
 
 export default function IssueCard({ issue, onClick }) {
