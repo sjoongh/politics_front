@@ -70,11 +70,20 @@ export default function MemberDetail({ memberId, onClose }) {
 
             {Array.isArray(detail.bills) && detail.bills.length > 0 && (
               <>
-                <div className="issue-section-title">📜 발의 법안 {detail.bill_count ? `(${detail.bill_count})` : ''}</div>
-                <div className="issue-timeline">
-                  {detail.bills.slice(0, 10).map((b, i) => (
-                    <a key={i} className="persp-item" href={b.link} target="_blank" rel="noreferrer">
-                      <span className="persp-item__src">{b.result || '처리중'}</span> {b.name}
+                <div className="issue-section-title">📜 대표발의 법안</div>
+                {detail.bill_stats && (
+                  <div className="bill-stats">
+                    <div className="bill-stat"><span className="bill-stat__num">{detail.bill_stats.total}</span><span className="bill-stat__label">발의</span></div>
+                    <div className="bill-stat"><span className="bill-stat__num" style={{ color: '#16a34a' }}>{detail.bill_stats.enacted}</span><span className="bill-stat__label">가결·반영</span></div>
+                    <div className="bill-stat"><span className="bill-stat__num">{detail.bill_stats.pending}</span><span className="bill-stat__label">심사중</span></div>
+                    <div className="bill-stat"><span className="bill-stat__num">{detail.bill_stats.enacted_rate}%</span><span className="bill-stat__label">입법성과율</span></div>
+                  </div>
+                )}
+                <div className="bill-list">
+                  {detail.bills.slice(0, 12).map((b, i) => (
+                    <a key={i} className="bill-row" href={b.url} target="_blank" rel="noreferrer">
+                      <span className={`bill-tag bill-tag--${b.outcome || 'pending'}`}>{b.status || '심사중'}</span>
+                      <span className="bill-row__name">{b.name}</span>
                     </a>
                   ))}
                 </div>
