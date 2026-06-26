@@ -339,6 +339,17 @@ body { font-family: var(--font-base); -webkit-font-smoothing: antialiased; }
 .pos--explain { background: #6b7280; }
 .pos--neutral { background: #94a3b8; }
 
+/* ===== 이용안내 모달 ===== */
+.about h2 { font-size: 18px; font-weight: 800; margin-bottom: 14px; color: var(--text); }
+.about__sec { margin-bottom: 16px; }
+.about__sec h3 { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.about__sec p, .about__sec li { font-size: 13px; line-height: 1.65; color: var(--text-secondary); }
+.about__sec ul { margin: 0; padding-left: 18px; }
+.about__sec li { margin: 4px 0; }
+.about__sec b { color: var(--text); }
+.about__disc { font-size: 12px; line-height: 1.6; color: var(--text-secondary); background: var(--badge-bg); padding: 10px 12px; border-radius: var(--radius-md); }
+.footer-link { background: none; border: none; padding: 0; color: var(--primary-text); font-weight: 600; font-size: 12px; cursor: pointer; text-decoration: underline; font-family: var(--font-base); }
+
 /* ===== 의원 발의 법안 ===== */
 .bill-stats { display: flex; gap: 8px; margin: 8px 0 14px; }
 .bill-stat { flex: 1; text-align: center; padding: 9px 4px; background: var(--badge-bg); border-radius: var(--radius-md); }
