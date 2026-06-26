@@ -157,6 +157,13 @@ const handleLoginClose = () => setLoginOpen(false);
 
   useEffect(() => {
     setSearchValue('');
+    // 공유 딥링크: ?issue=<id> 로 들어오면 해당 이슈 상세 열기
+    const params = new URLSearchParams(window.location.search);
+    const iid = params.get('issue');
+    if (iid) {
+      setSelectedIssueId(iid);
+      setActiveTab('issues');
+    }
   }, []);
 
   const renderSearchContent = () => {

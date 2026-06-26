@@ -4,6 +4,8 @@ import { statusBadgeClass } from './issueStatus';
 import { formatDate } from '../utils/dateUtils';
 import NewsCard from './NewsCard';
 import { partyColor } from '../utils/partyColors';
+import { Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const POSITION = {
   support: { label: '찬성', cls: 'pos--support' },
@@ -60,6 +62,9 @@ function PartyPanel({ groups }) {
           ))}
         </div>
       )) : <div className="src-panel__empty">정당 입장 없음</div>}
+      {groups.length > 0 && (
+        <p className="persp-disclaimer">※ 정당명이 언급된 보도를 자동 분류한 참고용이며, 정당의 공식 입장과 다를 수 있습니다.</p>
+      )}
     </div>
   );
 }
@@ -88,6 +93,15 @@ export default function IssueDetail({ issueId, onClose, onArticleClick }) {
     if (e.target === e.currentTarget) onClose();
   };
 
+  const handleShare = async () => {
+    const url = `${window.location.origin}/?issue=${issueId}`;
+    const data = { title: `브리핑 코리아 · ${detail?.title || '정치 이슈'}`, text: detail?.title, url };
+    try {
+      if (navigator.share) await navigator.share(data);
+      else if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast.success('링크를 복사했어요'); }
+    } catch (_) { /* 취소 */ }
+  };
+
   return (
     <div className="bk-modal" onClick={handleOverlay}>
       <div className="bk-modal__panel" onClick={(e) => e.stopPropagation()}>
@@ -98,9 +112,17 @@ export default function IssueDetail({ issueId, onClose, onArticleClick }) {
 
         {detail && (
           <>
-            <span className={statusBadgeClass(detail.status)}>{detail.status}</span>
+            <div className="issue-detail__head">
+              <span className={statusBadgeClass(detail.status)}>{detail.status}</span>
+              <button className="issue-share" onClick={handleShare} aria-label="공유">
+                <Share2 size={15} /> 공유
+              </button>
+            </div>
             <h3>{detail.title}</h3>
             {detail.summary && <p>{detail.summary}</p>}
+            {detail.auto_generated && (
+              <p className="auto-note">🤖 AI가 여러 보도를 묶어 자동 생성한 이슈입니다. 요약·분류에 오류가 있을 수 있어요.</p>
+            )}
 
             {detail.source_panels && (
               <SourcePanels panels={detail.source_panels} />
