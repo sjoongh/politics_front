@@ -55,6 +55,14 @@ export default function MemberDetail({ memberId, onClose }) {
             {Array.isArray(detail.votes) && detail.votes.length > 0 && (
               <>
                 <div className="issue-section-title">🗳️ 주요 표결</div>
+                {detail.vote_summary && (
+                  <div className="bill-stats">
+                    <div className="bill-stat"><span className="bill-stat__num" style={{ color: '#16a34a' }}>{detail.vote_summary['찬성']}</span><span className="bill-stat__label">찬성</span></div>
+                    <div className="bill-stat"><span className="bill-stat__num" style={{ color: '#dc2626' }}>{detail.vote_summary['반대']}</span><span className="bill-stat__label">반대</span></div>
+                    <div className="bill-stat"><span className="bill-stat__num">{detail.vote_summary['기권']}</span><span className="bill-stat__label">기권</span></div>
+                    <div className="bill-stat"><span className="bill-stat__num">{detail.vote_summary['불참']}</span><span className="bill-stat__label">불참</span></div>
+                  </div>
+                )}
                 <div className="issue-timeline">
                   {detail.votes.slice(0, 10).map((v, i) => (
                     <div key={i} className="issue-event">
