@@ -349,7 +349,8 @@ const handleLoginClose = () => setLoginOpen(false);
         const listItems = filtered.slice(7);       // 압축 목록형(티어링 3단계)
         return (
           <div>
-            <BriefingHero summary={dailySummary} fallbackItems={heroFallback} />
+            <BriefingHero summary={dailySummary} fallbackItems={heroFallback}
+              topIssues={issues} onIssueClick={(id) => { setSelectedIssueId(id); }} />
 
             {/* 요약이 있을 때만 별도 이슈 칩을 노출(요약 없으면 히어로가 이미 이슈를 나열하므로 중복 방지) */}
             {dailySummary?.overview && issues.length > 0 && (
