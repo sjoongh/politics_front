@@ -41,8 +41,15 @@ export default function AboutModal({ onClose }) {
         </div>
 
         <div className="about__sec">
+          <h3>📮 문의·연락처</h3>
+          <p>서비스 관련 문의, 제보, 정정 요청은 아래 이메일로 연락해 주세요.</p>
+          <p><b>이메일:</b> <a href="mailto:briefingkorea@gmail.com">briefingkorea@gmail.com</a></p>
+        </div>
+
+        <div className="about__sec">
           <h3>✏️ 정정 요청</h3>
-          <p>잘못된 정보나 정정이 필요한 내용은 각 화면의 <b>피드백(잘못된 정보)</b>으로 알려주시면 검토 후 반영합니다.
+          <p>잘못된 정보나 정정이 필요한 내용은 각 화면의 <b>피드백(잘못된 정보)</b> 또는
+            <b> briefingkorea@gmail.com</b>으로 알려주시면 검토 후 반영합니다.
             사실과 다른 표시가 확인되면 신속히 수정합니다.</p>
         </div>
 
