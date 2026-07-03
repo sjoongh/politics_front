@@ -49,7 +49,7 @@ export default function AboutModal({ onClose }) {
         <div className="about__sec">
           <h3>✏️ 정정 요청</h3>
           <p>잘못된 정보나 정정이 필요한 내용은 각 화면의 <b>피드백(잘못된 정보)</b> 또는
-            <b> briefingkorea@gmail.com</b>으로 알려주시면 검토 후 반영합니다.
+            {' '}<a href="mailto:briefingkorea@gmail.com"><b>briefingkorea@gmail.com</b></a>으로 알려주시면 검토 후 반영합니다.
             사실과 다른 표시가 확인되면 신속히 수정합니다.</p>
         </div>
 

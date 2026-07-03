@@ -96,7 +96,10 @@ export default function NewsReaderModal({ article, pool = [], onClose }) {
             {related.map((r) => (
               <button key={r.id} className="reader__related-item" onClick={() => setCurrent(r)}>
                 <span className="reader__related-title">{r.title}</span>
-                <span className="reader__related-src">{r.source}</span>
+                <span className="reader__related-src">
+                  {r.source}
+                  {(r.published_at || r.date) && ` · ${formatDate(r.published_at || r.date)}`}
+                </span>
               </button>
             ))}
           </div>

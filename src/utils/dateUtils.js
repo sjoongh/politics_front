@@ -1,6 +1,7 @@
 export const formatDate = (dateString) => {
   try {
     const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return dateString;
     return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
       month: 'long',
