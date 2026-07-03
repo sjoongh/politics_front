@@ -81,6 +81,9 @@ const NewsCard = ({ item, type, onDetailClick = () => {}, featured = false, comp
             <h3 className="news-row__title">{news.title}</h3>
             <div className="news-row__meta">
               <span className="bk-card__src">{news.source}</span>
+              {(news.published_at || news.date) && (
+                <span> · {formatDate(news.published_at || news.date)}</span>
+              )}
               {news.category && <span> · {news.category}</span>}
             </div>
           </div>
@@ -103,7 +106,10 @@ const NewsCard = ({ item, type, onDetailClick = () => {}, featured = false, comp
           <h3 className="bk-card__title">{news.title}</h3>
           <p className="bk-card__summary">{news.ai_summary}</p>
           <div className="bk-card__meta">
-            <span className="bk-card__src">{news.source}</span>
+            <span className="bk-card__src">
+              {news.source}
+              {(news.published_at || news.date) && ` · ${formatDate(news.published_at || news.date)}`}
+            </span>
             <span className="bk-card__more">자세히 →</span>
           </div>
         </div>
