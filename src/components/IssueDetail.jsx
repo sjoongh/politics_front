@@ -6,6 +6,7 @@ import NewsCard from './NewsCard';
 import { partyColor } from '../utils/partyColors';
 import { Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { issueShareUrl } from '../config/share';
 
 const POSITION = {
   support: { label: '찬성', cls: 'pos--support' },
@@ -94,7 +95,7 @@ export default function IssueDetail({ issueId, onClose, onArticleClick }) {
   };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/?issue=${issueId}`;
+    const url = issueShareUrl(issueId);
     const data = { title: `브리핑 코리아 · ${detail?.title || '정치 이슈'}`, text: detail?.title, url };
     try {
       if (navigator.share) await navigator.share(data);

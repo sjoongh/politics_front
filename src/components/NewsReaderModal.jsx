@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { ExternalLink, Share2, X, Eye } from 'lucide-react';
 import { formatDate } from '../utils/dateUtils';
 import { relatedNews } from '../utils/relatedNews';
+import { articleShareUrl } from '../config/share';
 
 function isIconLikeImage(url) {
   if (!url || typeof url !== 'string') return true;
@@ -39,13 +40,14 @@ export default function NewsReaderModal({ article, pool = [], onClose }) {
   };
 
   const share = async () => {
-    const shareData = { title: current.title, url: current.source_url || window.location.href };
+    const shareUrl = current.id ? articleShareUrl(current.id) : window.location.href;
+    const shareData = { title: current.title, url: shareUrl };
     try {
       if (navigator.share) {
         await navigator.share(shareData);
-      } else if (navigator.clipboard && current.source_url) {
-        await navigator.clipboard.writeText(current.source_url);
-        toast.success('원문 링크를 복사했어요');
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('링크를 복사했어요');
       } else {
         toast('공유를 지원하지 않는 환경이에요');
       }

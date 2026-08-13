@@ -11,6 +11,7 @@ import SearchFilters from './components/SearchFilters';
 import NewsCard from './components/NewsCard';
 import Modal from './components/Modal';
 import { useNews, useSearch, useAiSearch, useForYou, usePresident, usePolicies, useStatements } from './components/useNews';
+import { getNewsDetail } from './hooks/useNews';
 import AiSearchResults from './components/AiSearchResults';
 import ForYouFeed from './components/ForYouFeed';
 import IssueCard from './components/IssueCard';
@@ -163,6 +164,17 @@ const handleLoginClose = () => setLoginOpen(false);
     if (iid) {
       setSelectedIssueId(iid);
       setActiveTab('issues');
+    }
+    // 공유 딥링크: ?article=<id> 로 들어오면 해당 기사 리더 오픈
+    const aid = params.get('article');
+    if (aid) {
+      setActiveTab('news');
+      (async () => {
+        try {
+          const res = await getNewsDetail(aid);
+          if (res?.article) setReaderArticle(res.article);
+        } catch (_) { /* 없는 기사 무시 */ }
+      })();
     }
   }, []);
 
