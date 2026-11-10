@@ -76,6 +76,14 @@ export function trackTab(tabId, tabLabel) {
   });
 }
 
+/** 라우트 변경 = page_view (경로 기준). 라우터 도입 후 trackTab을 대체한다. */
+export function trackPageView(pathname, title) {
+  track('page_view', {
+    page_title: title || pathname,
+    page_location: `${window.location.origin}${pathname || '/'}`,
+  });
+}
+
 /** 상세가 실제로 표시된 시점에 기록(클릭이 아니라 표시 기준) */
 export function trackSelectContent(contentType, itemId) {
   if (!itemId) return;
