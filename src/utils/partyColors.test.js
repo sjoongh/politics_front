@@ -7,7 +7,7 @@ test('partyColor maps known parties', () => {
 });
 
 test('partyColor falls back', () => {
-  expect(partyColor('알수없는당')).toBe('var(--primary)');
+  expect(partyColor('알수없는당')).toBe('var(--hairline-strong)');
   expect(partyColor('')).toBe('#6b7280');
   expect(partyColor(null)).toBe('#6b7280');
 });
