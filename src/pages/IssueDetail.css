@@ -1,0 +1,7 @@
+.detail__top { display: flex; align-items: center; justify-content: space-between; height: var(--touch); }
+.detail__back, .detail__action { display: inline-flex; align-items: center; gap: 4px; min-height: var(--touch); padding: 0 var(--sp-2); font-size: var(--fs-14); font-weight: 600; color: var(--text); border-radius: var(--r-panel); }
+.detail__badges { display: flex; gap: var(--sp-1); margin-top: var(--sp-2); }
+.detail__title { font-size: var(--fs-24); font-weight: 800; letter-spacing: -.3px; line-height: var(--lh-title); margin-top: var(--sp-2); }
+.detail__summary { font-size: var(--fs-15); color: var(--text-2); margin-top: var(--sp-2); }
+.detail__note { font-size: var(--fs-12); color: var(--text-3); margin-top: var(--sp-2); }
+.detail__section { scroll-margin-top: 104px; }

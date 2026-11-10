@@ -36,11 +36,12 @@ export default function AppFrame() {
   useBackHandler({ modalOpen: !!reader.article, closeModal: closeArticle });
 
   const active = activeTabFor(location.pathname);
+  const wide = /^\/(issues|members)\/[^/]+$/.test(location.pathname);   // 데스크톱 분할 화면은 넓게
   return (
     <ReaderContext.Provider value={readerValue}>
       <div className="frame">
         <TopBar tabs={TABS} active={active} />
-        <main className="frame__main" id="main">
+        <main className={`frame__main${wide ? ' is-wide' : ''}`} id="main">
           <Outlet />
         </main>
         <BottomTabs tabs={TABS} active={active} />

@@ -17,6 +17,11 @@ const check = (name, ok, info = '') => { results.push({ name, ok }); console.log
   await p.goto(`${BASE}/?article=x`, { waitUntil: 'networkidle' });
   await p.waitForTimeout(500);
   check('legacy ?article= lands on /', new URL(p.url()).pathname === '/', p.url());
+  await p.goto(`${BASE}/issues/${ISSUE}`, { waitUntil: 'networkidle' });
+  await p.waitForTimeout(1500);
+  const back = p.locator('.detail__back');
+  if (await back.count()) { await back.first().click(); await p.waitForTimeout(500); }
+  check('detail back button returns to /issues', new URL(p.url()).pathname === '/issues', p.url());
   await p.goto(`${BASE}/nope`, { waitUntil: 'networkidle' });
   check('unknown path → /', new URL(p.url()).pathname === '/', p.url());
   await b.close();
