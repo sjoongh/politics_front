@@ -83,7 +83,7 @@ export default function MyPage({ user }) {
       <div style={{
         background: "var(--surface)",
         borderRadius: "var(--radius-lg)",
-        boxShadow: "var(--shadow-card)",
+        border: "1px solid var(--hairline)",
         border: "1px solid var(--card-border)",
         maxWidth: "420px",
         width: "100%",
@@ -111,7 +111,7 @@ export default function MyPage({ user }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
             {(user?.interests || []).map((k) => (
               <span key={k} className="bk-badge" style={{ cursor: 'pointer' }} onClick={() => handleRemoveInterest(k)}>
-                {k} ✕
+                {k} ×
               </span>
             ))}
             {(!user?.interests || user.interests.length === 0) && (

@@ -1,3 +1,4 @@
+import './legacy.css';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { ExternalLink, Share2, X, Eye } from 'lucide-react';

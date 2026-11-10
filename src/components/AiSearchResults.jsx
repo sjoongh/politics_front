@@ -1,3 +1,4 @@
+import './legacy.css';
 import React from 'react';
 import { Sparkles, Info } from 'lucide-react';
 import NewsCard from './NewsCard';
@@ -74,7 +75,6 @@ export default function AiSearchResults({ result, query, briefingLoading, onRunB
         </div>
       ) : (
         <div className="empty-rich">
-          <div className="empty-rich__icon">🔍</div>
           <p className="empty-rich__msg">'{query}'에 대한 결과가 없어요.<br />다른 표현으로 검색해 보세요.</p>
         </div>
       )}

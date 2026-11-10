@@ -14,7 +14,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from "../hooks/useAuth";
 
-export default function LoginForm({ onSuccess, onClose }) {
+export default function LoginForm({ onSuccess, onClose, inline = false }) {
   const [tab, setTab] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,16 +42,11 @@ export default function LoginForm({ onSuccess, onClose }) {
 
   return (
     <Box
-        minHeight="100vh"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        bgcolor="background.default"
         onClick={(e) => {
-          // 폼 외부 클릭 시 종료 (배경 클릭)
-          if (e.target === e.currentTarget && onClose) onClose();
+          // 폼 외부 클릭 시 종료 (배경 클릭) — 인라인 모드에서는 오버레이 없음
+          if (!inline && e.target === e.currentTarget && onClose) onClose();
         }}
-        sx={{
+        sx={inline ? { pt: 3 } : {
           position: 'fixed',
           inset: 0,
           zIndex: 9999,                       // (중요) 웹뷰 모달보다 높게
@@ -61,32 +56,25 @@ export default function LoginForm({ onSuccess, onClose }) {
           alignItems: 'center',
         }}
       >
-        {/* 카드 */}
         <Paper
-          elevation={8}
+          elevation={0}
           sx={{
-            p: 4,
-            width: { xs: '90%', sm: 400 },
-            bgcolor: "background.paper",
-            borderRadius: 3,
+            p: inline ? 0 : 4,
+            width: inline ? '100%' : { xs: '90%', sm: 400 },
+            maxWidth: 480,
+            mx: 'auto',
+            bgcolor: 'background.paper',
+            borderRadius: 2,
             position: 'relative',
+            border: inline ? 'none' : '1px solid var(--hairline)',
           }}
           onClick={(e) => e.stopPropagation()} // 내부 클릭은 닫힘 방지
         >
-          <IconButton
-            sx={{ position: "absolute", top: 8, right: 8, color: "text.secondary" }}
-            onClick={onClose}                  // X 버튼으로 닫기
-          >
-            <CloseIcon />
-          </IconButton>
-
-          {/* ... 탭/폼 내용 동일 ... */}
-          <Typography variant="h5" align="center" sx={{ fontWeight: 800, color: 'primary.main', mb: 0.5 }}>
-            브리핑 코리아
-          </Typography>
-          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 2 }}>
-            로그인하고 맞춤 브리핑을 받아보세요
-          </Typography>
+          {!inline && onClose && (
+            <IconButton sx={{ position: "absolute", top: 8, right: 8, color: "text.secondary" }} onClick={onClose} aria-label="닫기">
+              <CloseIcon />
+            </IconButton>
+          )}
 
           <Tabs
             value={tab}

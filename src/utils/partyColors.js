@@ -15,7 +15,7 @@ const PARTY_COLORS = {
 export function partyColor(party) {
   if (!party) return '#6b7280';
   const key = Object.keys(PARTY_COLORS).find((p) => party.includes(p));
-  return key ? PARTY_COLORS[key] : 'var(--primary)';
+  return key ? PARTY_COLORS[key] : 'var(--hairline-strong)';
 }
 
 export function initials(name) {

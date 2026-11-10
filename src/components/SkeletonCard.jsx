@@ -1,7 +1,8 @@
+import './legacy.css';
 import React from 'react';
 
 const shimmer = {
-  background: 'linear-gradient(90deg, rgba(94,82,64,0.08) 25%, rgba(94,82,64,0.16) 37%, rgba(94,82,64,0.08) 63%)',
+  background: 'var(--surface-2)',
   backgroundSize: '400% 100%',
   animation: 'bk-shimmer 1.4s ease infinite',
   borderRadius: '6px',

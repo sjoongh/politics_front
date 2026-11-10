@@ -1,3 +1,4 @@
+import './legacy.css';
 import React from 'react';
 import { Sparkles, Sprout, Info } from 'lucide-react';
 import NewsCard from './NewsCard';
@@ -9,7 +10,7 @@ import NewsCard from './NewsCard';
  */
 export default function ForYouFeed({ result, loading, onDetailClick, onGoSettings }) {
   if (loading && !result) {
-    return <div className="empty-rich"><div className="empty-rich__icon">✨</div><p className="empty-rich__msg">맞춤 피드를 준비하고 있어요…</p></div>;
+    return <div className="empty-rich"><p className="empty-rich__msg">맞춤 피드를 준비하고 있어요…</p></div>;
   }
   if (!result) return null;
   const { mode, profile, items = [] } = result;
@@ -44,7 +45,7 @@ export default function ForYouFeed({ result, loading, onDetailClick, onGoSetting
             <span className="ai-search__interp-label">추천 기준</span>
             <div className="ai-search__chips">
               {explicit.map((k, i) => <span key={`e${i}`} className="ai-chip ai-chip--ent">{k}</span>)}
-              {implicit.map((k, i) => <span key={`i${i}`} className="ai-chip ai-chip--kw">🔖 {k}</span>)}
+              {implicit.map((k, i) => <span key={`i${i}`} className="ai-chip ai-chip--kw">{k}</span>)}
             </div>
           </div>
         )
@@ -60,7 +61,7 @@ export default function ForYouFeed({ result, loading, onDetailClick, onGoSetting
           ))}
         </div>
       ) : (
-        <div className="empty-rich"><div className="empty-rich__icon">📰</div><p className="empty-rich__msg">표시할 추천 기사가 아직 없어요.</p></div>
+        <div className="empty-rich"><p className="empty-rich__msg">표시할 추천 기사가 아직 없어요.</p></div>
       )}
     </div>
   );
