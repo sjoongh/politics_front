@@ -13,6 +13,7 @@ import PressSection from '../issue/PressSection';
 import ProposerChips from '../issue/ProposerChips';
 import { officialRecords, timelineItems, stanceRows, pressModel, proposerChips } from '../issue/detailModel';
 import { useIssueDetail } from '../hooks/useIssueDetail';
+import { goBackToList } from '../hooks/backRules';
 import { useMembers } from '../hooks/useMembers';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 import { useReader } from '../layout/AppFrame';
@@ -25,7 +26,7 @@ export default function IssueDetail() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const desktop = useIsDesktop();
-  const { detail, loading, error } = useIssueDetail(id);
+  const { detail, loading, error, reload } = useIssueDetail(id);
   const { members } = useMembers();
   const { openArticle } = useReader();
   const [active, setActive] = useState('records');
@@ -42,7 +43,7 @@ export default function IssueDetail() {
   const press = useMemo(() => (detail ? pressModel(detail) : null), [detail]);
   const chips = useMemo(() => (detail ? proposerChips(detail, members) : []), [detail, members]);
 
-  const close = () => navigate(`/issues${params.toString() ? `?${params}` : ''}`, { replace: desktop });
+  const close = () => goBackToList(navigate, `/issues${params.toString() ? `?${params}` : ''}`, desktop);
   const share = async () => {
     const url = issueShareUrl(detail.id);
     const data = { title: `브리핑 코리아 · ${detail.title}`, text: detail.title, url };
@@ -73,13 +74,13 @@ export default function IssueDetail() {
         {detail && <button type="button" className="detail__action" onClick={share}><Share2 size={16} /> 공유</button>}
       </div>
       {loading && <Skeleton lines={4} rows={2} />}
-      {error && !loading && <ErrorRetry message={error} onRetry={() => navigate(0)} />}
+      {error && !loading && <ErrorRetry message={error} onRetry={reload} />}
       {detail && (
         <>
           <div className="detail__badges"><Badge kind="status" value={detail.status} /><Badge kind="category" value={detail.category} /></div>
           <h1 className="detail__title">{detail.type === 'bill' && detail.law_name ? detail.law_name : detail.title}</h1>
           {detail.summary && <p className="detail__summary">{detail.summary}</p>}
-          {detail.auto_generated && <p className="detail__note">여러 보도를 묶어 자동 생성한 이슈입니다. 요약·분류에 오류가 있을 수 있습니다.</p>}
+          {/* allow-ui-rule */}{detail.auto_generated && <p className="detail__note">여러 보도를 묶어 자동 생성한 이슈입니다. 요약·분류에 오류가 있을 수 있습니다.</p>}
 
           <section id="sec-records" className="detail__section">
             <h2 className="section-title">공식 기록</h2>

@@ -6,7 +6,7 @@
 
 .top-issue { display: block; width: 100%; text-align: left; padding: var(--sp-4) 0; border-bottom: 1px solid var(--hairline); color: var(--text); }
 .top-issue__no { font-size: var(--fs-12); font-weight: 700; color: var(--text-3); display: flex; gap: var(--sp-1); align-items: center; }
-.top-issue__title { font-size: var(--fs-20); font-weight: 800; line-height: var(--lh-title); letter-spacing: -.2px; margin-top: 4px; }
+.top-issue__title { display: block; font-size: var(--fs-20); font-weight: 800; line-height: var(--lh-title); letter-spacing: -.2px; margin-top: 4px; }
 .top-issue__grid { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px var(--sp-2); margin-top: var(--sp-2); font-size: var(--fs-14); }
 .top-issue__grid b { font-size: var(--fs-12); font-weight: 700; color: var(--text-3); padding-top: 3px; }
 .top-issue__stance { display: flex; flex-wrap: wrap; gap: var(--sp-1); }

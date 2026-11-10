@@ -22,19 +22,22 @@ export function useMembers() {
 }
 
 export function useMemberDetail(id) {
-  const [detail, setDetail] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [state, setState] = useState({ forId: null, detail: null, error: null });
+  const [loading, setLoading] = useState(!!id);
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    if (!id) { setDetail(null); return; }
+    if (!id) { setLoading(false); return undefined; }
     let active = true;
     setLoading(true);
     getMemberDetail(id)
-      .then((d) => { if (active) setDetail(d); })
-      .catch(() => { if (active) setDetail(null); })
+      .then((d) => { if (active) setState({ forId: id, detail: d || null, error: d ? null : '의원 정보를 불러오지 못했습니다' }); })
+      .catch((e) => { if (active) setState({ forId: id, detail: null, error: (e && e.message) || '의원 정보를 불러오지 못했습니다' }); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [id]);
+  }, [id, tick]);
 
-  return { detail, loading };
+  const reload = useCallback(() => setTick((t) => t + 1), []);
+  const current = state.forId === id;
+  return { detail: current ? state.detail : null, error: current ? state.error : null, loading: loading || !current, reload };
 }

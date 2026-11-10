@@ -38,3 +38,8 @@
 .btn:disabled { opacity: .5; cursor: default; }
 .section-title { font-size: var(--fs-13); font-weight: 700; color: var(--text-2); letter-spacing: .2px; margin: var(--sp-5) 0 var(--sp-2); }
 .hairline-list > * + * { border-top: 1px solid var(--hairline); }
+
+/* 터치 대상 44px: 시각 크기는 유지하고 히트 영역만 확장 */
+.chip, .seg__item, .btn--sm, .anchors__item { position: relative; }
+.chip::after, .seg__item::after, .btn--sm::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch); transform: translateY(-50%); }
+.topbar__actions > button, .theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); color: var(--text); border-radius: var(--r-panel); }

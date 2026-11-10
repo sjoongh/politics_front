@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { Search as SearchIcon } from 'lucide-react';
 import IssueRow from '../issue/IssueRow';
 import MemberRow from '../member/MemberRow';
@@ -15,7 +15,6 @@ import './Search.css';
 
 export default function Search() {
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate();
   const q = normalizeQuery(params.get('q'));
   const [input, setInput] = useState(params.get('q') || '');
   const [issues, setIssues] = useState([]);
@@ -48,12 +47,12 @@ export default function Search() {
         <>
           {issueHits.length > 0 && (
             <section><h2 className="section-title">이슈 {issueHits.length}</h2>
-              <div className="hairline-list">{issueHits.map((i) => <IssueRow key={i.id} issue={i} onSelect={(id) => navigate(`/issues/${id}`)} />)}</div>
+              <div className="hairline-list">{issueHits.map((i) => <IssueRow key={i.id} issue={i} />)}</div>
             </section>
           )}
           {memberHits.length > 0 && (
             <section><h2 className="section-title">의원 {memberHits.length}</h2>
-              <div className="hairline-list">{memberHits.map((m) => <MemberRow key={m.id} member={m} onSelect={(id) => navigate(`/members/${id}`)} />)}</div>
+              <div className="hairline-list">{memberHits.map((m) => <MemberRow key={m.id} member={m} />)}</div>
             </section>
           )}
           <section>

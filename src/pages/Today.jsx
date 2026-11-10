@@ -22,7 +22,7 @@ export default function Today() {
   const date = param && isValidDate(param) && !isFuture(param) ? param : today;
   const isToday = date === today;
   const ed = useToday(isToday ? null : date);
-  const feed = useIssuesPage({ sort: 'rank', filter: null, limit: 30 });
+  const feed = useIssuesPage({ sort: 'rank', filter: null, limit: 30, enabled: isToday });
 
   // 레거시 ?article= 딥링크: 리더 열기
   useEffect(() => {
@@ -47,12 +47,13 @@ export default function Today() {
       </div>
       {edition && edition.overview && <p className="today__overview">{edition.overview}</p>}
       {ed.loading && <Skeleton lines={3} rows={2} />}
-      {top.map((snap, i) => <TopIssueBlock key={snap.id} snap={snap} index={i} onOpen={(id) => navigate(`/issues/${id}`)} />)}
+      {top.map((snap, i) => <TopIssueBlock key={snap.id} snap={snap} index={i} />)}
       {edition && <AssemblyToday votes={edition.assembly && edition.assembly.votes} bills={edition.assembly && edition.assembly.bills} />}
       {edition && <GovernmentToday items={edition.government} />}
       {isToday && feed.error && <ErrorRetry message={feed.error} onRetry={feed.reload} />}
+      {!isToday && ed.error && <ErrorRetry message={ed.error} onRetry={ed.reload} />}
       <div className="hairline-list">
-        {feedItems.map((iss) => <IssueRow key={iss.id} issue={iss} onSelect={(id) => navigate(`/issues/${id}`)} />)}
+        {feedItems.map((iss) => <IssueRow key={iss.id} issue={iss} />)}
       </div>
       {isToday && feed.loading && <Skeleton lines={3} rows={feed.items.length ? 1 : 3} />}
       {isToday && !feed.loading && feed.hasMore && (

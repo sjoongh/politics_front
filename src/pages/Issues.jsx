@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
+import { Outlet, useParams, useSearchParams } from 'react-router';
 import FilterChips from '../ui/FilterChips';
 import SegmentedSort from '../ui/SegmentedSort';
 import Skeleton from '../ui/Skeleton';
@@ -26,7 +26,6 @@ export const SORTS = [
 
 export default function Issues() {
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate();
   const { id } = useParams();
   const desktop = useIsDesktop();
   const filterId = FILTERS.some((f) => f.id === params.get('f')) ? params.get('f') : 'all';
@@ -54,7 +53,7 @@ export default function Issues() {
     if (v && v !== 'all' && v !== 'rank') next.set(k, v); else next.delete(k);
     setParams(next, { replace: true });
   };
-  const open = (issueId) => navigate(`/issues/${issueId}${params.toString() ? `?${params}` : ''}`, { replace: split });
+  const linkTo = (issueId) => `/issues/${issueId}${params.toString() ? `?${params}` : ''}`;
 
   if (detailOnly) return <Outlet />;
 
@@ -67,7 +66,7 @@ export default function Issues() {
         </div>
         {page.error && <ErrorRetry message={page.error} onRetry={page.reload} />}
         <div className="issues__list hairline-list">
-          {page.items.map((iss) => <IssueRow key={iss.id} issue={iss} onSelect={open} selected={iss.id === id} />)}
+          {page.items.map((iss) => <IssueRow key={iss.id} issue={iss} to={linkTo(iss.id)} replace={split} selected={iss.id === id} />)}
         </div>
         {page.loading && <Skeleton lines={3} rows={page.items.length ? 1 : 4} />}
         {!page.loading && page.hasMore && (

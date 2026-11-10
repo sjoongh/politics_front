@@ -22,7 +22,7 @@ export function useBackHandler({ modalOpen, closeModal }) {
         else if (action === 'back') navigate(-1);
         else if (action === 'to-list') navigate(listPathFor(location.pathname), { replace: true });
         else App.exitApp();
-      }).then((h) => { handle = h; });
+      }).then((h) => { if (cancelled) h.remove(); else handle = h; });
     }).catch(() => {});
     return () => { cancelled = true; if (handle) handle.remove(); };
   }, [modalOpen, closeModal, location.pathname, navigate]);

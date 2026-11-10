@@ -21,3 +21,11 @@ test('clean file passes and focus ring line is exempt', () => {
 test('korean punctuation is not emoji', () => {
   expect(findViolations([{ path: 'e.jsx', text: '정부 2 · 법안 1 · ‘인용’ … ' }])).toEqual([]);
 });
+
+test('flags filler sentences in JSX text', () => {
+  const v = findViolations([{ path: 'f.jsx', text: '<p>맞춤 피드를 준비하고 있어요…</p>\n<span>다른 표현으로 검색해 보세요.</span>\n<b>저장</b>' }]);
+  expect(v.map((x) => x.rule)).toEqual(['filler', 'filler']);
+});
+test('notices and constraints are allowed with a marker', () => {
+  expect(findViolations([{ path: 'g.jsx', text: '<p>{/* allow-ui-rule */}AI 요약은 원문을 대체하지 않습니다.</p>' }])).toEqual([]);
+});

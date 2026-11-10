@@ -1,12 +1,20 @@
 import api from './api';
 import { normalizePage, normalizeIssue } from './issueShape';
 
-/** 구 호출(배열). 검색 카탈로그 등에서 첫 200건을 쓴다. */
+const CACHE_MS = 5 * 60 * 1000;
+const catalogCache = new Map();
+
+/** 구 호출(배열). 검색 카탈로그 등에서 첫 200건을 쓴다. 5분 모듈 캐시. */
 export async function getIssues(status = null, limit = 200) {
+  const key = `${status || '*'}|${limit}`;
+  const hit = catalogCache.get(key);
+  if (hit && Date.now() - hit.at < CACHE_MS) return hit.promise;
   const params = { limit };
   if (status) params.status = status;
-  const res = await api.get('/api/issues', { params });
-  return normalizePage(res.data.data).items;
+  const promise = api.get('/api/issues', { params }).then((res) => normalizePage(res.data.data).items);
+  catalogCache.set(key, { at: Date.now(), promise });
+  promise.catch(() => catalogCache.delete(key));
+  return promise;
 }
 
 /** v2: 서버 정렬(rank|updated|media)·단일 필터·커서. 구 서버가 배열을 주면 정규화한다. */

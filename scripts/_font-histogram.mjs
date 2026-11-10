@@ -2,7 +2,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
-const BASE = process.argv[2] || 'http://localhost:5055';
+const BASE = process.argv[2] || 'http://localhost:5056';
 const ISSUE = process.env.SHOT_ISSUE || '609c190844a5417c87695945e7bef25e';
 const ROUTES = ['/', '/issues', `/issues/${ISSUE}`, '/members', '/search'];
 const ALLOWED = new Set([12, 13, 14, 15, 17, 20, 24]);

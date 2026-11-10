@@ -89,8 +89,8 @@ export default function NewsReaderModal({ article, pool = [], onClose }) {
         </div>
 
         <div className="reader__summary-label">AI 요약</div>
-        <p className="reader__body">{current.ai_summary || '요약 정보가 아직 없어요. 원문에서 확인해 주세요.'}</p>
-        <p className="reader__disclaimer">※ AI 요약은 원문을 대체하지 않습니다. 세부 내용·인용은 원문에서 확인하세요.</p>
+        <p className="reader__body">{current.ai_summary || '요약 없음'}</p>
+        {/* allow-ui-rule */}<p className="reader__disclaimer">※ AI 요약은 원문을 대체하지 않습니다. 세부 내용·인용은 원문에서 확인하세요.</p>
 
         {Array.isArray(current.keywords) && current.keywords.length > 0 && (
           <div className="reader__keywords">

@@ -12,6 +12,8 @@ const RULES = [
   // 이모지: 보조 평면(이모티콘·픽토그램) + 기타 기호 블록 일부. 텍스트 구두점(·‘’…)은 제외.
   { rule: 'emoji', re: /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B50}\u{2B06}\u{2705}\u{274C}]/u },
   { rule: 'slogan', re: /실시간 정치 브리핑/ },
+  // JSX 텍스트의 설명·권유문(…합니다/하세요/해요/세요로 끝나는 문장). 고지·제약 문구는 allow-ui-rule 마커로 예외.
+  { rule: 'filler', re: />[^<>{}]{4,}(니다|세요|어요|아요|해요|드려요|주세요)[.…!?]?\s*</ },
 ];
 
 const SKIP_LINE = /focus-visible|focus-ring|\/\*\s*allow-ui-rule/;

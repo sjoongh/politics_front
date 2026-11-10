@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
+import { Outlet, useParams, useSearchParams } from 'react-router';
 import { Search } from 'lucide-react';
 import FilterChips from '../ui/FilterChips';
 import SegmentedSort from '../ui/SegmentedSort';
@@ -16,7 +16,6 @@ const SORTS = [{ id: 'name', label: '이름순' }, { id: 'criminal', label: '전
 
 export default function Members() {
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate();
   const { id } = useParams();
   const desktop = useIsDesktop();
   const { members, loading, error, refresh } = useMembers();
@@ -43,7 +42,7 @@ export default function Members() {
     if (v && v !== def) next.set(k, v); else next.delete(k);
     setParams(next, { replace: true });
   };
-  const open = (mid) => navigate(`/members/${mid}${params.toString() ? `?${params}` : ''}`, { replace: split });
+  const linkTo = (mid) => `/members/${mid}${params.toString() ? `?${params}` : ''}`;
 
   if (detailOnly) return <Outlet />;
   return (
@@ -60,7 +59,7 @@ export default function Members() {
         {loading ? <Skeleton lines={2} rows={6} /> : (
           <>
             <div className="members__count num">{list.length}명</div>
-            <div className="hairline-list">{list.map((m) => <MemberRow key={m.id} member={m} onSelect={open} selected={m.id === id} />)}</div>
+            <div className="hairline-list">{list.map((m) => <MemberRow key={m.id} member={m} to={linkTo(m.id)} replace={split} selected={m.id === id} />)}</div>
           </>
         )}
       </div>

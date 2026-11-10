@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 import fs from 'fs';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
-const BASE = process.argv[2] || 'http://localhost:5055';
+const BASE = process.argv[2] || 'http://localhost:5056';
 const ISSUE = process.env.SHOT_ISSUE || '609c190844a5417c87695945e7bef25e';
 const MEMBER = process.env.SHOT_MEMBER || '04T3751T';
 const ALL = ['/', '/issues', `/issues/${ISSUE}`, '/members', `/members/${MEMBER}`, '/search', '/search?q=추경'];

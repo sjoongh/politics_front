@@ -54,7 +54,7 @@ export default function AiSearchResults({ result, query, briefingLoading, onRunB
             <span className="ai-brief__conf">신뢰도 {CONF_LABEL[briefing.confidence] || '낮음'}</span>
           </div>
           <p className="ai-brief__answer">{briefing.answer}</p>
-          <p className="ai-brief__disclaimer">※ 제공된 기사 기반 AI 생성 요약입니다. 정확한 내용은 원문을 확인하세요.</p>
+          {/* allow-ui-rule */}<p className="ai-brief__disclaimer">※ 제공된 기사 기반 AI 생성 요약입니다. 정확한 내용은 원문을 확인하세요.</p>
         </section>
       ) : ai?.briefing_requested && !briefingLoading ? (
         <div className="ai-search__fallback">
@@ -75,7 +75,7 @@ export default function AiSearchResults({ result, query, briefingLoading, onRunB
         </div>
       ) : (
         <div className="empty-rich">
-          <p className="empty-rich__msg">'{query}'에 대한 결과가 없어요.<br />다른 표현으로 검색해 보세요.</p>
+          <p className="empty-rich__msg">'{query}' 결과 0건</p>
         </div>
       )}
     </div>

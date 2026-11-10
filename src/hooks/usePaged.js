@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /** 커서 페이지 공통 훅. fetchPage(cursor) → {items, nextCursor}. key가 바뀌면 처음부터. */
-export function usePaged(fetchPage, key) {
+export function usePaged(fetchPage, key, enabled = true) {
   const [items, setItems] = useState([]);
   const [cursor, setCursor] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState(null);
   const seq = useRef(0);
 
   const load = useCallback(async (reset) => {
+    if (!enabled) { setLoading(false); return; }
     const my = ++seq.current;
     setLoading(true); setError(null);
     try {
@@ -22,10 +23,10 @@ export function usePaged(fetchPage, key) {
     } finally {
       if (my === seq.current) setLoading(false);
     }
-  }, [fetchPage, cursor]);
+  }, [fetchPage, cursor, enabled]);
 
   useEffect(() => { load(true); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, enabled]);
 
   return { items, loading, error, hasMore: !!cursor, loadMore: () => load(false), reload: () => load(true) };
 }

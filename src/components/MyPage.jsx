@@ -115,7 +115,7 @@ export default function MyPage({ user }) {
               </span>
             ))}
             {(!user?.interests || user.interests.length === 0) && (
-              <Typography variant="body2" color="text.secondary">아직 없음 — 추가해보세요</Typography>
+              <Typography variant="body2" color="text.secondary">0개</Typography>
             )}
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -137,7 +137,7 @@ export default function MyPage({ user }) {
             <ListItem key={item.id} button component="a" href={item.source_url} target="_blank">
               <ListItemText primary={item.title} secondary={item.source} />
             </ListItem>
-          )) : <Typography variant="body2" color="text.secondary">북마크한 뉴스가 없습니다.</Typography>}
+          )) : <Typography variant="body2" color="text.secondary">북마크 0건</Typography>}
         </List>
 
         <Divider sx={{ my: 2 }} />

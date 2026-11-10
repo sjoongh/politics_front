@@ -7,6 +7,7 @@ import ErrorRetry from '../ui/ErrorRetry';
 import VoteSummary from '../member/VoteSummary';
 import { voteRows } from '../member/memberModel';
 import { useMemberDetail } from '../hooks/useMembers';
+import { goBackToList } from '../hooks/backRules';
 import { useIsDesktop } from '../hooks/useMediaQuery';
 import { trackSelectContent } from '../analytics';
 import { shortDate } from '../issue/format';
@@ -20,9 +21,9 @@ export default function MemberDetail() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const desktop = useIsDesktop();
-  const { detail, loading } = useMemberDetail(id);
+  const { detail, loading, error, reload } = useMemberDetail(id);
   useEffect(() => { if (detail && detail.id) trackSelectContent('member', detail.id); }, [detail]);
-  const close = () => navigate(`/members${params.toString() ? `?${params}` : ''}`, { replace: desktop });
+  const close = () => goBackToList(navigate, `/members${params.toString() ? `?${params}` : ''}`, desktop);
   const profile = detail ? [detail.district, detail.committee, detail.term].filter(Boolean).join(' · ') : '';
   const votes = voteRows(detail);
   const bills = (detail && Array.isArray(detail.bills) ? detail.bills : []).slice(0, 12);
@@ -36,7 +37,7 @@ export default function MemberDetail() {
         </button>
       </div>
       {loading && <Skeleton lines={3} rows={2} />}
-      {!loading && !detail && <ErrorRetry message="의원 정보를 불러오지 못했습니다" onRetry={() => navigate(0)} />}
+      {!loading && error && <ErrorRetry message={error} onRetry={reload} />}
       {detail && (
         <>
           <div className="detail__badges"><Badge kind="category" value={detail.party || '무소속'} /></div>
