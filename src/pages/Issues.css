@@ -1,0 +1,11 @@
+.issues__controls { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-2) 0 var(--sp-3); border-bottom: 1px solid var(--hairline); }
+.issues__list { display: flex; flex-direction: column; }
+.issues__more { display: flex; justify-content: center; padding: var(--sp-4) 0; }
+.issues__count { font-size: var(--fs-13); color: var(--text-3); }
+
+/* 데스크톱 분할: 상세가 열리면 좌 목록 + 우 상세 */
+@media (min-width: 1024px) {
+  .issues.is-split { display: grid; grid-template-columns: var(--split-list) 1fr; gap: var(--sp-5); align-items: start; }
+  .issues.is-split .issues__pane { position: sticky; top: 52px; max-height: calc(100vh - 52px); overflow-y: auto; padding-right: var(--sp-2); }
+  .issues__detail { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-panel); padding: var(--sp-4) var(--sp-5); min-height: 60vh; }
+}
