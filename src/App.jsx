@@ -24,8 +24,6 @@ import LoginForm from './components/LoginForm';
 import MyPage from './components/MyPage';
 import EmptyState from './components/EmptyState';
 import SkeletonCard from './components/SkeletonCard';
-import DailySummaryCard from './components/DailySummaryCard';
-import BriefingHero from './components/BriefingHero';
 import ScrollToTop from './components/ScrollToTop';
 import ListToolbar from './components/ListToolbar';
 import NewsReaderModal from './components/NewsReaderModal';
@@ -366,8 +364,6 @@ const handleLoginClose = () => setLoginOpen(false);
         const listItems = filtered.slice(7);       // 압축 목록형(티어링 3단계)
         return (
           <div>
-            <BriefingHero summary={dailySummary} fallbackItems={heroFallback}
-              topIssues={issues} onIssueClick={(id) => { setSelectedIssueId(id); }} />
 
             {/* 요약이 있을 때만 별도 이슈 칩을 노출(요약 없으면 히어로가 이미 이슈를 나열하므로 중복 방지) */}
             {dailySummary?.overview && issues.length > 0 && (
@@ -451,7 +447,6 @@ const handleLoginClose = () => setLoginOpen(false);
       default:
         return (
           <div>
-            <DailySummaryCard summary={dailySummary} />
             <div className="section-title">🔍 전체</div>
             <div className="feed-grid">
               {(data?.articles || []).length > 0 ? (

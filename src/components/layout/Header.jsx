@@ -7,7 +7,6 @@ export default function Header({ search, authButton }) {
       <div className="app-header__inner">
         <div className="app-header__brand">
           <span className="brandmark">브리핑 코리아</span>
-          <span className="brandsub">실시간 정치 브리핑</span>
         </div>
         <div className="app-header__search">{search}</div>
         <div className="app-header__actions">
