@@ -134,3 +134,6 @@ temp/
 # Brainstorm visual companion
 .superpowers/
 .vercel
+
+# superpowers 작업 스크래치
+.superpowers/
