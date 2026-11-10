@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import { Search } from 'lucide-react';
 import FilterChips from '../ui/FilterChips';
@@ -28,6 +28,15 @@ export default function Members() {
   const split = desktop && !!id;
   const detailOnly = !desktop && !!id;
   useScrollRestore(`members:${query}:${party}:${sort}`, !detailOnly && !loading);
+  const lastId = useRef(null);
+  useEffect(() => {
+    if (id) { lastId.current = id; return; }
+    if (lastId.current) {
+      const el = document.querySelector(`[data-member-id="${lastId.current}"]`);
+      if (el) el.focus();
+      lastId.current = null;
+    }
+  }, [id, loading]);
 
   const setParam = (k, v, def) => {
     const next = new URLSearchParams(params);

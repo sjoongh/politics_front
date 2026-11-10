@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import FilterChips from '../ui/FilterChips';
 import SegmentedSort from '../ui/SegmentedSort';
@@ -37,6 +37,16 @@ export default function Issues() {
   const detailOnly = !desktop && !!id;
 
   useScrollRestore(`issues:${filterId}:${sort}`, !detailOnly && !page.loading);
+  // 상세 닫힘 후 포커스를 선택했던 행으로 복귀(키보드 사용자)
+  const lastId = useRef(null);
+  useEffect(() => {
+    if (id) { lastId.current = id; return; }
+    if (lastId.current) {
+      const el = document.querySelector(`[data-issue-id="${lastId.current}"]`);
+      if (el) el.focus({ preventScroll: false });
+      lastId.current = null;
+    }
+  }, [id, page.loading]);
   useEffect(() => { if (!detailOnly) window.scrollTo(0, 0); }, [filterId, sort]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setParam = (k, v) => {
