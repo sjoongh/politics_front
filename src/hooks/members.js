@@ -1,7 +1,7 @@
 import api from './api';
 
 export async function getMembers(party = null) {
-  const params = {};
+  const params = { limit: 400 };   // 백엔드 기본 20건 → 전체(300명)
   if (party) params.party = party;
   const res = await api.get('/api/members', { params });
   return res.data.data?.members || [];

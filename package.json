@@ -39,7 +39,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint:ui": "node scripts/check-ui-rules.mjs",
+    "verify:ui": "node scripts/check-ui-rules.mjs && node scripts/_font-histogram.mjs http://localhost:5056 && node scripts/_overflow.mjs http://localhost:5056 && node scripts/_route-check.mjs http://localhost:5056"
   },
   "eslintConfig": {
     "extends": [

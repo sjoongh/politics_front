@@ -11,7 +11,7 @@
 .member-row__photo { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2) center/cover no-repeat; display: inline-flex; align-items: center; justify-content: center; font-size: var(--fs-13); font-weight: 700; color: var(--text-2); }
 .member-row__name { font-size: var(--fs-15); font-weight: 700; }
 .member-row__party { font-size: var(--fs-13); color: var(--text-2); margin-left: 6px; font-weight: 500; }
-.member-row__sub { font-size: var(--fs-13); color: var(--text-3); margin-top: 1px; }
+.member-row__sub { display: block; font-size: var(--fs-13); color: var(--text-3); margin-top: 1px; }
 .member-row__metrics { font-size: var(--fs-13); color: var(--text-2); white-space: nowrap; text-align: right; }
 .member-row__metrics b { color: var(--text); }
 
