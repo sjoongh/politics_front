@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackLogin, trackSignUp } from '../analytics';
 import toast from 'react-hot-toast';
 import { useAppContext } from "../components/AppContext";
 import api from "./api";
@@ -18,6 +19,7 @@ export function useAuth() {
         localStorage.setItem('access_token', data.data.access_token);
       }
       setUser(data.data.user);
+      trackLogin('password');
       if (onSuccess) onSuccess();
     } catch (err) {
       toast.error(err.message || "로그인 실패");
@@ -40,6 +42,7 @@ export function useAuth() {
       });
 
       toast.success("회원가입 완료. 로그인 해주세요.");
+      trackSignUp('password');
       if (onSuccess) onSuccess();
     } catch (err) {
       toast.error(err.message || "회원가입 실패");

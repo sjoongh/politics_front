@@ -4,6 +4,7 @@ import { ExternalLink, Share2, X, Eye } from 'lucide-react';
 import { formatDate } from '../utils/dateUtils';
 import { relatedNews } from '../utils/relatedNews';
 import { articleShareUrl } from '../config/share';
+import { trackShare, trackOpenOriginal, trackSelectContent } from '../analytics';
 
 function isIconLikeImage(url) {
   if (!url || typeof url !== 'string') return true;
@@ -19,6 +20,7 @@ export default function NewsReaderModal({ article, pool = [], onClose }) {
   const panelRef = useRef(null);
 
   useEffect(() => { setCurrent(article); }, [article]);
+  useEffect(() => { if (current?.id) trackSelectContent('news', current.id); }, [current?.id]);
 
   // 관련 기사 클릭으로 내용이 바뀌면 스크롤 상단으로
   useEffect(() => { if (panelRef.current) panelRef.current.scrollTop = 0; }, [current]);
@@ -36,7 +38,10 @@ export default function NewsReaderModal({ article, pool = [], onClose }) {
   const hasImg = current.image_url && !isIconLikeImage(current.image_url);
 
   const openOriginal = () => {
-    if (current.source_url) window.open(current.source_url, '_blank', 'noopener,noreferrer');
+    if (current.source_url) {
+      trackOpenOriginal(current.id, current.source);
+      window.open(current.source_url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const share = async () => {
@@ -45,9 +50,11 @@ export default function NewsReaderModal({ article, pool = [], onClose }) {
     try {
       if (navigator.share) {
         await navigator.share(shareData);
+        trackShare('article', current.id, 'native');
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         toast.success('링크를 복사했어요');
+        trackShare('article', current.id, 'clipboard');
       } else {
         toast('공유를 지원하지 않는 환경이에요');
       }

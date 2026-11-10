@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
+import { trackSearch } from '../analytics';
 import { getAllNews, searchNews, aiSearchNews, getForYou, getNewsDetail, exportNewsData, getPresidentInfo, getRecentPolicies, getPoliticalStatements } from '../hooks/useNews'; // ✅ news.js의 함수들 사용
 
 // 개인 맞춤 'For You' 피드 훅
@@ -42,6 +43,8 @@ export const useAiSearch = () => {
       setError(null);
       const data = await aiSearchNews(query, { includeBriefing: false });
       setResult(data);
+      // 검색어 원문은 보내지 않음(PII) — 모드/길이/결과수만
+      trackSearch({ mode: data?.mode, queryLength: query.trim().length, resultCount: data?.count ?? data?.items?.length ?? 0 });
     } catch (err) {
       setError(err.message || 'AI 검색 실패');
       setResult(null);

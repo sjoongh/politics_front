@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { trackSelectContent } from '../analytics';
 import { useMemberDetail } from './useMembers';
 
 export default function MemberDetail({ memberId, onClose }) {
   const { detail, loading } = useMemberDetail(memberId);
+  useEffect(() => { if (detail?.id) trackSelectContent('member', detail.id); }, [detail?.id]);
 
   const handleOverlay = (e) => {
     if (e.target === e.currentTarget) onClose();

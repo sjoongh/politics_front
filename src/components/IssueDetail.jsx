@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useIssueDetail } from './useIssues';
 import { statusBadgeClass } from './issueStatus';
 import { formatDate } from '../utils/dateUtils';
@@ -7,6 +7,7 @@ import { partyColor } from '../utils/partyColors';
 import { Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { issueShareUrl } from '../config/share';
+import { trackShare, trackSelectContent } from '../analytics';
 
 const POSITION = {
   support: { label: '찬성', cls: 'pos--support' },
@@ -89,6 +90,7 @@ function SourcePanels({ panels }) {
 
 export default function IssueDetail({ issueId, onClose, onArticleClick }) {
   const { detail, loading } = useIssueDetail(issueId);
+  useEffect(() => { if (detail?.id) trackSelectContent('issue', detail.id); }, [detail?.id]);
 
   const handleOverlay = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -98,8 +100,8 @@ export default function IssueDetail({ issueId, onClose, onArticleClick }) {
     const url = issueShareUrl(issueId);
     const data = { title: `브리핑 코리아 · ${detail?.title || '정치 이슈'}`, text: detail?.title, url };
     try {
-      if (navigator.share) await navigator.share(data);
-      else if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast.success('링크를 복사했어요'); }
+      if (navigator.share) { await navigator.share(data); trackShare('issue', issueId, 'native'); }
+      else if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast.success('링크를 복사했어요'); trackShare('issue', issueId, 'clipboard'); }
     } catch (_) { /* 취소 */ }
   };
 

@@ -30,6 +30,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ListToolbar from './components/ListToolbar';
 import NewsReaderModal from './components/NewsReaderModal';
 import { useDailySummary } from './components/useSummary';
+import { trackTab } from './analytics';
 
 const NEWS_TOPICS = ['전체', '정치', '경제', '사회', '대통령실', '국회'];
 const MEMBER_SORTS = [{ id: 'name', label: '이름순' }, { id: 'criminal', label: '전과순' }, { id: 'term', label: '선수순' }];
@@ -109,6 +110,10 @@ function App() {
     ...(user ? [{ id: 'digest', label: '맞춤', icon: '✨' }] : []),
     ...(user ? [{ id: 'mypage', label: '마이페이지', icon: '👤' }] : [])
   ];
+
+  // --- 계측(GA4): 탭 전환 = 가상 page_view (상세 select_content 는 각 상세 컴포넌트가 실제 표시 시점에 기록)
+  const activeTabLabel = tabs.find((t) => t.id === activeTab)?.label;
+  useEffect(() => { trackTab(activeTab, activeTabLabel); }, [activeTab, activeTabLabel]);
 
   const handleSearch = useCallback(async (searchTerm, filters) => {
     if (searchTerm.trim()) {
