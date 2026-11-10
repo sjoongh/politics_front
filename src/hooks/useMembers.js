@@ -1,27 +1,27 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getIssues, getIssueDetail } from '../hooks/issues';
+import { getMembers, getMemberDetail } from './members';
 
-export function useIssues() {
-  const [issues, setIssues] = useState([]);
+export function useMembers() {
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const load = useCallback(async () => {
     try {
       setLoading(true);
-      setIssues(await getIssues());
+      setMembers(await getMembers());
     } catch (err) {
-      setError(err.message || '이슈를 불러오지 못했습니다.');
+      setError(err.message || '의원을 불러오지 못했습니다.');
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => { load(); }, [load]);
-  return { issues, loading, error, refresh: load };
+  return { members, loading, error, refresh: load };
 }
 
-export function useIssueDetail(id) {
+export function useMemberDetail(id) {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,7 @@ export function useIssueDetail(id) {
     if (!id) { setDetail(null); return; }
     let active = true;
     setLoading(true);
-    getIssueDetail(id)
+    getMemberDetail(id)
       .then((d) => { if (active) setDetail(d); })
       .catch(() => { if (active) setDetail(null); })
       .finally(() => { if (active) setLoading(false); });
