@@ -16,7 +16,9 @@ export const SNAPSHOT_FILES = {
 };
 
 const HOUR = 3600 * 1000;
-const FRESH_MS = 3 * HOUR;        // 수집은 매시(누락 감안 3시간)
+const FRESH_MS = 3 * HOUR;        // 기본: 수집은 매시(누락 감안 3시간)
+const FRESH_MIN_MS = 1 * HOUR;
+const FRESH_MAX_MS = 26 * HOUR;   // 파일이 말하는 신선 기간의 상한(의원 목록은 하루 1회 갱신)
 const STALE_MAX_MS = 7 * 24 * HOUR; // API가 죽었을 때 보여 줄 수 있는 최대 나이
 const FETCH_TIMEOUT_MS = 4000;
 
@@ -54,8 +56,14 @@ async function loadSnapshot(file, key, fetchImpl) {
   }
 }
 
+function freshWindow(snap) {
+  const s = Number(snap.fresh_for_s);
+  if (!Number.isFinite(s) || s <= 0) return FRESH_MS;
+  return Math.min(FRESH_MAX_MS, Math.max(FRESH_MIN_MS, s * 1000));
+}
+
 function isFresh(snap, key, now) {
-  if (now - snap.at > FRESH_MS) return false;
+  if (now - snap.at > freshWindow(snap)) return false;
   // '오늘 판'은 KST 날짜가 바뀌면 어제 것이 되므로 날짜가 같을 때만 신선하다
   if (key === '/api/today' && kstDate(snap.at) !== kstDate(now)) return false;
   return true;

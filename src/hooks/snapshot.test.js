@@ -103,3 +103,17 @@ test('non-snapshot requests and non-GETs go straight to the API', async () => {
   expect(fetchImpl.calls).toHaveLength(0);
   expect(api.calls).toHaveLength(3);
 });
+
+test('per-file freshness window from the backend is honoured (members refresh daily)', async () => {
+  const key = '/api/members?limit=400';
+  const file = { ...snapFile(key, NOW - 20 * H, { members: ['snap'] }), fresh_for_s: 25 * 3600 };
+  const api = fakeAdapter({ success: true, data: { members: ['api'] } });
+  const res = await withSnapshots(api, { fetchImpl: fakeFetch({ 'members-400.json': file }), now: () => NOW })(
+    cfg('/api/members', { limit: 400 }));
+  expect(res.data.data.members).toEqual(['snap']);
+  expect(api.calls).toHaveLength(0);
+  const tooLong = { ...file, generated_at: new Date(NOW - 40 * H).toISOString(), fresh_for_s: 999 * 3600 };
+  const r2 = await withSnapshots(api, { fetchImpl: fakeFetch({ 'members-400.json': tooLong }), now: () => NOW })(
+    cfg('/api/members', { limit: 400 }));
+  expect(r2.data.data.members).toEqual(['api']);   // 상한 26시간으로 고정
+});
