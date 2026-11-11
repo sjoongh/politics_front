@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { needsAuth } from './authScope';
+import { withSnapshots } from './snapshot';
 
 // 로컬/프로덕션 baseURL. 프로덕션은 개인 Vercel 백엔드.
 const API_BASE_URL = process.env.NODE_ENV === 'development'
@@ -9,6 +10,11 @@ const API_BASE_URL = process.env.NODE_ENV === 'development'
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
+  // 프로덕션: 공개 목록(오늘 판·이슈 랭킹·검색 카탈로그·의원)은 GitHub Pages 정적 스냅샷을 먼저 쓴다.
+  // 개발(로컬 백엔드)에서는 끈다.
+  ...(process.env.NODE_ENV === 'production'
+    ? { adapter: withSnapshots(axios.getAdapter(axios.defaults.adapter)) }
+    : {}),
   headers: {
     'Content-Type': 'application/json',
   },
