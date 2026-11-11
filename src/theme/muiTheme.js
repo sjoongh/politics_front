@@ -1,12 +1,13 @@
 import { createTheme } from '@mui/material';
 
 const palettes = {
+  // 토큰 정본(src/theme/tokens.css)과 같은 값. MUI는 로그인·마이페이지 폼에서만 쓴다.
   light: {
-    primary: '#3354ff', bgDefault: '#f4f6fb', bgPaper: '#ffffff',
-    textPrimary: '#1a2233', textSecondary: '#5b6580',
+    primary: '#111418', bgDefault: '#ffffff', bgPaper: '#ffffff',
+    textPrimary: '#111418', textSecondary: '#5c6470',
   },
   dark: {
-    primary: '#5b78ff', bgDefault: '#0f1218', bgPaper: '#181c24',
+    primary: '#eef1f7', bgDefault: '#0f1115', bgPaper: '#151821',
     textPrimary: '#eef1f7', textSecondary: '#9aa3b5',
   },
 };
@@ -21,6 +22,6 @@ export function makeTheme(mode) {
       text: { primary: p.textPrimary, secondary: p.textSecondary },
     },
     typography: { fontFamily: `'Pretendard', -apple-system, sans-serif` },
-    shape: { borderRadius: 12 },
+    shape: { borderRadius: 8 },
   });
 }

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useRegisterModal } from '../hooks/modalStack';
 import toast from 'react-hot-toast';
 import {
   Typography, Avatar,
@@ -42,6 +43,8 @@ export default function MyPage({ user }) {
   };
 
   const [changePwOpen, setChangePwOpen] = useState(false);
+  const closePw = useCallback(() => setChangePwOpen(false), []);
+  useRegisterModal(changePwOpen, closePw);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -83,7 +86,7 @@ export default function MyPage({ user }) {
       <div style={{
         background: "var(--surface)",
         borderRadius: "var(--radius-lg)",
-        boxShadow: "var(--shadow-card)",
+        border: "1px solid var(--hairline)",
         border: "1px solid var(--card-border)",
         maxWidth: "420px",
         width: "100%",
@@ -111,11 +114,11 @@ export default function MyPage({ user }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
             {(user?.interests || []).map((k) => (
               <span key={k} className="bk-badge" style={{ cursor: 'pointer' }} onClick={() => handleRemoveInterest(k)}>
-                {k} ✕
+                {k} ×
               </span>
             ))}
             {(!user?.interests || user.interests.length === 0) && (
-              <Typography variant="body2" color="text.secondary">아직 없음 — 추가해보세요</Typography>
+              <Typography variant="body2" color="text.secondary">0개</Typography>
             )}
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -137,7 +140,7 @@ export default function MyPage({ user }) {
             <ListItem key={item.id} button component="a" href={item.source_url} target="_blank">
               <ListItemText primary={item.title} secondary={item.source} />
             </ListItem>
-          )) : <Typography variant="body2" color="text.secondary">북마크한 뉴스가 없습니다.</Typography>}
+          )) : <Typography variant="body2" color="text.secondary">북마크 0건</Typography>}
         </List>
 
         <Divider sx={{ my: 2 }} />

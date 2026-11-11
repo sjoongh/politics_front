@@ -1,0 +1,76 @@
+/* 이슈 전용 컴포넌트. 토큰만 참조. */
+.tally { display: flex; height: 8px; border-radius: 3px; overflow: hidden; background: var(--lean-unknown); }
+.tally--md { height: 10px; }
+.tally__yes { background: var(--pos-yes); }
+.tally__no { background: var(--pos-no); }
+.tally__abstain { background: var(--pos-neutral); opacity: .55; }
+.tally-legend { display: flex; gap: var(--sp-3); font-size: var(--fs-12); color: var(--text-2); margin-top: 4px; }
+.tally-legend b { color: var(--text); font-weight: 700; }
+
+.bias { display: flex; height: 6px; border-radius: 3px; overflow: hidden; }
+.bias__left { background: var(--lean-left); }
+.bias__center { background: var(--lean-center); }
+.bias__right { background: var(--lean-right); }
+.bias__foreign { background: var(--lean-foreign); }
+.bias__unknown { background: var(--lean-unknown); }
+.bias-legend { display: flex; flex-wrap: wrap; gap: var(--sp-3); font-size: var(--fs-12); color: var(--text-2); margin-top: 6px; }
+.bias-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+
+.stance-chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 22px; max-width: 100%; padding: 2px 6px; border-radius: var(--r-badge); background: var(--surface-2); font-size: var(--fs-12); color: var(--text); line-height: 1.3; }
+.stance-chip__pos { font-weight: 700; }
+.stance-chip__pos--support, .stance-chip__pos--yes { color: var(--pos-yes); }
+.stance-chip__pos--oppose, .stance-chip__pos--no { color: var(--pos-no); }
+.stance-chip__pos--criticize { color: var(--pos-crit); }
+.stance-chip__pos--explain, .stance-chip__pos--propose, .stance-chip__pos--neutral { color: var(--pos-neutral); }
+.stance-chip__basis { font-size: var(--fs-12); color: var(--text-3); }
+
+/* 이슈 행(카드 아님): 배지 줄 / 제목 / 요약 2줄 / 소스 줄 */
+.issue-row { display: block; width: 100%; text-align: left; padding: var(--sp-3) 0; border-top: 1px solid var(--hairline); color: var(--text); }
+.issue-row:first-child { border-top: 0; }
+.issue-row.is-selected { background: var(--surface-2); margin: 0 calc(-1 * var(--sp-3)); padding-left: var(--sp-3); padding-right: var(--sp-3); border-radius: var(--r-panel); }
+.issue-row__badges { display: flex; gap: var(--sp-1); margin-bottom: 6px; }
+.issue-row__title, .issue-row__sub, .issue-row__summary { display: block; }
+.issue-row__stance { display: flex; }
+.issue-row__title { font-size: var(--fs-17); font-weight: 700; line-height: var(--lh-title); letter-spacing: -.2px; }
+.issue-row__sub { font-size: var(--fs-13); color: var(--text-3); margin-top: 2px; }
+.issue-row__summary { font-size: var(--fs-14); color: var(--text-2); margin-top: 4px; display: -webkit-box !important; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.issue-row__stance { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin-top: 6px; }
+.issue-row__sources { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--sp-2); margin-top: 6px; font-size: var(--fs-13); color: var(--text-2); }
+.issue-row__sources .is-none { color: var(--text-3); }
+.issue-row__sources .sep { color: var(--hairline-strong); }
+.issue-row__date { margin-left: auto; color: var(--text-3); }
+
+/* 상세 섹션 */
+.rec { display: block; padding: var(--sp-3) 0; border-top: 1px solid var(--hairline); color: var(--text); }
+.rec:first-child { border-top: 0; }
+.rec__kind { font-size: var(--fs-12); font-weight: 700; color: var(--text-2); }
+.rec__title { font-size: var(--fs-15); font-weight: 600; margin-top: 2px; line-height: var(--lh-title); }
+.rec__meta { font-size: var(--fs-13); color: var(--text-3); margin-top: 2px; }
+.rec__excerpt { font-size: var(--fs-14); color: var(--text-2); margin-top: 4px; }
+.rec__tally { margin-top: 6px; }
+.rec--empty { color: var(--text-3); font-size: var(--fs-14); padding: var(--sp-3) 0; }
+
+.stance-table { border: 1px solid var(--hairline); border-radius: var(--r-panel); overflow: hidden; }
+.stance-table__row { display: grid; grid-template-columns: 84px 1fr; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); border-top: 1px solid var(--hairline); align-items: baseline; }
+.stance-table__row:first-child { border-top: 0; }
+.stance-table__actor { font-size: var(--fs-14); font-weight: 700; }
+.stance-table__body { font-size: var(--fs-13); color: var(--text-2); }
+.stance-table__pos { font-size: var(--fs-14); font-weight: 700; margin-right: 6px; }
+.stance-table__basis { display: inline-block; font-size: var(--fs-12); color: var(--text-3); margin-left: 6px; }
+
+.timeline { border-left: 2px solid var(--hairline-strong); margin: var(--sp-2) 0 0 4px; padding-left: var(--sp-4); }
+.timeline__item { position: relative; padding: 6px 0; font-size: var(--fs-14); }
+.timeline__item::before { content: ''; position: absolute; left: calc(-1 * var(--sp-4) - 6px); top: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--action); }
+.timeline__date { font-size: var(--fs-12); color: var(--text-3); margin-right: var(--sp-2); }
+
+.press__group { margin-top: var(--sp-3); }
+.press__label { font-size: var(--fs-12); font-weight: 700; color: var(--text-2); margin-bottom: 4px; }
+.press__item { display: block; width: 100%; min-height: var(--touch); text-align: left; padding: var(--sp-2) 0; border-top: 1px solid var(--hairline); color: var(--text); font-size: var(--fs-14); line-height: var(--lh-title); }
+.press__item span { font-size: var(--fs-12); color: var(--text-3); margin-right: var(--sp-2); }
+.press__blind { font-size: var(--fs-13); color: var(--text-2); margin-top: var(--sp-2); }
+.press__more { display: flex; justify-content: center; padding: var(--sp-3) 0; }
+
+.proposers { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.proposers__chip { display: inline-flex; align-items: center; height: 36px; position: relative; padding: 0 var(--sp-3); border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); font-size: var(--fs-13); font-weight: 600; color: var(--text); }
+
+.proposers__chip::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch); transform: translateY(-50%); }

@@ -12,6 +12,7 @@
   "private": true,
   "dependencies": {
     "@capacitor/android": "^7.4.2",
+    "@capacitor/app": "^7.1.2",
     "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^7.4.2",
     "@capacitor/ios": "^7.4.2",
@@ -30,6 +31,7 @@
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.6.0",
+    "react-router": "^7.18.5",
     "react-scripts": "^5.0.1",
     "web-vitals": "^5.0.3"
   },
@@ -37,7 +39,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint:ui": "node scripts/check-ui-rules.mjs",
+    "verify:ui": "node scripts/check-ui-rules.mjs && node scripts/_font-histogram.mjs http://localhost:5056 && node scripts/_overflow.mjs http://localhost:5056 && node scripts/_route-check.mjs http://localhost:5056"
   },
   "eslintConfig": {
     "extends": [
@@ -56,5 +60,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "playwright": "^1.65.0"
   }
 }

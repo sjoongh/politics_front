@@ -16,19 +16,6 @@ body {
 }
 
 /* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  text-decoration: none;
-}
 
 /* .btn--primary and .btn--outline are defined in tokens.css — removed from here to avoid override */
 
@@ -58,14 +45,6 @@ body {
 }
 
 /* Quote styling — used by Modal.jsx standalone .quote */
-.quote {
-  font-style: italic;
-  padding: 12px;
-  background: color-mix(in srgb, var(--primary) 8%, transparent);
-  border-left: 4px solid var(--primary, #3354ff);
-  border-radius: 6px;
-  margin: 8px 0;
-}
 
 /* Utility classes */
 .flex {
@@ -90,62 +69,6 @@ body {
 }
 
 /* webview */
-.webviewModal {
-  position: fixed;
-  z-index: 2000;
-  left: 0; top: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.webviewModalContent {
-  background: var(--surface, white);
-  border-radius: var(--radius-lg, 16px);
-  width: 95vw;
-  max-width: 800px;
-  height: 85vh;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding-top: 62px;
-}
-
-.webviewClose {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  z-index: 10;
-  font-size: 2rem;
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  border: none;
-  background: var(--primary, #3354ff);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.webviewClose:hover {
-  background: rgba(0,0,0,0.18);
-  color: var(--primary, #3354ff);
-}
-
-.webviewModal iframe {
-  flex-grow: 1;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 0 0 var(--radius-lg, 16px) var(--radius-lg, 16px);
-}
 
 /* Responsive */
 @media (max-width: 768px) {

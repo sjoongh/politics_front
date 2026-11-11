@@ -1,0 +1,45 @@
+/* 공용 프리미티브. 토큰만 참조. */
+.badge { display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: var(--r-badge); font-size: var(--fs-12); font-weight: 700; line-height: 1; white-space: nowrap; }
+.badge--pass { background: var(--status-pass-bg); color: var(--status-pass-fg); }
+.badge--live { background: var(--status-live-bg); color: var(--status-live-fg); }
+.badge--fail { background: var(--status-fail-bg); color: var(--status-fail-fg); }
+.badge--etc, .badge--category { background: var(--status-etc-bg); color: var(--status-etc-fg); }
+.badge--category { font-weight: 600; }
+
+.chips { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-2) 0; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: 0 0 auto; height: 32px; padding: 0 var(--sp-3); border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); font-size: var(--fs-13); font-weight: 600; color: var(--text-2); background: var(--surface); }
+.chip.is-active { background: var(--action); color: var(--on-action); border-color: var(--action); }
+
+.seg { display: inline-flex; border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); overflow: hidden; }
+.seg__item { height: 32px; padding: 0 var(--sp-3); font-size: var(--fs-13); font-weight: 600; color: var(--text-2); border-right: 1px solid var(--hairline); }
+.seg__item:last-child { border-right: 0; }
+.seg__item.is-active { background: var(--action); color: var(--on-action); }
+
+.anchors { position: sticky; top: 52px; z-index: 5; display: flex; gap: var(--sp-4); overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--hairline); background: var(--surface); margin: var(--sp-4) 0 var(--sp-2); }
+.anchors::-webkit-scrollbar { display: none; }
+.anchors__item { height: var(--touch); display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-14); font-weight: 600; color: var(--text-2); border-bottom: 2px solid transparent; white-space: nowrap; }
+.anchors__item.is-active { color: var(--text); border-bottom-color: var(--action); }
+.anchors__item:disabled { color: var(--text-3); cursor: default; }
+.anchors__count { font-size: var(--fs-12); color: var(--text-3); }
+
+.collapsible__summary { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: var(--touch); padding: var(--sp-2) 0; font-size: var(--fs-15); font-weight: 600; color: var(--text); text-align: left; }
+.collapsible__body { padding-bottom: var(--sp-3); }
+
+.skeleton { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3) 0; }
+.skeleton__line { height: 14px; border-radius: 4px; background: var(--surface-2); }
+.skeleton__line--short { width: 40%; }
+
+.error-retry { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-3) 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: var(--fs-14); color: var(--text-2); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: var(--touch); padding: 0 var(--sp-4); border-radius: var(--r-panel); font-size: var(--fs-14); font-weight: 700; }
+.btn--primary { background: var(--action); color: var(--on-action); }
+.btn--outline { border: 1px solid var(--hairline-strong); color: var(--text); }
+.btn--sm { min-height: 36px; padding: 0 var(--sp-3); }
+.btn:disabled { opacity: .5; cursor: default; }
+.section-title { font-size: var(--fs-13); font-weight: 700; color: var(--text-2); letter-spacing: .2px; margin: var(--sp-5) 0 var(--sp-2); }
+.hairline-list > * + * { border-top: 1px solid var(--hairline); }
+
+/* 터치 대상 44px: 시각 크기는 유지하고 히트 영역만 확장 */
+.chip, .seg__item, .btn--sm, .anchors__item { position: relative; }
+.chip::after, .seg__item::after, .btn--sm::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch); transform: translateY(-50%); }
+.topbar__actions > button, .theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); color: var(--text); border-radius: var(--r-panel); }
