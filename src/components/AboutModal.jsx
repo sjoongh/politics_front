@@ -1,4 +1,5 @@
 import './legacy.css';
+import { useRegisterModal } from '../hooks/modalStack';
 import React from 'react';
 
 /**
@@ -6,6 +7,7 @@ import React from 'react';
  * 한국 정치 서비스의 법적 리스크(저작권·편향·명예훼손) 완화를 위한 투명성 공개.
  */
 export default function AboutModal({ onClose }) {
+  useRegisterModal(true, onClose);
   return (
     <div className="bk-modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="bk-modal__panel about" role="dialog" aria-modal="true" aria-label="이용안내">
@@ -42,17 +44,10 @@ export default function AboutModal({ onClose }) {
         </div>
 
         <div className="about__sec">
-          <h3>문의·연락처</h3>
-          {/* allow-ui-rule */}<p>서비스 관련 문의, 제보, 정정 요청은 아래 이메일로 연락해 주세요.</p>
-          <p><b>이메일:</b> <a href="mailto:briefingkorea@gmail.com">briefingkorea@gmail.com</a></p>
+          <h3>문의·제보·정정</h3>
+          <p><a href="mailto:briefingkorea@gmail.com">briefingkorea@gmail.com</a></p>
         </div>
 
-        <div className="about__sec">
-          <h3>정정 요청</h3>
-          <p>잘못된 정보나 정정이 필요한 내용은 각 화면의 <b>피드백(잘못된 정보)</b> 또는
-            {' '}<a href="mailto:briefingkorea@gmail.com"><b>briefingkorea@gmail.com</b></a>으로 알려주시면 검토 후 반영합니다.
-            사실과 다른 표시가 확인되면 신속히 수정합니다.</p>
-        </div>
 
         <p className="about__disc">본 서비스는 정보 제공 목적이며, 특정 정당·후보를 지지·반대하지 않습니다.
           선거기간 중 일부 기능 표시는 관련 법령에 따라 조정될 수 있습니다.</p>

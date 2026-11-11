@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useRegisterModal } from '../hooks/modalStack';
 import toast from 'react-hot-toast';
 import {
   Typography, Avatar,
@@ -42,6 +43,8 @@ export default function MyPage({ user }) {
   };
 
   const [changePwOpen, setChangePwOpen] = useState(false);
+  const closePw = useCallback(() => setChangePwOpen(false), []);
+  useRegisterModal(changePwOpen, closePw);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
