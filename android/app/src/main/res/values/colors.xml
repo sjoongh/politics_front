@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 시스템바 뒤 영역. src/theme/tokens.css의 surface 토큰과 맞춘다. -->
+    <color name="system_bar_bg">#FFFFFF</color>
+    <bool name="light_system_bars">true</bool>
+</resources>
