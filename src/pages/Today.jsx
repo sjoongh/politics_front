@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Skeleton from '../ui/Skeleton';
@@ -24,13 +24,28 @@ export default function Today() {
   const ed = useToday(isToday ? null : date);
   const feed = useIssuesPage({ sort: 'rank', filter: null, limit: 30, enabled: isToday });
 
-  // 레거시 ?article= 딥링크: 리더 열기
+  const sharedArticleId = location.state?.article;
+  const [articleError, setArticleError] = useState(null);
+  const [articleRetry, setArticleRetry] = useState(0);
+
+  // 성공 전까지 딥링크 state를 보존해 조회 실패 시 같은 기사를 재시도한다.
   useEffect(() => {
-    const aid = location.state && location.state.article;
-    if (!aid) return;
-    getNewsDetail(aid).then((r) => { if (r && r.article) openArticle(r.article, []); }).catch(() => {});
-    navigate(location.pathname, { replace: true, state: null });
-  }, [location.state, location.pathname, navigate, openArticle]);
+    if (!sharedArticleId) return undefined;
+    let active = true;
+    setArticleError(null);
+    getNewsDetail(sharedArticleId).then((r) => {
+      if (!active) return;
+      if (!r?.article) {
+        setArticleError('공유된 기사를 찾을 수 없습니다.');
+        return;
+      }
+      openArticle(r.article, []);
+      navigate(location.pathname, { replace: true, state: null });
+    }).catch(() => {
+      if (active) setArticleError('공유된 기사를 불러오지 못했습니다.');
+    });
+    return () => { active = false; };
+  }, [sharedArticleId, articleRetry, location.pathname, navigate, openArticle]);
 
   const go = (d) => navigate(d === today ? '/' : `/today/${d}`);
   const edition = ed.edition;
@@ -40,6 +55,9 @@ export default function Today() {
 
   return (
     <div className="today">
+      {sharedArticleId && (articleError
+        ? <ErrorRetry message={articleError} onRetry={() => setArticleRetry((n) => n + 1)} />
+        : <div role="status" aria-label="공유된 기사 불러오는 중"><Skeleton lines={2} rows={1} /></div>)}
       <div className="today__head">
         <button type="button" className="today__nav" onClick={() => go(shiftDate(date, -1))} aria-label="전날"><ChevronLeft size={22} /></button>
         <h1 className="today__date">{formatHeader(date)}</h1>
