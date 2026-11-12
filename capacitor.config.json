@@ -9,5 +9,8 @@
       "politics-news.vercel.app",
       "localhost"
     ]
+  },
+  "android": {
+    "adjustMarginsForEdgeToEdge": "auto"
   }
 }
