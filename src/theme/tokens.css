@@ -17,7 +17,7 @@
   /* 텍스트 */
   --text: #111418;
   --text-2: #5c6470;
-  --text-3: #8a919c;
+  --text-3: #697180;   /* 흰 배경 4.9:1, 캔버스 4.6:1(AA) */
   --on-action: #ffffff;
 
   /* 액션(링크·활성 탭·주요 버튼) — 하나만 */
@@ -70,7 +70,7 @@
   --hairline-strong: #343945;
   --text: #eef1f7;
   --text-2: #9aa3b5;
-  --text-3: #6f7784;
+  --text-3: #858d9a;
   --on-action: #0f1115;
   --action: #eef1f7;
   --action-hover: #d7dbe3;
@@ -89,7 +89,7 @@
   :root:not([data-theme="light"]) {
     --canvas: #0f1115; --surface: #151821; --surface-2: #1c2029;
     --hairline: #262a33; --hairline-strong: #343945;
-    --text: #eef1f7; --text-2: #9aa3b5; --text-3: #6f7784;
+    --text: #eef1f7; --text-2: #9aa3b5; --text-3: #858d9a;
     --on-action: #0f1115; --action: #eef1f7; --action-hover: #d7dbe3;
     --pos-yes: #34a866; --pos-no: #e05252; --pos-neutral: #9aa3b5; --pos-crit: #d6a040;
     --status-pass-bg: #163b28; --status-pass-fg: #8fd6ad;

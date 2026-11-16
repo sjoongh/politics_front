@@ -73,11 +73,9 @@ const NewsCard = ({ item, type, onDetailClick = () => {}, featured = false, comp
           onClick={() => onDetailClick('news', news)}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onDetailClick('news', news)}
         >
-          <div
-            className="news-row__thumb"
-            style={hasImg ? { backgroundImage: `url(${news.image_url})` } : undefined}
-            aria-hidden="true"
-          />
+          {hasImg && (
+            <div className="news-row__thumb" style={{ backgroundImage: `url(${news.image_url})` }} aria-hidden="true" />
+          )}
           <div className="news-row__body">
             <h3 className="news-row__title">{news.title}</h3>
             <div className="news-row__meta">

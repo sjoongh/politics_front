@@ -10,6 +10,8 @@ export default function AiSearchResults({ result, query, briefingLoading, onRunB
   if (!result) return null;
   const { parsed, items = [], briefing, mode, ai } = result;
   const isFallback = mode !== 'ai_structured';
+  // AI 검색을 운영에서 꺼 둔 경우(disabled)는 상시 상태라 '사용할 수 없어' 안내를 띄우지 않는다
+  const aiOff = isFallback && ai && ai.fallback_reason === 'disabled';
 
   const chips = [];
   if (parsed) {
@@ -24,7 +26,7 @@ export default function AiSearchResults({ result, query, briefingLoading, onRunB
     <div className="ai-search">
       <div className="section-head">
         <span className="section-head__title">
-          <Sparkles size={18} /> AI 검색 결과
+          {isFallback ? '키워드 일치' : <><Sparkles size={18} /> AI 검색 결과</>}
         </span>
         <span className="ai-search__count">{items.length}건</span>
       </div>
@@ -40,7 +42,7 @@ export default function AiSearchResults({ result, query, briefingLoading, onRunB
           </div>
         </div>
       )}
-      {isFallback && (
+      {isFallback && !aiOff && (
         <div className="ai-search__fallback">
           <Info size={13} /> AI 해석을 사용할 수 없어 키워드 검색으로 보여드려요.
         </div>

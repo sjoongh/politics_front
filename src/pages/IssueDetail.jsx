@@ -12,6 +12,8 @@ import Timeline from '../issue/Timeline';
 import PressSection from '../issue/PressSection';
 import ProposerChips from '../issue/ProposerChips';
 import { officialRecords, timelineItems, stanceRows, pressModel, proposerChips } from '../issue/detailModel';
+import { shownSummary } from '../hooks/issueShape';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useIssueDetail } from '../hooks/useIssueDetail';
 import { goBackToList } from '../hooks/backRules';
 import { useMembers } from '../hooks/useMembers';
@@ -43,6 +45,8 @@ export default function IssueDetail() {
   const press = useMemo(() => (detail ? pressModel(detail) : null), [detail]);
   const chips = useMemo(() => (detail ? proposerChips(detail, members) : []), [detail, members]);
 
+  const summary = detail ? shownSummary(detail) : null;
+  useDocumentTitle(detail ? (detail.type === 'bill' && detail.law_name ? detail.law_name : detail.title) : null);
   const close = () => goBackToList(navigate, `/issues${params.toString() ? `?${params}` : ''}`, desktop);
   const share = async () => {
     const url = issueShareUrl(detail.id);
@@ -79,8 +83,8 @@ export default function IssueDetail() {
         <>
           <div className="detail__badges"><Badge kind="status" value={detail.status} /><Badge kind="category" value={detail.category} /></div>
           <h1 className="detail__title">{detail.type === 'bill' && detail.law_name ? detail.law_name : detail.title}</h1>
-          {detail.summary && <p className="detail__summary">{detail.summary}</p>}
-          {/* allow-ui-rule */}{detail.auto_generated && <p className="detail__note">여러 보도를 묶어 자동 생성한 이슈입니다. 요약·분류에 오류가 있을 수 있습니다.</p>}
+          {summary && <p className="detail__summary">{summary}</p>}
+          {/* allow-ui-rule */}{detail.auto_generated && detail.type === 'news' && <p className="detail__note">여러 보도를 묶어 자동 생성한 이슈입니다. 요약·분류에 오류가 있을 수 있습니다.</p>}
 
           <section id="sec-records" className="detail__section">
             <h2 className="section-title">공식 기록</h2>
@@ -90,7 +94,7 @@ export default function IssueDetail() {
           {stance.length > 0 && (
             <section id="sec-stance" className="detail__section">
               <h2 className="section-title">입장</h2>
-              <StanceTable rows={stance} />
+              <StanceTable rows={stance} hideVoteEvidence={records.some((r) => r.kind === 'vote')} />
             </section>
           )}
 

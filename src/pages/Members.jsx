@@ -12,7 +12,8 @@ import { useIsDesktop } from '../hooks/useMediaQuery';
 import { useScrollRestore } from '../hooks/useScrollRestore';
 import './Members.css';
 
-const SORTS = [{ id: 'name', label: '이름순' }, { id: 'criminal', label: '전과순' }, { id: 'term', label: '선수순' }];
+// 전과순은 전과 데이터를 수집하지 않아(전원 0) 제거. 데이터가 생기면 되살린다.
+const SORTS = [{ id: 'name', label: '이름순' }, { id: 'term', label: '선수순' }];
 
 export default function Members() {
   const [params, setParams] = useSearchParams();

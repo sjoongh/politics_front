@@ -1,4 +1,4 @@
-import { normalizeIssue, counts, hasOfficial, officialStance, voteLabel, normalizePage } from './issueShape';
+import { normalizeIssue, counts, hasOfficial, officialStance, voteLabel, normalizePage, shownSummary } from './issueShape';
 
 test('no digest is null', () => {
   const i = normalizeIssue({ id: 'a', title: 't' });
@@ -28,4 +28,11 @@ test('normalizePage accepts v2 and legacy array', () => {
   expect(normalizePage({ items: [{ id: '1' }], next_cursor: 'c' })).toEqual({ items: [expect.objectContaining({ id: '1' })], nextCursor: 'c' });
   expect(normalizePage([{ id: '2' }])).toEqual({ items: [expect.objectContaining({ id: '2' })], nextCursor: null });
   expect(normalizePage(null)).toEqual({ items: [], nextCursor: null });
+});
+
+test('summary hidden when empty or same as title', () => {
+  expect(shownSummary({ title: '‘두 국가’ 논란', summary: '‘두 국가’ 논란' })).toBeNull();
+  expect(shownSummary({ title: '‘언행 논란’', summary: '' })).toBeNull();
+  expect(shownSummary({ title: '‘하이에나 떼들’ 논란', summary: "최민희 '하이에나 떼들' 발언 사과" })).toBe("최민희 '하이에나 떼들' 발언 사과");
+  expect(shownSummary({ title: '국민연금법', summary: '가결 · 8.20 표결 · 찬성 156 · 반대 9 · 기권 12' })).toBe('가결 · 8.20 표결 · 찬성 156 · 반대 9 · 기권 12');
 });

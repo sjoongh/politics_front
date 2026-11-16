@@ -17,7 +17,7 @@ export default function MemberRow({ member, to, replace = false, selected = fals
         <span className="member-row__name">{member.name}<span className="member-row__party">{member.party || '무소속'}</span></span>
         {sub && <span className="member-row__sub">{sub}</span>}
       </span>
-      <span className="member-row__metrics num">전과 <b>{member.criminal_count || 0}</b>{terms ? <> · <b>{terms}</b>선</> : null}</span>
+      {terms ? <span className="member-row__metrics num"><b>{terms}</b>선</span> : <span />}
     </Link>
   );
 }

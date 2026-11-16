@@ -30,7 +30,7 @@ export default function PressSection({ issueId, model, articles, articlesCursor,
       {model.blindspotText && <p className="press__blind">{model.blindspotText}</p>}
       {LEAN.map(([k, label]) => (grouped[k] && grouped[k].length ? (
         <div className="press__group" key={k}>
-          <div className="press__label">{label} {grouped[k].length}</div>
+          <div className="press__label">{label}</div>
           <div>
             {grouped[k].map((a) => (
               <button type="button" key={a.id || a.source_url} className="press__item" onClick={() => onOpenArticle(a, all)}>
