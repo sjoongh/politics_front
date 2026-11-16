@@ -14,8 +14,9 @@ function Pos({ position }) {
   return label ? <span className={`stance-table__pos stance-chip__pos--${position}`}>{label}</span> : null;
 }
 
-/** hideVoteEvidence: 표결 근거(법안명)가 바로 위 공식 기록에 이미 보이면 행마다 반복하지 않는다. */
-export default function StanceTable({ rows, hideVoteEvidence = false }) {
+/** shownVoteTitles: 바로 위 공식 기록에 보인 표결 법안명. 표결 근거가 그중 하나와 같으면 행마다 반복하지 않는다. */
+export default function StanceTable({ rows, shownVoteTitles = [] }) {
+  const shown = new Set(shownVoteTitles);
   if (!rows || rows.length === 0) return null;
   return (
     <div className="stance-table">
@@ -24,7 +25,7 @@ export default function StanceTable({ rows, hideVoteEvidence = false }) {
           <div className="stance-table__actor">{s.actor}</div>
           <div className="stance-table__body">
             <Pos position={s.position} />
-            {s.evidence && !(hideVoteEvidence && s.basis === 'vote') && (s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.evidence}</a> : <span>{s.evidence}</span>)}
+            {s.evidence && !(s.basis === 'vote' && shown.has(s.evidence)) && (s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.evidence}</a> : <span>{s.evidence}</span>)}
             {s.basis && <span className="stance-table__basis">{basisLabel(s.basis)}</span>}
           </div>
         </div>

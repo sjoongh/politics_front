@@ -94,7 +94,7 @@ export default function IssueDetail() {
           {stance.length > 0 && (
             <section id="sec-stance" className="detail__section">
               <h2 className="section-title">입장</h2>
-              <StanceTable rows={stance} hideVoteEvidence={records.some((r) => r.kind === 'vote')} />
+              <StanceTable rows={stance} shownVoteTitles={records.filter((r) => r.kind === 'vote').map((r) => r.title)} />
             </section>
           )}
 

@@ -15,6 +15,8 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import './IssueDetail.css';
 import './Members.css';
 
+const OUTCOME_LABEL = { pending: '심사중', passed: '통과', enacted: '공포', reflected: '대안반영', discarded: '폐기' };
+const VOTE_KEYS = ['찬성', '반대', '기권', '불참'];
 const voteCls = (v) => (v === '찬성' ? 'yes' : v === '반대' ? 'no' : 'etc');
 
 export default function MemberDetail() {
@@ -30,7 +32,8 @@ export default function MemberDetail() {
   const bills = (detail && Array.isArray(detail.bills) ? detail.bills : []).slice(0, 12);
   const records = (detail && detail.criminal_records) || [];
   useDocumentTitle(detail ? detail.name : null);
-  const voteTotal = detail && detail.vote_summary ? detail.vote_summary.total || 0 : 0;
+  const vs = (detail && detail.vote_summary) || null;
+  const voteTotal = vs ? (vs.total || VOTE_KEYS.reduce((a, k) => a + (vs[k] || 0), 0)) : 0;
   const billTotal = detail && detail.bill_stats ? detail.bill_stats.total || 0 : 0;
 
   return (
@@ -73,7 +76,7 @@ export default function MemberDetail() {
               <div>
                 {bills.map((b, i) => (
                   <a className="bill-row" key={i} href={b.url || b.link || undefined} target="_blank" rel="noreferrer">
-                    <span>{b.name}</span><span className="bill-row__status">{b.status || b.result || ''}</span>
+                    <span>{b.name}</span><span className="bill-row__status">{b.status || OUTCOME_LABEL[b.outcome] || b.result || ''}</span>
                   </a>
                 ))}
               </div>
