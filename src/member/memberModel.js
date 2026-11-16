@@ -18,8 +18,7 @@ export function filterMembers(members, { query = '', party = '전체', sort = 'n
     return partyOk && qOk;
   });
   const sorted = [...list];
-  if (sort === 'criminal') sorted.sort((a, b) => (b.criminal_count || 0) - (a.criminal_count || 0));
-  else if (sort === 'term') sorted.sort((a, b) => termCount(b.term) - termCount(a.term));
+  if (sort === 'term') sorted.sort((a, b) => termCount(b.term) - termCount(a.term));
   else sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
   return sorted;
 }

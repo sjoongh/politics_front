@@ -1,9 +1,25 @@
 {
   "short_name": "브리핑 코리아",
-  "name": "브리핑 코리아 — 정치 뉴스 AI 요약",
-  "icons": [],
+  "name": "브리핑 코리아",
+  "icons": [
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#21808d",
-  "background_color": "#fcfcf9"
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import Badge from '../ui/Badge';
 import StanceChip from './StanceChip';
 import { sourceLine } from './sourceLine';
-import { officialStance } from '../hooks/issueShape';
+import { officialStance, shownSummary } from '../hooks/issueShape';
 import { shortDate } from './format';
 import './issue.css';
 
@@ -14,6 +14,7 @@ export default function IssueRow({ issue, to, replace = false, selected = false,
   const isBill = issue.type === 'bill';
   const title = isBill && issue.law_name ? issue.law_name : issue.title;
   const sub = isBill && issue.law_name && issue.title !== issue.law_name ? issue.title : null;
+  const summary = shownSummary(issue);
   const date = shortDate((issue.digest && issue.digest.last_activity_at) || issue.updated_at);
   return (
     <Link to={to || `/issues/${issue.id}`} replace={replace} className={`issue-row${selected ? ' is-selected' : ''}`}
@@ -24,7 +25,7 @@ export default function IssueRow({ issue, to, replace = false, selected = false,
       </span>
       <span className="issue-row__title">{title}</span>
       {sub && <span className="issue-row__sub">{sub}</span>}
-      {issue.summary && <span className="issue-row__summary">{issue.summary}</span>}
+      {summary && <span className="issue-row__summary">{summary}</span>}
       {stance.length >= 2 && (
         <span className="issue-row__stance">
           {stance.slice(0, 2).map((s, i) => <StanceChip key={i} actor={s.actor} position={s.position} basis={s.basis} />)}

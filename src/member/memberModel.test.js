@@ -12,6 +12,7 @@ test('filter query and party', () => {
   expect(filterMembers(M, { query: '', party: 'A당', sort: 'name' }).map((m) => m.id)).toEqual(['1', '3']);
 });
 test('sorts', () => {
+  // 전과순 정렬은 제거됨(전과 미수집) → 알 수 없는 정렬은 이름순
   expect(filterMembers(M, { query: '', party: '전체', sort: 'criminal' })[0].id).toBe('1');
   expect(filterMembers(M, { query: '', party: '전체', sort: 'term' })[0].id).toBe('3');
   expect(filterMembers(M, { query: '', party: '전체', sort: 'name' }).map((m) => m.name)).toEqual(['김가', '박다', '이나']);

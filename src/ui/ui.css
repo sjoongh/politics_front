@@ -43,3 +43,9 @@
 .chip, .seg__item, .btn--sm, .anchors__item { position: relative; }
 .chip::after, .seg__item::after, .btn--sm::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: var(--touch); transform: translateY(-50%); }
 .topbar__actions > button, .theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch); color: var(--text); border-radius: var(--r-panel); }
+
+/* 작은 텍스트 링크(원문·의안·이슈 보기)의 터치 영역을 44px 높이로 넓힌다(보이는 크기는 그대로) */
+.vote-row__link, .src-row__meta a, .day-row__link, .mdetail__links a { position: relative; }
+.vote-row__link::after, .src-row__meta a::after, .day-row__link::after, .mdetail__links a::after {
+  content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: var(--touch); transform: translateY(-50%);
+}

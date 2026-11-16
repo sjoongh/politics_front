@@ -13,6 +13,14 @@ export function normalizeIssue(raw) {
   return { ...r, id: r.id, type: issueType(r), digest: r.digest && typeof r.digest === 'object' ? r.digest : null };
 }
 
+/** 화면에 보일 요약. 비었거나 제목과 같으면 null(근거 기사가 없을 때 서버는 요약을 제목과 같게 둔다). */
+export function shownSummary(issue) {
+  const s = ((issue && issue.summary) || '').trim();
+  if (!s) return null;
+  const norm = (t) => String(t || '').replace(/[\s‘’'"“”]/g, '').replace(/논란$/, '');
+  return norm(s) === norm(issue.title) ? null : s;
+}
+
 export function counts(issue) {
   const c = issue && issue.digest && issue.digest.counts;
   if (!c) return null;
